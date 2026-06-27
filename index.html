@@ -218,8 +218,17 @@ function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
 
 async function syncComponentsFromDB(){
   if(!sb) return;
-  const {data}=await sb.from('components_config').select('*').maybeSingle();
-  if(data&&data.config) COMPONENTS=data.config;
+  const {data,error}=await sb.from('components_config').select('*').maybeSingle();
+  if(data&&data.config){
+    COMPONENTS=data.config;
+    lsSet('components',COMPONENTS);
+  } else {
+    // premiere fois : sauvegarder les composantes initiales en DB
+    const saved=lsGet('components');
+    if(saved) COMPONENTS=saved;
+    await sb.from('components_config').upsert({id:1,config:COMPONENTS},{onConflict:'id'});
+    lsSet('components',COMPONENTS);
+  }
 }
 
 async function saveComponentsToDB(){
