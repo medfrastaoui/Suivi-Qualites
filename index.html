@@ -53,13 +53,22 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .components-list{display:flex;flex-direction:column;gap:5px;padding:0 2px 4px}
 .comp-row{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:.6rem .8rem;transition:all .15s}
 .comp-row.checked{border-color:#6ee7b7;background:#d1fae5}
-@media(prefers-color-scheme:dark){.comp-row.checked{border-color:#065f46;background:#064e35}}
+.comp-row.skipped{border-color:#a78bfa;background:#ede9fe;opacity:.7}
+@media(prefers-color-scheme:dark){
+  .comp-row.checked{border-color:#065f46;background:#064e35}
+  .comp-row.skipped{border-color:#4c1d95;background:#2e1a5e}
+}
 .comp-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer}
 .comp-row.checked .comp-check{background:#059669;border-color:#059669;color:#fff}
+.comp-row.skipped .comp-check{background:#7c3aed;border-color:#7c3aed;color:#fff}
 .comp-info{flex:1;cursor:pointer}
 .comp-name{font-size:13px;font-weight:500}
 .comp-row.checked .comp-name{color:#065f46}
-@media(prefers-color-scheme:dark){.comp-row.checked .comp-name{color:#6ee7b7}}
+.comp-row.skipped .comp-name{color:#6d28d9}
+@media(prefers-color-scheme:dark){
+  .comp-row.checked .comp-name{color:#6ee7b7}
+  .comp-row.skipped .comp-name{color:#a78bfa}
+}
 .comp-desc{font-size:11px;color:var(--muted);margin-top:2px;display:none;line-height:1.4}
 .comp-desc.open{display:block}
 .comp-actions{display:flex;gap:4px;flex-shrink:0}
@@ -231,6 +240,20 @@ async function syncComponentsFromDB(){
   }
 }
 
+async function backfillSkip(compId){
+  if(!sb) return;
+  const today=dateStr(0);
+  const {data}=await sb.from('suivi_jours').select('date,checks').lt('date',today);
+  if(!data||!data.length) return;
+  for(const row of data){
+    const checks=row.checks||{};
+    if(!(compId in checks)){
+      checks[compId]='skip';
+      await sb.from('suivi_jours').update({checks}).eq('date',row.date);
+    }
+  }
+}
+
 async function saveComponentsToDB(){
   lsSet('components',COMPONENTS);
   if(!sb) return;
@@ -263,8 +286,10 @@ async function saveDay(){
 function qualityScore(qName,checks){
   const comps=COMPONENTS[qName]||[];
   if(!comps.length) return null;
-  const ok=comps.filter(c=>checks[c.id]).length;
-  return Math.round((ok/comps.length)*100);
+  const active=comps.filter(c=>checks[c.id]!=='skip');
+  if(!active.length) return null; // all skipped
+  const ok=active.filter(c=>checks[c.id]===true).length;
+  return Math.round((ok/active.length)*100);
 }
 
 // Interpolation continue rouge(0%) → orange(50%) → vert(100%)
@@ -339,10 +364,12 @@ function renderSaisie(){
       if(isOpen){
         html+=`<div class="components-list">`;
         comps.forEach(c=>{
-          const isChecked=!!dayChecked[c.id];
+          const compState=dayChecked[c.id];
+          const isChecked=compState===true;
+          const isSkipped=compState==='skip';
           const descOpen=openDescs.has(c.id);
-          html+=`<div class="comp-row ${isChecked?'checked':''}">
-            <div class="comp-check" onclick="toggleComp('${c.id}')">${isChecked?'✓':''}</div>
+          html+=`<div class="comp-row ${isChecked?'checked':isSkipped?'skipped':''}">
+            <div class="comp-check" onclick="toggleComp('${c.id}')">${isChecked?'✓':isSkipped?'⊘':''}</div>
             <div class="comp-info" onclick="toggleDesc('${c.id}')">
               <div class="comp-name">${c.name}</div>
               ${c.desc?`<div class="comp-desc ${descOpen?'open':''}">${c.desc}</div>`:''}
@@ -370,7 +397,13 @@ function renderSaisie(){
 }
 
 function toggleQ(q){openQualities.has(q)?openQualities.delete(q):openQualities.add(q);renderSaisie()}
-function toggleComp(id){dayChecked[id]=!dayChecked[id];renderSaisie()}
+function toggleComp(id){
+  const cur=dayChecked[id];
+  if(!cur) dayChecked[id]=true;
+  else if(cur===true) dayChecked[id]='skip';
+  else dayChecked[id]=false;
+  renderSaisie();
+}
 function toggleDesc(id){openDescs.has(id)?openDescs.delete(id):openDescs.add(id);renderSaisie()}
 async function nav(d){currentOffset=Math.min(0,currentOffset+d);await loadDay();renderSaisie()}
 async function goToday(){currentOffset=0;await loadDay();renderSaisie()}
@@ -396,8 +429,11 @@ function saveModal(){
 function addComp(q){
   openModal('Nouvelle composante','','',async(name,desc)=>{
     if(!COMPONENTS[q]) COMPONENTS[q]=[];
-    COMPONENTS[q].push({id:uid(),name,desc});
+    const newId=uid();
+    COMPONENTS[q].push({id:newId,name,desc});
     await saveComponentsToDB();
+    // set skip on all past days
+    await backfillSkip(newId);
     renderSaisie();
   });
 }
@@ -467,7 +503,8 @@ async function renderDashboard(){
       const isOpen=openDashCards.has(q);
       const comps=COMPONENTS[q]||[];
       const compAvgs=comps.map(c=>{
-        const vals=rows.map(r=>(r.checks||{})[c.id]?100:0);
+        const active=rows.filter(r=>(r.checks||{})[c.id]!=='skip');
+        const vals=active.map(r=>(r.checks||{})[c.id]===true?100:0);
         return {name:c.name,avg:vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):null};
       });
       let detailHtml='';
