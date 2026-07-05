@@ -180,6 +180,10 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
       <label>Qualité associée</label>
       <select id="goal-quality"></select>
     </div>
+    <div class="modal-field">
+      <label>Définition (optionnel)</label>
+      <textarea id="goal-definition" placeholder="Décrivez cet objectif, son contexte, ce qu'il représente pour vous..."></textarea>
+    </div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal('modal-goal')">Annuler</button>
       <button class="btn-primary" onclick="saveGoal()">Enregistrer</button>
@@ -397,6 +401,7 @@ async function renderDetailTabs(){
   document.getElementById('tab-vision').innerHTML = `
     <div class="vision-box">
       <div class="vision-phrase">"${h.vision}"</div>
+      ${currentGoal.definition?`<div style="background:var(--bg);border-radius:10px;padding:1rem;margin-bottom:1rem;font-size:14px;line-height:1.6;color:var(--text)"><div style="font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem">Définition</div>${currentGoal.definition}</div>`:''}
       <div class="kpi-grid">
         <div class="kpi-card"><div class="kpi-val" style="font-size:14px">${fmtDate(dateStart)}</div><div class="kpi-label">Début</div></div>
         <div class="kpi-card"><div class="kpi-val" style="font-size:14px">${fmtDate(dateEnd)}</div><div class="kpi-label">Fin</div></div>
@@ -409,8 +414,12 @@ async function renderDetailTabs(){
     </div>`;
 
   // TASKS TAB
-  let tasksHtml = `<div class="task-form">
-    <div class="task-form-title">Ajouter une tâche</div>
+  let tasksHtml = `<div style="margin-bottom:.75rem">
+    <button class="btn-add-task" style="width:auto;padding:9px 20px" onclick="toggleTaskForm()">+ Ajouter une tâche</button>
+  </div>
+  <div id="task-form-panel" style="display:none">
+  <div class="task-form">
+    <div class="task-form-title">Nouvelle tâche</div>
     <div class="form-row">
       <div class="form-field" style="flex:2;min-width:180px">
         <label>Nom</label>
@@ -431,8 +440,12 @@ async function renderDetailTabs(){
       <label>Descriptif (optionnel)</label>
       <textarea id="new-task-desc" placeholder="Détails, étapes, comment faire..."></textarea>
     </div>
-    <button class="btn-add-task" onclick="addTask()">Ajouter la tâche</button>
+    <div style="display:flex;gap:8px;margin-top:.5rem">
+      <button class="btn-add-task" style="flex:1" onclick="addTask()">Enregistrer</button>
+      <button class="btn-cancel" style="flex:0 0 auto;padding:9px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:13px;color:var(--muted)" onclick="toggleTaskForm()">Annuler</button>
+    </div>
     <div class="feedback" id="new-task-fb"></div>
+  </div>
   </div>
   <div class="tasks-list">`;
 
@@ -473,6 +486,14 @@ async function toggleTask(taskId){
 }
 
 // ── ADD TASK ──
+function toggleTaskForm(){
+  const panel = document.getElementById('task-form-panel');
+  if(!panel) return;
+  const isOpen = panel.style.display !== 'none';
+  panel.style.display = isOpen ? 'none' : 'block';
+  if(!isOpen) setTimeout(()=>{const n=document.getElementById('new-task-name');if(n)n.focus();},100);
+}
+
 async function addTask(){
   const name = document.getElementById('new-task-name').value.trim();
   const date = document.getElementById('new-task-date').value;
@@ -489,6 +510,7 @@ async function addTask(){
   fb.textContent='Ajoutée ✓';fb.style.color='#059669';
   setTimeout(()=>{if(fb)fb.textContent=''},2000);
   await renderDetailTabs();
+  // form closes after re-render (hidden by default)
 }
 
 // ── TASK EDIT MODAL ──
@@ -537,6 +559,7 @@ function openGoalModal(goalId=null, presetQuality=null){
   } else {
     document.getElementById('modal-goal-title').textContent = 'Nouvel objectif';
     document.getElementById('goal-name').value = '';
+    document.getElementById('goal-definition').value = '';
     if(presetQuality) sel.value = presetQuality;
   }
   document.getElementById('goal-fb').textContent='';
@@ -549,13 +572,14 @@ async function saveGoal(){
   const quality = document.getElementById('goal-quality').value;
   const fb = document.getElementById('goal-fb');
   if(!name){fb.textContent='Nom requis';fb.style.color='#dc2626';return;}
+  const definition = document.getElementById('goal-definition').value.trim();
   if(editGoalId){
-    const {error} = await sb.from('goals').update({name,quality}).eq('id',editGoalId);
+    const {error} = await sb.from('goals').update({name,quality,definition}).eq('id',editGoalId);
     if(error){fb.textContent='Erreur: '+error.message;fb.style.color='#dc2626';return;}
     const g = goals.find(g=>g.id===editGoalId);
-    if(g){g.name=name;g.quality=quality;}
+    if(g){g.name=name;g.quality=quality;g.definition=definition;}
   } else {
-    const {data,error} = await sb.from('goals').insert({name,quality}).select().single();
+    const {data,error} = await sb.from('goals').insert({name,quality,definition}).select().single();
     if(error){fb.textContent='Erreur: '+error.message;fb.style.color='#dc2626';return;}
     goals.push(data);
   }
