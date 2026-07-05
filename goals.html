@@ -414,10 +414,37 @@ async function renderDetailTabs(){
     </div>`;
 
   // TASKS TAB
-  let tasksHtml = `<div style="margin-bottom:.75rem">
+  let tasksHtml = ``
+  <div class="tasks-list">`;
+
+  const today = todayStr();
+  if(gt.length===0){
+    tasksHtml += `<div class="tasks-empty">Aucune tâche — ajoutez-en une ci-dessus.</div>`;
+  } else {
+    gt.forEach(t=>{
+      const overdue = !t.done && t.due_date && t.due_date < today;
+      tasksHtml += `<div class="task-row ${t.done?'done':''} ${overdue?'overdue':''}">
+        <div class="task-check" onclick="toggleTask('${t.id}')">${t.done?'✓':''}</div>
+        <div class="task-main" onclick="openTaskEdit('${t.id}')">
+          <div class="task-name">${t.name}</div>
+          <div class="task-meta">
+            <span class="task-date ${overdue?'overdue':''}">${fmtDate(t.due_date)}</span>
+            <span class="task-weight">Poids ${t.weight}</span>
+            ${t.description?`<span style="font-size:10px;color:var(--muted)">📝 détail</span>`:''}
+          </div>
+        </div>
+        <button class="task-delete" onclick="confirmDelete('task','${t.id}','${t.name.replace(/'/g,"\\'")}')">🗑</button>
+      </div>`;
+    });
+  }
+  tasksHtml += `</div>`;
+
+  // Add task button + form at the bottom
+  tasksHtml += `
+  <div style="margin-top:.75rem">
     <button class="btn-add-task" style="width:auto;padding:9px 20px" onclick="toggleTaskForm()">+ Ajouter une tâche</button>
   </div>
-  <div id="task-form-panel" style="display:none">
+  <div id="task-form-panel" style="display:none;margin-top:.75rem">
   <div class="task-form">
     <div class="task-form-title">Nouvelle tâche</div>
     <div class="form-row">
@@ -442,34 +469,12 @@ async function renderDetailTabs(){
     </div>
     <div style="display:flex;gap:8px;margin-top:.5rem">
       <button class="btn-add-task" style="flex:1" onclick="addTask()">Enregistrer</button>
-      <button class="btn-cancel" style="flex:0 0 auto;padding:9px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:13px;color:var(--muted)" onclick="toggleTaskForm()">Annuler</button>
+      <button style="flex:0 0 auto;padding:9px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:13px;color:var(--muted)" onclick="toggleTaskForm()">Annuler</button>
     </div>
     <div class="feedback" id="new-task-fb"></div>
   </div>
-  </div>
-  <div class="tasks-list">`;
+  </div>`;
 
-  const today = todayStr();
-  if(gt.length===0){
-    tasksHtml += `<div class="tasks-empty">Aucune tâche — ajoutez-en une ci-dessus.</div>`;
-  } else {
-    gt.forEach(t=>{
-      const overdue = !t.done && t.due_date && t.due_date < today;
-      tasksHtml += `<div class="task-row ${t.done?'done':''} ${overdue?'overdue':''}">
-        <div class="task-check" onclick="toggleTask('${t.id}')">${t.done?'✓':''}</div>
-        <div class="task-main" onclick="openTaskEdit('${t.id}')">
-          <div class="task-name">${t.name}</div>
-          <div class="task-meta">
-            <span class="task-date ${overdue?'overdue':''}">${fmtDate(t.due_date)}</span>
-            <span class="task-weight">Poids ${t.weight}</span>
-            ${t.description?`<span style="font-size:10px;color:var(--muted)">📝 détail</span>`:''}
-          </div>
-        </div>
-        <button class="task-delete" onclick="confirmDelete('task','${t.id}','${t.name.replace(/'/g,"\\'")}')">🗑</button>
-      </div>`;
-    });
-  }
-  tasksHtml += `</div>`;
   document.getElementById('tab-tasks').innerHTML = tasksHtml;
 }
 
