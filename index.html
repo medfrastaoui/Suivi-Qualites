@@ -135,6 +135,35 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .fill-none{background:var(--surface);color:var(--muted);border-color:var(--border)!important}
 
 .loading{text-align:center;padding:2rem;color:var(--muted);font-size:13px}
+
+/* Day indicator */
+.day-indicator{width:10px;height:10px;border-radius:50%;flex-shrink:0;display:inline-block;margin-left:8px;vertical-align:middle}
+.day-indicator.saved{background:#059669}
+.day-indicator.unsaved{background:var(--border);border:1px solid var(--muted)}
+
+/* Mini calendar */
+.cal-toggle{background:transparent;border:1px solid var(--border);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px;color:var(--muted)}
+.cal-toggle:hover{background:var(--surface)}
+.mini-cal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem;margin-bottom:1rem;display:none}
+.mini-cal.open{display:block}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
+.cal-month{font-size:13px;font-weight:600}
+.cal-nav{background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:2px 6px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-dow{font-size:10px;color:var(--muted);text-align:center;padding-bottom:3px;font-weight:500}
+.cal-day{aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;cursor:pointer;position:relative;border:1px solid transparent}
+.cal-day.empty{cursor:default}
+.cal-day.future{opacity:.3;cursor:default}
+.cal-day.today{border-color:var(--muted)}
+.cal-day.current{border-color:var(--text);font-weight:700}
+.cal-day.has-data{background:#d1fae5;color:#065f46}
+.cal-day.has-data:hover{background:#a7f3d0}
+.cal-day.no-data{background:var(--bg)}
+.cal-day.no-data:hover{background:var(--border)}
+@media(prefers-color-scheme:dark){
+  .cal-day.has-data{background:#064e35;color:#6ee7b7}
+  .cal-day.has-data:hover{background:#065f46}
+}
 .empty-state{text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:13px}
 </style>
 </head>
@@ -203,6 +232,10 @@ let dayChecked={}; // {compId: bool}
 let openQualities=new Set();
 let openDescs=new Set();
 let modalCtx=null;
+let calOpen=false;
+let calViewYear=new Date().getFullYear();
+let calViewMonth=new Date().getMonth();
+let savedDates=new Set(); // set of 'YYYY-MM-DD' strings known to be saved
 
 function uid(){return Math.random().toString(36).slice(2,9)}
 function slugQ(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'')}
@@ -222,6 +255,7 @@ function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
     await syncComponentsFromDB();
   }
   await loadDay();
+  await loadSavedDates();
   renderSaisie();
 })();
 
@@ -265,10 +299,26 @@ async function loadDay(){
   dayChecked={};
   const key='day:'+dateStr(currentOffset);
   const local=lsGet(key);
-  if(local) dayChecked=local;
+  if(local){ dayChecked=local; savedDates.add(dateStr(currentOffset)); }
   if(sb){
     const {data}=await sb.from('suivi_jours').select('*').eq('date',dateStr(currentOffset)).maybeSingle();
-    if(data&&data.checks) dayChecked=data.checks;
+    if(data&&data.checks){ dayChecked=data.checks; savedDates.add(dateStr(currentOffset)); }
+  }
+}
+
+async function loadSavedDates(){
+  // load all saved dates for current cal month + neighbours
+  if(sb){
+    const start=new Date(calViewYear,calViewMonth-1,1).toISOString().split('T')[0];
+    const end=new Date(calViewYear,calViewMonth+2,0).toISOString().split('T')[0];
+    const {data}=await sb.from('suivi_jours').select('date').gte('date',start).lte('date',end);
+    if(data) data.forEach(r=>savedDates.add(r.date));
+  } else {
+    // from localStorage
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k&&k.startsWith('day:')) savedDates.add(k.replace('day:',''));
+    }
   }
 }
 
@@ -279,7 +329,12 @@ async function saveDay(){
   if(!sb){el.textContent='Sauvegardé localement ✓';el.style.color='#059669';setTimeout(()=>{if(el)el.textContent=''},2500);return;}
   const {error}=await sb.from('suivi_jours').upsert({date:dateStr(currentOffset),checks:dayChecked},{onConflict:'date'});
   if(error){el.textContent='Erreur: '+error.message;el.style.color='#dc2626';}
-  else{el.textContent='Enregistré ✓';el.style.color='#059669';setTimeout(()=>{if(el)el.textContent=''},2500);}
+  else{
+    savedDates.add(dateStr(currentOffset));
+    el.textContent='Enregistré ✓';el.style.color='#059669';
+    setTimeout(()=>{if(el)el.textContent=''},2500);
+    renderSaisie();
+  }
 }
 
 // ── SCORE ──
@@ -329,17 +384,73 @@ function pctClass(p){ return p===null||p===undefined?'fill-none':'fill-gradient'
 function scoreColor(p){ return p===null?'#888':gradientColor(p); }
 
 // ── RENDER SAISIE ──
+function toggleCal(){calOpen=!calOpen;if(calOpen)loadSavedDates().then(renderSaisie);else renderSaisie();}
+function calPrev(){calViewMonth--;if(calViewMonth<0){calViewMonth=11;calViewYear--;}loadSavedDates().then(renderSaisie);}
+function calNext(){calViewMonth++;if(calViewMonth>11){calViewMonth=0;calViewYear++;}loadSavedDates().then(renderSaisie);}
+function calGoDay(dateString){
+  const today=new Date();today.setHours(0,0,0,0);
+  const target=new Date(dateString);
+  if(target>today) return;
+  const diff=Math.round((target-today)/(1000*60*60*24));
+  currentOffset=diff;
+  loadDay().then(renderSaisie);
+}
+
+function renderMiniCal(){
+  if(!calOpen) return '';
+  const months=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const dows=['L','M','M','J','V','S','D'];
+  const today=new Date();today.setHours(0,0,0,0);
+  const firstDay=new Date(calViewYear,calViewMonth,1);
+  const lastDay=new Date(calViewYear,calViewMonth+1,0);
+  const startDow=(firstDay.getDay()+6)%7; // monday=0
+  const currentDate=dateStr(currentOffset);
+  let html=`<div class="mini-cal open">
+    <div class="cal-header">
+      <button class="cal-nav" onclick="calPrev()">&#8592;</button>
+      <div class="cal-month">${months[calViewMonth]} ${calViewYear}</div>
+      <button class="cal-nav" onclick="calNext()">&#8594;</button>
+    </div>
+    <div class="cal-grid">`;
+  dows.forEach(d=>{ html+=`<div class="cal-dow">${d}</div>`; });
+  for(let i=0;i<startDow;i++) html+=`<div class="cal-day empty"></div>`;
+  for(let d=1;d<=lastDay.getDate();d++){
+    const dt=new Date(calViewYear,calViewMonth,d);
+    dt.setHours(0,0,0,0);
+    const dtStr=dt.toISOString().split('T')[0];
+    const isFuture=dt>today;
+    const isToday=dt.getTime()===today.getTime();
+    const isCurrent=dtStr===currentDate;
+    const hasSave=savedDates.has(dtStr);
+    let cls='cal-day';
+    if(isFuture) cls+=' future';
+    else if(hasSave) cls+=' has-data';
+    else cls+=' no-data';
+    if(isToday) cls+=' today';
+    if(isCurrent) cls+=' current';
+    html+=`<div class="${cls}" onclick="${isFuture?'':''}" ${!isFuture?`onclick="calGoDay('${dtStr}')"`:''} title="${dtStr}">${d}</div>`;
+  }
+  html+=`</div></div>`;
+  return html;
+}
+
 function renderSaisie(){
   const totalComps=ALL_QUALITIES.reduce((s,q)=>s+(COMPONENTS[q]||[]).length,0);
   const okComps=ALL_QUALITIES.reduce((s,q)=>s+(COMPONENTS[q]||[]).filter(c=>dayChecked[c.id]).length,0);
 
+  const isSaved=savedDates.has(dateStr(currentOffset));
   let html=`<div class="day-nav">
-    <div class="day-label">${dateFR(currentOffset)}</div>
+    <div class="day-label">
+      ${dateFR(currentOffset)}
+      <span class="day-indicator ${isSaved?'saved':'unsaved'}" title="${isSaved?'Journée enregistrée':'Non enregistrée'}"></span>
+    </div>
     <div class="day-btns">
       <button class="btn-sm" onclick="nav(-1)">&#8592;</button>
       <button class="btn-sm" onclick="goToday()">Auj.</button>
       <button class="btn-sm" onclick="nav(1)" ${currentOffset>=0?'disabled':''}>&#8594;</button>
-    </div></div>`;
+      <button class="cal-toggle" onclick="toggleCal()">📅</button>
+    </div></div>
+  ${renderMiniCal()}`;
 
   HORIZONS.forEach(h=>{
     const bgVar=h.id==='spirituel'?'var(--spirituel-l)':h.id==='professionnel'?'var(--professionnel-l)':h.id==='social'?'var(--social-l)':'var(--personnel-l)';
