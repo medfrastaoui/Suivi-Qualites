@@ -299,25 +299,37 @@ async function loadDay(){
   dayChecked={};
   const key='day:'+dateStr(currentOffset);
   const local=lsGet(key);
-  if(local){ dayChecked=local; savedDates.add(dateStr(currentOffset)); }
+  if(local){ dayChecked=local; }
   if(sb){
     const {data}=await sb.from('suivi_jours').select('*').eq('date',dateStr(currentOffset)).maybeSingle();
-    if(data&&data.checks){ dayChecked=data.checks; savedDates.add(dateStr(currentOffset)); }
+    if(data&&data.checks){ dayChecked=data.checks; }
   }
+  // mark as saved only if at least one component is checked true
+  const hasTrue=Object.values(dayChecked).some(v=>v===true);
+  if(hasTrue) savedDates.add(dateStr(currentOffset));
+  else savedDates.delete(dateStr(currentOffset));
 }
 
 async function loadSavedDates(){
-  // load all saved dates for current cal month + neighbours
+  // une journée est "enregistrée" seulement si elle contient au moins une composante true
   if(sb){
     const start=new Date(calViewYear,calViewMonth-1,1).toISOString().split('T')[0];
     const end=new Date(calViewYear,calViewMonth+2,0).toISOString().split('T')[0];
-    const {data}=await sb.from('suivi_jours').select('date').gte('date',start).lte('date',end);
-    if(data) data.forEach(r=>savedDates.add(r.date));
+    const {data}=await sb.from('suivi_jours').select('date,checks').gte('date',start).lte('date',end);
+    if(data) data.forEach(r=>{
+      const checks=r.checks||{};
+      const hasTrue=Object.values(checks).some(v=>v===true);
+      if(hasTrue) savedDates.add(r.date);
+      else savedDates.delete(r.date);
+    });
   } else {
-    // from localStorage
     for(let i=0;i<localStorage.length;i++){
       const k=localStorage.key(i);
-      if(k&&k.startsWith('day:')) savedDates.add(k.replace('day:',''));
+      if(k&&k.startsWith('day:')){
+        const v=lsGet(k);
+        const hasTrue=v&&Object.values(v).some(val=>val===true);
+        if(hasTrue) savedDates.add(k.replace('day:',''));
+      }
     }
   }
 }
