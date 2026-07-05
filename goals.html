@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Objectifs Stratégiques</title>
+<style>
+:root {
+  --spirituel:#7c3aed; --professionnel:#059669; --social:#dc2626; --personnel:#2563eb;
+  --bg:#f8f7f4; --surface:#ffffff; --text:#1a1a18; --muted:#6b6b67;
+  --border:rgba(0,0,0,0.09); --radius:12px;
+  --shadow:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111110;--surface:#1c1c1a;--text:#f0efe8;--muted:#8a8a84;--border:rgba(255,255,255,0.09);
+  --shadow:0 1px 4px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.2);
+}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;height:54px}
+.nav-brand{font-size:14px;font-weight:700;letter-spacing:-.01em}
+.nav-back{background:transparent;border:1px solid var(--border);border-radius:8px;padding:5px 12px;cursor:pointer;font-size:13px;color:var(--muted);display:none;align-items:center;gap:5px}
+.nav-back.visible{display:flex}
+.btn-add-goal{background:var(--text);color:var(--bg);border:none;border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600}
+
+/* SCREENS */
+.screen{display:none;padding:1.25rem;max-width:900px;margin:0 auto}
+.screen.active{display:block}
+
+/* DASHBOARD GRID */
+.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.dash-title{font-size:20px;font-weight:700}
+.horizon-section{margin-bottom:2rem}
+.horizon-label{display:flex;align-items:center;gap:8px;margin-bottom:.75rem}
+.horizon-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.horizon-name{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+.horizon-vision{font-size:11px;font-style:italic;opacity:.6;margin-left:4px}
+.goals-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+
+/* GOAL CARD */
+.goal-card{background:var(--surface);border:2px solid transparent;border-radius:14px;padding:1rem 1rem .85rem;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative;box-shadow:var(--shadow)}
+.goal-card:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,0,0,.1)}
+.goal-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:.6rem}
+.goal-card-name{font-size:14px;font-weight:700;line-height:1.3;flex:1}
+.goal-card-quality{font-size:11px;color:var(--muted);margin-bottom:.75rem}
+.goal-card-dates{font-size:10px;color:var(--muted);margin-bottom:.6rem}
+.goal-card-actions{display:flex;gap:4px;flex-shrink:0}
+.btn-card-action{background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:3px 5px;border-radius:6px;line-height:1}
+.btn-card-action:hover{background:var(--border)}
+
+/* PROGRESS BARS */
+.progress-block{margin-bottom:.35rem}
+.progress-label{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:3px}
+.progress-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width .3s}
+
+/* HEALTH BADGE */
+.health-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;margin-top:.5rem}
+.health-green{background:#d1fae5;color:#065f46}
+.health-red{background:#fee2e2;color:#7f1d1d}
+@media(prefers-color-scheme:dark){
+  .health-green{background:#064e35;color:#6ee7b7}
+  .health-red{background:#450a0a;color:#fca5a5}
+}
+
+/* EMPTY STATE */
+.empty-card{background:transparent;border:2px dashed var(--border);border-radius:14px;padding:1.5rem;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:13px;min-height:80px;transition:border-color .15s}
+.empty-card:hover{border-color:var(--muted)}
+
+/* DETAIL SCREEN */
+.detail-header{margin-bottom:1.25rem}
+.detail-horizon-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.5rem;opacity:.7}
+.detail-title{font-size:24px;font-weight:800;line-height:1.2;margin-bottom:.3rem}
+.detail-quality{font-size:13px;color:var(--muted)}
+
+/* TABS */
+.tabs{display:flex;gap:4px;margin-bottom:1.25rem;border-bottom:1px solid var(--border);padding-bottom:0}
+.tab-btn{padding:8px 16px;border:none;background:transparent;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.tab-btn.active{color:var(--text);border-bottom-color:var(--text)}
+
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* VISION TAB */
+.vision-box{background:var(--surface);border-radius:14px;padding:1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+.vision-phrase{font-size:18px;font-style:italic;line-height:1.5;margin-bottom:1.25rem;opacity:.8}
+.kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem}
+@media(min-width:480px){.kpi-grid{grid-template-columns:repeat(4,1fr)}}
+.kpi-card{background:var(--bg);border-radius:10px;padding:.75rem;text-align:center}
+.kpi-val{font-size:22px;font-weight:700;line-height:1}
+.kpi-label{font-size:10px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.04em}
+
+/* TASKS TAB */
+.task-form{background:var(--surface);border-radius:14px;padding:1rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+.task-form-title{font-size:13px;font-weight:600;margin-bottom:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.form-row{display:flex;gap:8px;flex-wrap:wrap}
+.form-field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px}
+.form-field label{font-size:11px;color:var(--muted);font-weight:500}
+.form-field input,.form-field select,.form-field textarea{padding:.55rem .7rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;font-family:inherit;width:100%}
+.form-field textarea{min-height:60px;resize:vertical}
+.btn-add-task{background:var(--text);color:var(--bg);border:none;border-radius:8px;padding:9px 18px;cursor:pointer;font-size:13px;font-weight:600;margin-top:.5rem;width:100%}
+
+/* TASK LIST */
+.tasks-list{display:flex;flex-direction:column;gap:6px}
+.task-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.7rem .9rem;display:flex;align-items:center;gap:10px;transition:all .15s;box-shadow:var(--shadow)}
+.task-row.done{opacity:.6}
+.task-row.overdue{border-color:#fca5a5}
+@media(prefers-color-scheme:dark){.task-row.overdue{border-color:#7f1d1d}}
+.task-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s}
+.task-row.done .task-check{background:#059669;border-color:#059669;color:#fff}
+.task-main{flex:1;cursor:pointer;min-width:0}
+.task-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task-row.done .task-name{text-decoration:line-through}
+.task-meta{display:flex;align-items:center;gap:8px;margin-top:2px;flex-wrap:wrap}
+.task-date{font-size:11px;color:var(--muted)}
+.task-date.overdue{color:#dc2626}
+.task-weight{font-size:10px;background:var(--bg);border-radius:4px;padding:1px 5px;color:var(--muted)}
+.task-delete{background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:15px;padding:3px 5px;border-radius:6px;flex-shrink:0}
+.task-delete:hover{color:#dc2626;background:#fee2e2}
+.tasks-empty{text-align:center;padding:2rem;color:var(--muted);font-size:13px}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:flex-end;justify-content:center;padding:0}
+.modal-overlay.hidden{display:none}
+.modal{background:var(--surface);border-radius:16px 16px 0 0;padding:1.25rem 1rem 2rem;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:15px;font-weight:700;margin-bottom:1rem}
+.modal-field{display:flex;flex-direction:column;gap:4px;margin-bottom:.75rem}
+.modal-field label{font-size:11px;color:var(--muted);font-weight:500}
+.modal-field input,.modal-field select,.modal-field textarea{padding:.6rem .8rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:14px;font-family:inherit;width:100%}
+.modal-field textarea{min-height:80px;resize:vertical}
+.modal-btns{display:flex;gap:8px;margin-top:1rem}
+.btn-primary{flex:1;padding:11px;background:var(--text);color:var(--bg);border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-cancel{flex:1;padding:11px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;font-size:14px;cursor:pointer}
+.btn-danger{flex:1;padding:11px;background:#dc2626;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
+
+/* CONFIRM DIALOG */
+.confirm-msg{font-size:14px;color:var(--muted);margin-bottom:1rem;line-height:1.5}
+
+.loading{text-align:center;padding:3rem;color:var(--muted);font-size:13px}
+.feedback{text-align:center;font-size:12px;min-height:18px;margin-top:6px}
+</style>
+</head>
+<body>
+
+<nav>
+  <button class="nav-back" id="nav-back" onclick="goHome()">&#8592; Retour</button>
+  <div class="nav-brand">Objectifs Stratégiques</div>
+  <button class="btn-add-goal" id="btn-add-goal" onclick="openGoalModal()">+ Objectif</button>
+</nav>
+
+<div id="screen-home" class="screen active">
+  <div id="home-content"><div class="loading">Chargement...</div></div>
+</div>
+
+<div id="screen-detail" class="screen">
+  <div class="detail-header">
+    <div class="detail-horizon-tag" id="detail-horizon-tag"></div>
+    <div class="detail-title" id="detail-title"></div>
+    <div class="detail-quality" id="detail-quality"></div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('vision',this)">Vision</button>
+    <button class="tab-btn" onclick="switchTab('tasks',this)">Tâches</button>
+  </div>
+  <div id="tab-vision" class="tab-content active"></div>
+  <div id="tab-tasks" class="tab-content"></div>
+</div>
+
+<!-- MODAL GOAL -->
+<div class="modal-overlay hidden" id="modal-goal">
+  <div class="modal">
+    <div class="modal-title" id="modal-goal-title">Nouvel objectif</div>
+    <div class="modal-field">
+      <label>Nom de l'objectif</label>
+      <input type="text" id="goal-name" placeholder="Ex: Lancer mon activité freelance" />
+    </div>
+    <div class="modal-field">
+      <label>Qualité associée</label>
+      <select id="goal-quality"></select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('modal-goal')">Annuler</button>
+      <button class="btn-primary" onclick="saveGoal()">Enregistrer</button>
+    </div>
+    <div class="feedback" id="goal-fb"></div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRM DELETE -->
+<div class="modal-overlay hidden" id="modal-confirm">
+  <div class="modal">
+    <div class="modal-title">Confirmer la suppression</div>
+    <div class="confirm-msg" id="confirm-msg"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('modal-confirm')">Annuler</button>
+      <button class="btn-danger" id="confirm-ok">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TASK EDIT -->
+<div class="modal-overlay hidden" id="modal-task">
+  <div class="modal">
+    <div class="modal-title" id="modal-task-title">Tâche</div>
+    <div class="modal-field">
+      <label>Nom</label>
+      <input type="text" id="task-edit-name" />
+    </div>
+    <div class="modal-field">
+      <label>Descriptif</label>
+      <textarea id="task-edit-desc"></textarea>
+    </div>
+    <div class="modal-field">
+      <label>Date d'échéance</label>
+      <input type="date" id="task-edit-date" />
+    </div>
+    <div class="modal-field">
+      <label>Poids (1–5)</label>
+      <select id="task-edit-weight">
+        <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('modal-task')">Annuler</button>
+      <button class="btn-primary" onclick="saveTaskEdit()">Enregistrer</button>
+    </div>
+    <div class="feedback" id="task-fb"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL = 'https://gzfliakogbmuvwurwqfy.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6ZmxpYWtvZ2JtdXZ3dXJ3cWZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NjQ5NTMsImV4cCI6MjA5ODE0MDk1M30.35aNfS9uS1oCxvhk-6Tgg9wi93hGzU10bBBN4-Lz1KM';
+
+const HORIZONS = [
+  {id:'spirituel',label:'Spirituel',color:'#7c3aed',
+   vision:'I am living in a World of Love, Joy and Peace of God',
+   qualities:['Rester Conscient','Être droit','Contribuer dans la société']},
+  {id:'professionnel',label:'Professionnel',color:'#059669',
+   vision:'I am giving perfect services for a perfect Pay',
+   qualities:['Apprendre de nouvelles compétences','Donner un service de qualité','Avoir un revenu']},
+  {id:'social',label:'Social',color:'#dc2626',
+   vision:'I am sharing life with beautiful spirits',
+   qualities:['Prendre soins de ma petite famille','Prendre soins de ma grande famille','Garder une bonne relation avec amis et proches']},
+  {id:'personnel',label:'Personnel',color:'#2563eb',
+   vision:'I am living in perfect life conditions and perfect life style',
+   qualities:['Prendre soins de mon corps','Vivre avec confort','Faire des activités de loisirs']}
+];
+
+const ALL_QUALITIES = HORIZONS.flatMap(h=>h.qualities.map(q=>({quality:q,horizon:h})));
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let goals = [];
+let tasks = [];
+let currentGoal = null;
+let editGoalId = null;
+let editTaskId = null;
+let confirmCallback = null;
+
+// ── UTILS ──
+function localDateStr(d){
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function todayStr(){ return localDateStr(new Date()); }
+function fmtDate(s){
+  if(!s) return '—';
+  const d=new Date(s+'T00:00:00');
+  return d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});
+}
+function horizonOf(quality){return HORIZONS.find(h=>h.qualities.includes(quality))||HORIZONS[0]}
+
+// ── CALCULS ──
+function calcGoal(goal, goalTasks){
+  const today = todayStr();
+  const dates = goalTasks.map(t=>t.due_date).filter(Boolean).sort();
+  const dateStart = dates[0]||null;
+  const dateEnd = dates[dates.length-1]||null;
+
+  const totalWeight = goalTasks.reduce((s,t)=>s+t.weight,0);
+  const doneWeight = goalTasks.filter(t=>t.done).reduce((s,t)=>s+t.weight,0);
+  const progGlobal = totalWeight>0 ? Math.round((doneWeight/totalWeight)*100) : 0;
+
+  const dueTasks = goalTasks.filter(t=>t.due_date&&t.due_date<=today);
+  const dueWeight = dueTasks.reduce((s,t)=>s+t.weight,0);
+  const dueDoneWeight = dueTasks.filter(t=>t.done).reduce((s,t)=>s+t.weight,0);
+  const progDate = dueWeight>0 ? Math.round((dueDoneWeight/dueWeight)*100) : 100;
+
+  const healthy = progDate === 100;
+  return {dateStart,dateEnd,progGlobal,progDate,healthy};
+}
+
+// ── LOAD ──
+async function loadAll(){
+  const [g, t] = await Promise.all([
+    sb.from('goals').select('*').order('created_at'),
+    sb.from('tasks').select('*').order('due_date')
+  ]);
+  goals = g.data||[];
+  tasks = t.data||[];
+}
+
+// ── HOME ──
+async function renderHome(){
+  await loadAll();
+  const el = document.getElementById('home-content');
+  let html = '';
+
+  HORIZONS.forEach(h=>{
+    const hGoals = goals.filter(g=>h.qualities.includes(g.quality));
+    html += `<div class="horizon-section">
+      <div class="horizon-label">
+        <div class="horizon-dot" style="background:${h.color}"></div>
+        <div class="horizon-name" style="color:${h.color}">${h.label}</div>
+        <div class="horizon-vision">${h.vision}</div>
+      </div>
+      <div class="goals-grid">`;
+
+    h.qualities.forEach(q=>{
+      const qGoals = hGoals.filter(g=>g.quality===q);
+      qGoals.forEach(goal=>{
+        const gt = tasks.filter(t=>t.goal_id===goal.id);
+        const {dateStart,dateEnd,progGlobal,progDate,healthy} = calcGoal(goal,gt);
+        const gradGlobal = pctGradient(progGlobal);
+        const gradDate = pctGradient(progDate);
+        html += `<div class="goal-card" style="border-color:${h.color}" onclick="openGoal('${goal.id}')">
+          <div class="goal-card-top">
+            <div class="goal-card-name">${goal.name}</div>
+            <div class="goal-card-actions" onclick="event.stopPropagation()">
+              <button class="btn-card-action" onclick="openGoalModal('${goal.id}')" title="Modifier">✏️</button>
+              <button class="btn-card-action" onclick="confirmDelete('goal','${goal.id}','${goal.name.replace(/'/g,"\\'")}')" title="Supprimer">🗑</button>
+            </div>
+          </div>
+          <div class="goal-card-quality">${q}</div>
+          <div class="goal-card-dates">📅 ${fmtDate(dateStart)} → ${fmtDate(dateEnd)}</div>
+          <div class="progress-block">
+            <div class="progress-label"><span>Global</span><span>${progGlobal}%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${progGlobal}%;background:${gradGlobal}"></div></div>
+          </div>
+          <div class="progress-block">
+            <div class="progress-label"><span>À date</span><span>${progDate}%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${progDate}%;background:${gradDate}"></div></div>
+          </div>
+          <div class="health-badge ${healthy?'health-green':'health-red'}">${healthy?'🟢 En bonne santé':'🔴 En retard'}</div>
+        </div>`;
+      });
+
+      // empty add button for this quality
+      html += `<div class="empty-card" onclick="openGoalModal(null,'${q.replace(/'/g,"\\'")}')">+ Objectif pour <em style="margin-left:4px">${q}</em></div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  el.innerHTML = html;
+}
+
+// ── GRADIENT COLOR ──
+function pctGradient(p){
+  const t=p/100;
+  const red=[220,38,38],orange=[234,88,12],green=[5,150,105];
+  let rgb;
+  if(t<=0.5) rgb=lerp(red,orange,t*2); else rgb=lerp(orange,green,(t-0.5)*2);
+  return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+}
+function lerp(a,b,t){return[Math.round(a[0]+(b[0]-a[0])*t),Math.round(a[1]+(b[1]-a[1])*t),Math.round(a[2]+(b[2]-a[2])*t)]}
+
+// ── GOAL DETAIL ──
+async function openGoal(goalId){
+  currentGoal = goals.find(g=>g.id===goalId);
+  if(!currentGoal) return;
+  const h = horizonOf(currentGoal.quality);
+
+  document.getElementById('detail-horizon-tag').innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:${h.color};display:inline-block"></span> ${h.label}`;
+  document.getElementById('detail-title').textContent = currentGoal.name;
+  document.getElementById('detail-quality').textContent = currentGoal.quality;
+
+  document.getElementById('screen-home').classList.remove('active');
+  document.getElementById('screen-detail').classList.add('active');
+  document.getElementById('nav-back').classList.add('visible');
+  document.getElementById('btn-add-goal').style.display='none';
+
+  // reset to vision tab
+  switchTab('vision', document.querySelector('.tab-btn'));
+  await renderDetailTabs();
+}
+
+async function renderDetailTabs(){
+  const gt = tasks.filter(t=>t.goal_id===currentGoal.id);
+  const {dateStart,dateEnd,progGlobal,progDate,healthy} = calcGoal(currentGoal,gt);
+  const h = horizonOf(currentGoal.quality);
+
+  // VISION TAB
+  document.getElementById('tab-vision').innerHTML = `
+    <div class="vision-box">
+      <div class="vision-phrase">"${h.vision}"</div>
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-val" style="font-size:14px">${fmtDate(dateStart)}</div><div class="kpi-label">Début</div></div>
+        <div class="kpi-card"><div class="kpi-val" style="font-size:14px">${fmtDate(dateEnd)}</div><div class="kpi-label">Fin</div></div>
+        <div class="kpi-card"><div class="kpi-val" style="color:${pctGradient(progGlobal)}">${progGlobal}%</div><div class="kpi-label">Global</div></div>
+        <div class="kpi-card"><div class="kpi-val" style="color:${pctGradient(progDate)}">${progDate}%</div><div class="kpi-label">À date</div></div>
+      </div>
+      <div style="margin-top:.75rem">
+        <div class="health-badge ${healthy?'health-green':'health-red'}" style="font-size:12px">${healthy?'🟢 En bonne santé — Toutes les tâches échues sont complétées':'🔴 En retard — Des tâches échues ne sont pas complétées'}</div>
+      </div>
+    </div>`;
+
+  // TASKS TAB
+  let tasksHtml = `<div class="task-form">
+    <div class="task-form-title">Ajouter une tâche</div>
+    <div class="form-row">
+      <div class="form-field" style="flex:2;min-width:180px">
+        <label>Nom</label>
+        <input type="text" id="new-task-name" placeholder="Nom de la tâche" />
+      </div>
+      <div class="form-field">
+        <label>Échéance</label>
+        <input type="date" id="new-task-date" />
+      </div>
+      <div class="form-field" style="max-width:80px">
+        <label>Poids</label>
+        <select id="new-task-weight">
+          <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-field" style="margin-top:.5rem">
+      <label>Descriptif (optionnel)</label>
+      <textarea id="new-task-desc" placeholder="Détails, étapes, comment faire..."></textarea>
+    </div>
+    <button class="btn-add-task" onclick="addTask()">Ajouter la tâche</button>
+    <div class="feedback" id="new-task-fb"></div>
+  </div>
+  <div class="tasks-list">`;
+
+  const today = todayStr();
+  if(gt.length===0){
+    tasksHtml += `<div class="tasks-empty">Aucune tâche — ajoutez-en une ci-dessus.</div>`;
+  } else {
+    gt.forEach(t=>{
+      const overdue = !t.done && t.due_date && t.due_date < today;
+      tasksHtml += `<div class="task-row ${t.done?'done':''} ${overdue?'overdue':''}">
+        <div class="task-check" onclick="toggleTask('${t.id}')">${t.done?'✓':''}</div>
+        <div class="task-main" onclick="openTaskEdit('${t.id}')">
+          <div class="task-name">${t.name}</div>
+          <div class="task-meta">
+            <span class="task-date ${overdue?'overdue':''}">${fmtDate(t.due_date)}</span>
+            <span class="task-weight">Poids ${t.weight}</span>
+            ${t.description?`<span style="font-size:10px;color:var(--muted)">📝 détail</span>`:''}
+          </div>
+        </div>
+        <button class="task-delete" onclick="confirmDelete('task','${t.id}','${t.name.replace(/'/g,"\\'")}')">🗑</button>
+      </div>`;
+    });
+  }
+  tasksHtml += `</div>`;
+  document.getElementById('tab-tasks').innerHTML = tasksHtml;
+}
+
+// ── TOGGLE TASK ──
+async function toggleTask(taskId){
+  const task = tasks.find(t=>t.id===taskId);
+  if(!task) return;
+  task.done = !task.done;
+  await sb.from('tasks').update({done:task.done}).eq('id',taskId);
+  await renderDetailTabs();
+  // refresh home data silently
+  const g = await sb.from('goals').select('*').order('created_at');
+  goals = g.data||[];
+}
+
+// ── ADD TASK ──
+async function addTask(){
+  const name = document.getElementById('new-task-name').value.trim();
+  const date = document.getElementById('new-task-date').value;
+  const weight = parseInt(document.getElementById('new-task-weight').value)||3;
+  const desc = document.getElementById('new-task-desc').value.trim();
+  const fb = document.getElementById('new-task-fb');
+  if(!name){fb.textContent='Nom requis';fb.style.color='#dc2626';return;}
+  const {data,error} = await sb.from('tasks').insert({goal_id:currentGoal.id,name,description:desc,due_date:date||null,weight,done:false}).select().single();
+  if(error){fb.textContent='Erreur: '+error.message;fb.style.color='#dc2626';return;}
+  tasks.push(data);
+  document.getElementById('new-task-name').value='';
+  document.getElementById('new-task-date').value='';
+  document.getElementById('new-task-desc').value='';
+  fb.textContent='Ajoutée ✓';fb.style.color='#059669';
+  setTimeout(()=>{if(fb)fb.textContent=''},2000);
+  await renderDetailTabs();
+}
+
+// ── TASK EDIT MODAL ──
+function openTaskEdit(taskId){
+  const t = tasks.find(t=>t.id===taskId);
+  if(!t) return;
+  editTaskId = taskId;
+  document.getElementById('modal-task-title').textContent = t.name;
+  document.getElementById('task-edit-name').value = t.name;
+  document.getElementById('task-edit-desc').value = t.description||'';
+  document.getElementById('task-edit-date').value = t.due_date||'';
+  document.getElementById('task-edit-weight').value = t.weight||3;
+  document.getElementById('task-fb').textContent='';
+  document.getElementById('modal-task').classList.remove('hidden');
+}
+async function saveTaskEdit(){
+  const name = document.getElementById('task-edit-name').value.trim();
+  const desc = document.getElementById('task-edit-desc').value.trim();
+  const date = document.getElementById('task-edit-date').value;
+  const weight = parseInt(document.getElementById('task-edit-weight').value)||3;
+  const fb = document.getElementById('task-fb');
+  if(!name){fb.textContent='Nom requis';fb.style.color='#dc2626';return;}
+  const {error} = await sb.from('tasks').update({name,description:desc,due_date:date||null,weight}).eq('id',editTaskId);
+  if(error){fb.textContent='Erreur: '+error.message;fb.style.color='#dc2626';return;}
+  const t = tasks.find(t=>t.id===editTaskId);
+  if(t){t.name=name;t.description=desc;t.due_date=date||null;t.weight=weight;}
+  closeModal('modal-task');
+  await renderDetailTabs();
+}
+
+// ── GOAL MODAL ──
+function openGoalModal(goalId=null, presetQuality=null){
+  editGoalId = goalId;
+  const goal = goalId ? goals.find(g=>g.id===goalId) : null;
+
+  // populate quality select
+  const sel = document.getElementById('goal-quality');
+  sel.innerHTML = ALL_QUALITIES.map(({quality,horizon})=>
+    `<option value="${quality}" style="color:${horizon.color}">${horizon.label} — ${quality}</option>`
+  ).join('');
+
+  if(goal){
+    document.getElementById('modal-goal-title').textContent = 'Modifier l\'objectif';
+    document.getElementById('goal-name').value = goal.name;
+    sel.value = goal.quality;
+  } else {
+    document.getElementById('modal-goal-title').textContent = 'Nouvel objectif';
+    document.getElementById('goal-name').value = '';
+    if(presetQuality) sel.value = presetQuality;
+  }
+  document.getElementById('goal-fb').textContent='';
+  document.getElementById('modal-goal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('goal-name').focus(),100);
+}
+
+async function saveGoal(){
+  const name = document.getElementById('goal-name').value.trim();
+  const quality = document.getElementById('goal-quality').value;
+  const fb = document.getElementById('goal-fb');
+  if(!name){fb.textContent='Nom requis';fb.style.color='#dc2626';return;}
+  if(editGoalId){
+    const {error} = await sb.from('goals').update({name,quality}).eq('id',editGoalId);
+    if(error){fb.textContent='Erreur: '+error.message;fb.style.color='#dc2626';return;}
+    const g = goals.find(g=>g.id===editGoalId);
+    if(g){g.name=name;g.quality=quality;}
+  } else {
+    const {data,error} = await sb.from('goals').insert({name,quality}).select().single();
+    if(error){fb.textContent='Erreur: '+error.message;fb.style.color='#dc2626';return;}
+    goals.push(data);
+  }
+  closeModal('modal-goal');
+  renderHome();
+}
+
+// ── DELETE ──
+function confirmDelete(type, id, label){
+  const msg = type==='goal'
+    ? `Supprimer l'objectif "<strong>${label}</strong>" et toutes ses tâches ? Cette action est irréversible.`
+    : `Supprimer la tâche "<strong>${label}</strong>" ?`;
+  document.getElementById('confirm-msg').innerHTML = msg;
+  document.getElementById('confirm-ok').onclick = ()=>doDelete(type,id);
+  document.getElementById('modal-confirm').classList.remove('hidden');
+}
+async function doDelete(type, id){
+  closeModal('modal-confirm');
+  if(type==='goal'){
+    await sb.from('tasks').delete().eq('goal_id',id);
+    await sb.from('goals').delete().eq('id',id);
+    goals = goals.filter(g=>g.id!==id);
+    tasks = tasks.filter(t=>t.goal_id!==id);
+    renderHome();
+  } else {
+    await sb.from('tasks').delete().eq('id',id);
+    tasks = tasks.filter(t=>t.id!==id);
+    await renderDetailTabs();
+  }
+}
+
+// ── NAVIGATION ──
+function goHome(){
+  document.getElementById('screen-detail').classList.remove('active');
+  document.getElementById('screen-home').classList.add('active');
+  document.getElementById('nav-back').classList.remove('visible');
+  document.getElementById('btn-add-goal').style.display='';
+  currentGoal = null;
+  renderHome();
+}
+
+function switchTab(tab, btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+
+function closeModal(id){
+  document.getElementById(id).classList.add('hidden');
+}
+
+// ── INIT ──
+renderHome();
+</script>
+</body>
+</html>
