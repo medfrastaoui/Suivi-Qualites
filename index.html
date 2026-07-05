@@ -254,6 +254,15 @@ function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
     sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
     await syncComponentsFromDB();
   }
+  // nettoyer localStorage des journées sans vrai contenu
+  for(let i=localStorage.length-1;i>=0;i--){
+    const k=localStorage.key(i);
+    if(k&&k.startsWith('day:')){
+      const v=lsGet(k);
+      const hasTrue=v&&Object.values(v).some(val=>val===true);
+      if(!hasTrue) localStorage.removeItem(k);
+    }
+  }
   await loadDay();
   await loadSavedDates();
   renderSaisie();
@@ -342,7 +351,10 @@ async function saveDay(){
   const {error}=await sb.from('suivi_jours').upsert({date:dateStr(currentOffset),checks:dayChecked},{onConflict:'date'});
   if(error){el.textContent='Erreur: '+error.message;el.style.color='#dc2626';}
   else{
-    savedDates.add(dateStr(currentOffset));
+    // marquer comme sauvegardé seulement si au moins une composante est true
+    const hasTrueNow=Object.values(dayChecked).some(v=>v===true);
+    if(hasTrueNow) savedDates.add(dateStr(currentOffset));
+    else savedDates.delete(dateStr(currentOffset));
     el.textContent='Enregistré ✓';el.style.color='#059669';
     setTimeout(()=>{if(el)el.textContent=''},2500);
     renderSaisie();
@@ -440,7 +452,7 @@ function renderMiniCal(){
     else cls+=' no-data';
     if(isToday) cls+=' today';
     if(isCurrent) cls+=' current';
-    html+=`<div class="${cls}" onclick="${isFuture?'':''}" ${!isFuture?`onclick="calGoDay('${dtStr}')"`:''} title="${dtStr}">${d}</div>`;
+    html+=`<div class="${cls}" ${!isFuture?`onclick="calGoDay('${dtStr}')"`:''}  title="${dtStr}">${d}</div>`;
   }
   html+=`</div></div>`;
   return html;
