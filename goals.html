@@ -17,95 +17,68 @@
 }}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-
-/* NAV */
 nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;height:54px}
 .nav-brand{font-size:14px;font-weight:700;letter-spacing:-.01em}
 .nav-back{background:transparent;border:1px solid var(--border);border-radius:8px;padding:5px 12px;cursor:pointer;font-size:13px;color:var(--muted);display:none;align-items:center;gap:5px}
 .nav-back.visible{display:flex}
 .btn-add-goal{background:var(--text);color:var(--bg);border:none;border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600}
-
-/* SCREENS */
 .screen{display:none;padding:1.25rem;max-width:900px;margin:0 auto}
 .screen.active{display:block}
-
-/* DASHBOARD GRID */
-.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
-.dash-title{font-size:20px;font-weight:700}
 .horizon-section{margin-bottom:2rem}
-.horizon-label{display:flex;align-items:center;gap:8px;margin-bottom:.75rem}
+.horizon-label{display:flex;align-items:center;gap:8px;margin-bottom:.75rem;flex-wrap:wrap}
 .horizon-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .horizon-name{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
-.horizon-vision{font-size:11px;font-style:italic;opacity:.6;margin-left:4px}
+.horizon-vision{font-size:11px;font-style:italic;opacity:.6}
 .goals-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
-
-/* GOAL CARD */
-.goal-card{background:var(--surface);border:2px solid transparent;border-radius:14px;padding:1rem 1rem .85rem;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative;box-shadow:var(--shadow)}
+.goal-card{background:var(--surface);border:2px solid transparent;border-radius:14px;padding:1rem;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:var(--shadow)}
 .goal-card:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,0,0,.1)}
-.goal-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:.6rem}
+.goal-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:.4rem}
 .goal-card-name{font-size:14px;font-weight:700;line-height:1.3;flex:1}
-.goal-card-quality{font-size:11px;color:var(--muted);margin-bottom:.75rem}
+.goal-card-quality{font-size:11px;color:var(--muted);margin-bottom:.6rem}
 .goal-card-dates{font-size:10px;color:var(--muted);margin-bottom:.6rem}
 .goal-card-actions{display:flex;gap:4px;flex-shrink:0}
-.btn-card-action{background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:3px 5px;border-radius:6px;line-height:1}
+.btn-card-action{background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:3px 5px;border-radius:6px}
 .btn-card-action:hover{background:var(--border)}
-
-/* PROGRESS BARS */
 .progress-block{margin-bottom:.35rem}
 .progress-label{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:3px}
 .progress-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
 .progress-fill{height:100%;border-radius:3px;transition:width .3s}
-
-/* HEALTH BADGE */
 .health-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;margin-top:.5rem}
 .health-green{background:#d1fae5;color:#065f46}
 .health-red{background:#fee2e2;color:#7f1d1d}
-@media(prefers-color-scheme:dark){
-  .health-green{background:#064e35;color:#6ee7b7}
-  .health-red{background:#450a0a;color:#fca5a5}
-}
-
-/* EMPTY STATE */
-.empty-card{background:transparent;border:2px dashed var(--border);border-radius:14px;padding:1.5rem;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:13px;min-height:80px;transition:border-color .15s}
+@media(prefers-color-scheme:dark){.health-green{background:#064e35;color:#6ee7b7}.health-red{background:#450a0a;color:#fca5a5}}
+.empty-card{background:transparent;border:2px dashed var(--border);border-radius:14px;padding:1.25rem;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:12px;transition:border-color .15s;text-align:center;line-height:1.4}
 .empty-card:hover{border-color:var(--muted)}
-
-/* DETAIL SCREEN */
 .detail-header{margin-bottom:1.25rem}
-.detail-horizon-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.5rem;opacity:.7}
-.detail-title{font-size:24px;font-weight:800;line-height:1.2;margin-bottom:.3rem}
+.detail-horizon-tag{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.5rem;opacity:.7}
+.detail-title{font-size:22px;font-weight:800;line-height:1.2;margin-bottom:.3rem}
 .detail-quality{font-size:13px;color:var(--muted)}
-
-/* TABS */
-.tabs{display:flex;gap:4px;margin-bottom:1.25rem;border-bottom:1px solid var(--border);padding-bottom:0}
+.tabs{display:flex;gap:4px;margin-bottom:1.25rem;border-bottom:1px solid var(--border)}
 .tab-btn{padding:8px 16px;border:none;background:transparent;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
 .tab-btn.active{color:var(--text);border-bottom-color:var(--text)}
-
 .tab-content{display:none}
 .tab-content.active{display:block}
-
-/* VISION TAB */
 .vision-box{background:var(--surface);border-radius:14px;padding:1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
-.vision-phrase{font-size:18px;font-style:italic;line-height:1.5;margin-bottom:1.25rem;opacity:.8}
+.vision-phrase{font-size:17px;font-style:italic;line-height:1.6;margin-bottom:1.25rem;opacity:.8}
+.definition-box{background:var(--bg);border-radius:10px;padding:1rem;margin-bottom:1.25rem;font-size:14px;line-height:1.6}
+.definition-label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
 .kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem}
 @media(min-width:480px){.kpi-grid{grid-template-columns:repeat(4,1fr)}}
 .kpi-card{background:var(--bg);border-radius:10px;padding:.75rem;text-align:center}
-.kpi-val{font-size:22px;font-weight:700;line-height:1}
+.kpi-val{font-size:20px;font-weight:700;line-height:1}
 .kpi-label{font-size:10px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.04em}
-
-/* TASKS TAB */
-.task-form{background:var(--surface);border-radius:14px;padding:1rem;margin-bottom:1rem;box-shadow:var(--shadow)}
-.task-form-title{font-size:13px;font-weight:600;margin-bottom:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.task-form{background:var(--surface);border-radius:14px;padding:1rem;margin-top:.75rem;box-shadow:var(--shadow)}
+.task-form-title{font-size:12px;font-weight:600;margin-bottom:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
 .form-row{display:flex;gap:8px;flex-wrap:wrap}
 .form-field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px}
 .form-field label{font-size:11px;color:var(--muted);font-weight:500}
 .form-field input,.form-field select,.form-field textarea{padding:.55rem .7rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;font-family:inherit;width:100%}
 .form-field textarea{min-height:60px;resize:vertical}
-.btn-add-task{background:var(--text);color:var(--bg);border:none;border-radius:8px;padding:9px 18px;cursor:pointer;font-size:13px;font-weight:600;margin-top:.5rem;width:100%}
-
-/* TASK LIST */
+.btn-primary-sm{background:var(--text);color:var(--bg);border:none;border-radius:8px;padding:9px 18px;cursor:pointer;font-size:13px;font-weight:600}
+.btn-cancel-sm{background:transparent;border:1px solid var(--border);border-radius:8px;padding:9px 16px;cursor:pointer;font-size:13px;color:var(--muted)}
 .tasks-list{display:flex;flex-direction:column;gap:6px}
 .task-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.7rem .9rem;display:flex;align-items:center;gap:10px;transition:all .15s;box-shadow:var(--shadow)}
-.task-row.done{opacity:.6}
+.task-row.done{opacity:.55}
 .task-row.overdue{border-color:#fca5a5}
 @media(prefers-color-scheme:dark){.task-row.overdue{border-color:#7f1d1d}}
 .task-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s}
@@ -115,14 +88,14 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .task-row.done .task-name{text-decoration:line-through}
 .task-meta{display:flex;align-items:center;gap:8px;margin-top:2px;flex-wrap:wrap}
 .task-date{font-size:11px;color:var(--muted)}
-.task-date.overdue{color:#dc2626}
+.task-date.late{color:#dc2626}
 .task-weight{font-size:10px;background:var(--bg);border-radius:4px;padding:1px 5px;color:var(--muted)}
 .task-delete{background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:15px;padding:3px 5px;border-radius:6px;flex-shrink:0}
-.task-delete:hover{color:#dc2626;background:#fee2e2}
-.tasks-empty{text-align:center;padding:2rem;color:var(--muted);font-size:13px}
-
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:flex-end;justify-content:center;padding:0}
+.task-delete:hover{color:#dc2626}
+.btn-add-task-bottom{margin-top:.75rem;background:transparent;border:2px dashed var(--border);border-radius:10px;width:100%;padding:10px;cursor:pointer;font-size:13px;color:var(--muted);transition:border-color .15s}
+.btn-add-task-bottom:hover{border-color:var(--muted)}
+.tasks-empty{text-align:center;padding:1.5rem;color:var(--muted);font-size:13px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:flex-end;justify-content:center}
 .modal-overlay.hidden{display:none}
 .modal{background:var(--surface);border-radius:16px 16px 0 0;padding:1.25rem 1rem 2rem;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
 .modal-title{font-size:15px;font-weight:700;margin-bottom:1rem}
@@ -134,12 +107,9 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .btn-primary{flex:1;padding:11px;background:var(--text);color:var(--bg);border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
 .btn-cancel{flex:1;padding:11px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;font-size:14px;cursor:pointer}
 .btn-danger{flex:1;padding:11px;background:#dc2626;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
-
-/* CONFIRM DIALOG */
 .confirm-msg{font-size:14px;color:var(--muted);margin-bottom:1rem;line-height:1.5}
-
-.loading{text-align:center;padding:3rem;color:var(--muted);font-size:13px}
 .feedback{text-align:center;font-size:12px;min-height:18px;margin-top:6px}
+.loading{text-align:center;padding:3rem;color:var(--muted);font-size:13px}
 </style>
 </head>
 <body>
@@ -147,7 +117,7 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 <nav>
   <button class="nav-back" id="nav-back" onclick="goHome()">&#8592; Retour</button>
   <div class="nav-brand">Objectifs Stratégiques</div>
-  <button class="btn-add-goal" id="btn-add-goal" onclick="openGoalModal()">+ Objectif</button>
+  <button class="btn-add-goal" id="btn-add-goal" onclick="openGoalModal(null,null)">+ Objectif</button>
 </nav>
 
 <div id="screen-home" class="screen active">
@@ -192,7 +162,7 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
   </div>
 </div>
 
-<!-- MODAL CONFIRM DELETE -->
+<!-- MODAL CONFIRM -->
 <div class="modal-overlay hidden" id="modal-confirm">
   <div class="modal">
     <div class="modal-title">Confirmer la suppression</div>
@@ -254,7 +224,9 @@ const HORIZONS = [
    qualities:['Prendre soins de mon corps','Vivre avec confort','Faire des activités de loisirs']}
 ];
 
-const ALL_QUALITIES = HORIZONS.flatMap(h=>h.qualities.map(q=>({quality:q,horizon:h})));
+const ALL_QUALITIES = HORIZONS.flatMap(function(h){
+  return h.qualities.map(function(q){ return {quality:q, horizon:h}; });
+});
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -263,264 +235,215 @@ let tasks = [];
 let currentGoal = null;
 let editGoalId = null;
 let editTaskId = null;
-let confirmCallback = null;
 
 // ── UTILS ──
 function localDateStr(d){
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
 function todayStr(){ return localDateStr(new Date()); }
 function fmtDate(s){
   if(!s) return '—';
-  const d=new Date(s+'T00:00:00');
+  var d = new Date(s+'T00:00:00');
   return d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});
 }
-function horizonOf(quality){return HORIZONS.find(h=>h.qualities.includes(quality))||HORIZONS[0]}
+function horizonOf(quality){
+  return HORIZONS.find(function(h){ return h.qualities.indexOf(quality)>=0; })||HORIZONS[0];
+}
 
 // ── CALCULS ──
-function calcGoal(goal, goalTasks){
-  const today = todayStr();
-  const dates = goalTasks.map(t=>t.due_date).filter(Boolean).sort();
-  const dateStart = dates[0]||null;
-  const dateEnd = dates[dates.length-1]||null;
+function calcGoal(goal, gt){
+  var today = todayStr();
+  var dates = gt.map(function(t){return t.due_date;}).filter(Boolean).sort();
+  var dateStart = dates[0]||null;
+  var dateEnd = dates[dates.length-1]||null;
+  var totalW = gt.reduce(function(s,t){return s+t.weight;},0);
+  var doneW = gt.filter(function(t){return t.done;}).reduce(function(s,t){return s+t.weight;},0);
+  var progGlobal = totalW>0 ? Math.round(doneW/totalW*100) : 0;
+  var dueTasks = gt.filter(function(t){return t.due_date && t.due_date<=today;});
+  var dueW = dueTasks.reduce(function(s,t){return s+t.weight;},0);
+  var dueDoneW = dueTasks.filter(function(t){return t.done;}).reduce(function(s,t){return s+t.weight;},0);
+  var progDate = dueW>0 ? Math.round(dueDoneW/dueW*100) : 100;
+  var healthy = progDate===100;
+  return {dateStart:dateStart, dateEnd:dateEnd, progGlobal:progGlobal, progDate:progDate, healthy:healthy};
+}
 
-  const totalWeight = goalTasks.reduce((s,t)=>s+t.weight,0);
-  const doneWeight = goalTasks.filter(t=>t.done).reduce((s,t)=>s+t.weight,0);
-  const progGlobal = totalWeight>0 ? Math.round((doneWeight/totalWeight)*100) : 0;
-
-  const dueTasks = goalTasks.filter(t=>t.due_date&&t.due_date<=today);
-  const dueWeight = dueTasks.reduce((s,t)=>s+t.weight,0);
-  const dueDoneWeight = dueTasks.filter(t=>t.done).reduce((s,t)=>s+t.weight,0);
-  const progDate = dueWeight>0 ? Math.round((dueDoneWeight/dueWeight)*100) : 100;
-
-  const healthy = progDate === 100;
-  return {dateStart,dateEnd,progGlobal,progDate,healthy};
+// ── GRADIENT ──
+function lerp(a,b,t){
+  return [Math.round(a[0]+(b[0]-a[0])*t), Math.round(a[1]+(b[1]-a[1])*t), Math.round(a[2]+(b[2]-a[2])*t)];
+}
+function pctGradient(p){
+  var t=p/100, red=[220,38,38], orange=[234,88,12], green=[5,150,105], rgb;
+  if(t<=0.5) rgb=lerp(red,orange,t*2); else rgb=lerp(orange,green,(t-0.5)*2);
+  return 'rgb('+rgb[0]+','+rgb[1]+','+rgb[2]+')';
 }
 
 // ── LOAD ──
 async function loadAll(){
-  const [g, t] = await Promise.all([
+  var res = await Promise.all([
     sb.from('goals').select('*').order('created_at'),
     sb.from('tasks').select('*').order('due_date')
   ]);
-  goals = g.data||[];
-  tasks = t.data||[];
+  goals = res[0].data||[];
+  tasks = res[1].data||[];
 }
 
 // ── HOME ──
 async function renderHome(){
+  document.getElementById('home-content').innerHTML = '<div class="loading">Chargement...</div>';
   await loadAll();
-  const el = document.getElementById('home-content');
-  let html = '';
-
-  HORIZONS.forEach(h=>{
-    const hGoals = goals.filter(g=>h.qualities.includes(g.quality));
-    html += `<div class="horizon-section">
-      <div class="horizon-label">
-        <div class="horizon-dot" style="background:${h.color}"></div>
-        <div class="horizon-name" style="color:${h.color}">${h.label}</div>
-        <div class="horizon-vision">${h.vision}</div>
-      </div>
-      <div class="goals-grid">`;
-
-    h.qualities.forEach(q=>{
-      const qGoals = hGoals.filter(g=>g.quality===q);
-      qGoals.forEach(goal=>{
-        const gt = tasks.filter(t=>t.goal_id===goal.id);
-        const {dateStart,dateEnd,progGlobal,progDate,healthy} = calcGoal(goal,gt);
-        const gradGlobal = pctGradient(progGlobal);
-        const gradDate = pctGradient(progDate);
-        html += `<div class="goal-card" style="border-color:${h.color}" onclick="openGoal('${goal.id}')">
-          <div class="goal-card-top">
-            <div class="goal-card-name">${goal.name}</div>
-            <div class="goal-card-actions" onclick="event.stopPropagation()">
-              <button class="btn-card-action" onclick="openGoalModal('${goal.id}')" title="Modifier">✏️</button>
-              <button class="btn-card-action" onclick="confirmDelete('goal','${goal.id}','${goal.name.replace(/'/g,"\\'")}')" title="Supprimer">🗑</button>
-            </div>
-          </div>
-          <div class="goal-card-quality">${q}</div>
-          <div class="goal-card-dates">📅 ${fmtDate(dateStart)} → ${fmtDate(dateEnd)}</div>
-          <div class="progress-block">
-            <div class="progress-label"><span>Global</span><span>${progGlobal}%</span></div>
-            <div class="progress-bar"><div class="progress-fill" style="width:${progGlobal}%;background:${gradGlobal}"></div></div>
-          </div>
-          <div class="progress-block">
-            <div class="progress-label"><span>À date</span><span>${progDate}%</span></div>
-            <div class="progress-bar"><div class="progress-fill" style="width:${progDate}%;background:${gradDate}"></div></div>
-          </div>
-          <div class="health-badge ${healthy?'health-green':'health-red'}">${healthy?'🟢 En bonne santé':'🔴 En retard'}</div>
-        </div>`;
+  var html = '';
+  HORIZONS.forEach(function(h){
+    html += '<div class="horizon-section">';
+    html += '<div class="horizon-label">';
+    html += '<div class="horizon-dot" style="background:'+h.color+'"></div>';
+    html += '<div class="horizon-name" style="color:'+h.color+'">'+h.label+'</div>';
+    html += '<div class="horizon-vision">'+h.vision+'</div>';
+    html += '</div><div class="goals-grid">';
+    h.qualities.forEach(function(q){
+      var qGoals = goals.filter(function(g){ return g.quality===q; });
+      qGoals.forEach(function(goal){
+        var gt = tasks.filter(function(t){ return t.goal_id===goal.id; });
+        var c = calcGoal(goal, gt);
+        html += '<div class="goal-card" style="border-color:'+h.color+'" onclick="openGoal(\''+goal.id+'\')">';
+        html += '<div class="goal-card-top">';
+        html += '<div class="goal-card-name">'+escHtml(goal.name)+'</div>';
+        html += '<div class="goal-card-actions" onclick="event.stopPropagation()">';
+        html += '<button class="btn-card-action" onclick="openGoalModal(\''+goal.id+'\',null)" title="Modifier">✏️</button>';
+        html += '<button class="btn-card-action" onclick="confirmDelete(\'goal\',\''+goal.id+'\',\''+escAttr(goal.name)+'\')" title="Supprimer">🗑</button>';
+        html += '</div></div>';
+        html += '<div class="goal-card-quality">'+escHtml(q)+'</div>';
+        html += '<div class="goal-card-dates">📅 '+fmtDate(c.dateStart)+' → '+fmtDate(c.dateEnd)+'</div>';
+        html += '<div class="progress-block"><div class="progress-label"><span>Global</span><span>'+c.progGlobal+'%</span></div>';
+        html += '<div class="progress-bar"><div class="progress-fill" style="width:'+c.progGlobal+'%;background:'+pctGradient(c.progGlobal)+'"></div></div></div>';
+        html += '<div class="progress-block"><div class="progress-label"><span>À date</span><span>'+c.progDate+'%</span></div>';
+        html += '<div class="progress-bar"><div class="progress-fill" style="width:'+c.progDate+'%;background:'+pctGradient(c.progDate)+'"></div></div></div>';
+        html += '<div class="health-badge '+(c.healthy?'health-green':'health-red')+'">'+(c.healthy?'🟢 En bonne santé':'🔴 En retard')+'</div>';
+        html += '</div>';
       });
-
-      // empty add button for this quality
-      html += `<div class="empty-card" onclick="openGoalModal(null,'${q.replace(/'/g,"\\'")}')">+ Objectif pour <em style="margin-left:4px">${q}</em></div>`;
+      html += '<div class="empty-card" onclick="openGoalModal(null,\''+escAttr(q)+'\')">+ Objectif<br><em>'+escHtml(q)+'</em></div>';
     });
-
-    html += `</div></div>`;
+    html += '</div></div>';
   });
-
-  el.innerHTML = html;
+  document.getElementById('home-content').innerHTML = html;
 }
 
-// ── GRADIENT COLOR ──
-function pctGradient(p){
-  const t=p/100;
-  const red=[220,38,38],orange=[234,88,12],green=[5,150,105];
-  let rgb;
-  if(t<=0.5) rgb=lerp(red,orange,t*2); else rgb=lerp(orange,green,(t-0.5)*2);
-  return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
-}
-function lerp(a,b,t){return[Math.round(a[0]+(b[0]-a[0])*t),Math.round(a[1]+(b[1]-a[1])*t),Math.round(a[2]+(b[2]-a[2])*t)]}
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escAttr(s){ return String(s).replace(/'/g,'&#39;'); }
 
 // ── GOAL DETAIL ──
 async function openGoal(goalId){
-  currentGoal = goals.find(g=>g.id===goalId);
+  currentGoal = goals.find(function(g){ return g.id===goalId; });
   if(!currentGoal) return;
-  const h = horizonOf(currentGoal.quality);
-
-  document.getElementById('detail-horizon-tag').innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:${h.color};display:inline-block"></span> ${h.label}`;
+  var h = horizonOf(currentGoal.quality);
+  document.getElementById('detail-horizon-tag').innerHTML = '<span style="width:8px;height:8px;border-radius:50%;background:'+h.color+';display:inline-block"></span>&nbsp;'+h.label;
   document.getElementById('detail-title').textContent = currentGoal.name;
   document.getElementById('detail-quality').textContent = currentGoal.quality;
-
   document.getElementById('screen-home').classList.remove('active');
   document.getElementById('screen-detail').classList.add('active');
   document.getElementById('nav-back').classList.add('visible');
-  document.getElementById('btn-add-goal').style.display='none';
-
-  // reset to vision tab
-  switchTab('vision', document.querySelector('.tab-btn'));
+  document.getElementById('btn-add-goal').style.display = 'none';
+  document.querySelectorAll('.tab-btn').forEach(function(b,i){ b.classList.toggle('active',i===0); });
+  document.querySelectorAll('.tab-content').forEach(function(c,i){ c.classList.toggle('active',i===0); });
   await renderDetailTabs();
 }
 
 async function renderDetailTabs(){
-  const gt = tasks.filter(t=>t.goal_id===currentGoal.id);
-  const {dateStart,dateEnd,progGlobal,progDate,healthy} = calcGoal(currentGoal,gt);
-  const h = horizonOf(currentGoal.quality);
+  var gt = tasks.filter(function(t){ return t.goal_id===currentGoal.id; });
+  var c = calcGoal(currentGoal, gt);
+  var h = horizonOf(currentGoal.quality);
+  var today = todayStr();
 
-  // VISION TAB
-  document.getElementById('tab-vision').innerHTML = `
-    <div class="vision-box">
-      <div class="vision-phrase">"${h.vision}"</div>
-      ${currentGoal.definition?`<div style="background:var(--bg);border-radius:10px;padding:1rem;margin-bottom:1rem;font-size:14px;line-height:1.6;color:var(--text)"><div style="font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem">Définition</div>${currentGoal.definition}</div>`:''}
-      <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-val" style="font-size:14px">${fmtDate(dateStart)}</div><div class="kpi-label">Début</div></div>
-        <div class="kpi-card"><div class="kpi-val" style="font-size:14px">${fmtDate(dateEnd)}</div><div class="kpi-label">Fin</div></div>
-        <div class="kpi-card"><div class="kpi-val" style="color:${pctGradient(progGlobal)}">${progGlobal}%</div><div class="kpi-label">Global</div></div>
-        <div class="kpi-card"><div class="kpi-val" style="color:${pctGradient(progDate)}">${progDate}%</div><div class="kpi-label">À date</div></div>
-      </div>
-      <div style="margin-top:.75rem">
-        <div class="health-badge ${healthy?'health-green':'health-red'}" style="font-size:12px">${healthy?'🟢 En bonne santé — Toutes les tâches échues sont complétées':'🔴 En retard — Des tâches échues ne sont pas complétées'}</div>
-      </div>
-    </div>`;
+  // VISION
+  var vhtml = '<div class="vision-box">';
+  vhtml += '<div class="vision-phrase">"'+escHtml(h.vision)+'"</div>';
+  if(currentGoal.definition){
+    vhtml += '<div class="definition-box"><div class="definition-label">Définition</div>'+escHtml(currentGoal.definition)+'</div>';
+  }
+  vhtml += '<div class="kpi-grid">';
+  vhtml += '<div class="kpi-card"><div class="kpi-val" style="font-size:13px">'+fmtDate(c.dateStart)+'</div><div class="kpi-label">Début</div></div>';
+  vhtml += '<div class="kpi-card"><div class="kpi-val" style="font-size:13px">'+fmtDate(c.dateEnd)+'</div><div class="kpi-label">Fin</div></div>';
+  vhtml += '<div class="kpi-card"><div class="kpi-val" style="color:'+pctGradient(c.progGlobal)+'">'+c.progGlobal+'%</div><div class="kpi-label">Global</div></div>';
+  vhtml += '<div class="kpi-card"><div class="kpi-val" style="color:'+pctGradient(c.progDate)+'">'+c.progDate+'%</div><div class="kpi-label">À date</div></div>';
+  vhtml += '</div>';
+  vhtml += '<div style="margin-top:.75rem"><div class="health-badge '+(c.healthy?'health-green':'health-red')+'">'+(c.healthy?'🟢 Toutes les tâches échues sont complétées':'🔴 Des tâches échues ne sont pas complétées')+'</div></div>';
+  vhtml += '</div>';
+  document.getElementById('tab-vision').innerHTML = vhtml;
 
-  // TASKS TAB
-  let tasksHtml = ``
-  <div class="tasks-list">`;
-
-  const today = todayStr();
+  // TASKS
+  var thtml = '<div class="tasks-list">';
   if(gt.length===0){
-    tasksHtml += `<div class="tasks-empty">Aucune tâche — ajoutez-en une ci-dessus.</div>`;
+    thtml += '<div class="tasks-empty">Aucune tâche pour cet objectif.</div>';
   } else {
-    gt.forEach(t=>{
-      const overdue = !t.done && t.due_date && t.due_date < today;
-      tasksHtml += `<div class="task-row ${t.done?'done':''} ${overdue?'overdue':''}">
-        <div class="task-check" onclick="toggleTask('${t.id}')">${t.done?'✓':''}</div>
-        <div class="task-main" onclick="openTaskEdit('${t.id}')">
-          <div class="task-name">${t.name}</div>
-          <div class="task-meta">
-            <span class="task-date ${overdue?'overdue':''}">${fmtDate(t.due_date)}</span>
-            <span class="task-weight">Poids ${t.weight}</span>
-            ${t.description?`<span style="font-size:10px;color:var(--muted)">📝 détail</span>`:''}
-          </div>
-        </div>
-        <button class="task-delete" onclick="confirmDelete('task','${t.id}','${t.name.replace(/'/g,"\\'")}')">🗑</button>
-      </div>`;
+    gt.forEach(function(t){
+      var overdue = !t.done && t.due_date && t.due_date<today;
+      thtml += '<div class="task-row'+(t.done?' done':'')+(overdue?' overdue':'')+'">';
+      thtml += '<div class="task-check" onclick="toggleTask(\''+t.id+'\')">'+(t.done?'✓':'')+'</div>';
+      thtml += '<div class="task-main" onclick="openTaskEdit(\''+t.id+'\')">';
+      thtml += '<div class="task-name">'+escHtml(t.name)+'</div>';
+      thtml += '<div class="task-meta"><span class="task-date'+(overdue?' late':'')+'">'+fmtDate(t.due_date)+'</span>';
+      thtml += '<span class="task-weight">Poids '+t.weight+'</span>';
+      if(t.description) thtml += '<span style="font-size:10px;color:var(--muted)">📝</span>';
+      thtml += '</div></div>';
+      thtml += '<button class="task-delete" onclick="confirmDelete(\'task\',\''+t.id+'\',\''+escAttr(t.name)+'\')">🗑</button>';
+      thtml += '</div>';
     });
   }
-  tasksHtml += `</div>`;
+  thtml += '</div>';
 
-  // Add task button + form at the bottom
-  tasksHtml += `
-  <div style="margin-top:.75rem">
-    <button class="btn-add-task" style="width:auto;padding:9px 20px" onclick="toggleTaskForm()">+ Ajouter une tâche</button>
-  </div>
-  <div id="task-form-panel" style="display:none;margin-top:.75rem">
-  <div class="task-form">
-    <div class="task-form-title">Nouvelle tâche</div>
-    <div class="form-row">
-      <div class="form-field" style="flex:2;min-width:180px">
-        <label>Nom</label>
-        <input type="text" id="new-task-name" placeholder="Nom de la tâche" />
-      </div>
-      <div class="form-field">
-        <label>Échéance</label>
-        <input type="date" id="new-task-date" />
-      </div>
-      <div class="form-field" style="max-width:80px">
-        <label>Poids</label>
-        <select id="new-task-weight">
-          <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-field" style="margin-top:.5rem">
-      <label>Descriptif (optionnel)</label>
-      <textarea id="new-task-desc" placeholder="Détails, étapes, comment faire..."></textarea>
-    </div>
-    <div style="display:flex;gap:8px;margin-top:.5rem">
-      <button class="btn-add-task" style="flex:1" onclick="addTask()">Enregistrer</button>
-      <button style="flex:0 0 auto;padding:9px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:13px;color:var(--muted)" onclick="toggleTaskForm()">Annuler</button>
-    </div>
-    <div class="feedback" id="new-task-fb"></div>
-  </div>
-  </div>`;
+  // Add task button at bottom
+  thtml += '<button class="btn-add-task-bottom" onclick="showTaskForm()">+ Ajouter une tâche</button>';
+  thtml += '<div id="task-form-panel" style="display:none">';
+  thtml += '<div class="task-form"><div class="task-form-title">Nouvelle tâche</div>';
+  thtml += '<div class="form-row">';
+  thtml += '<div class="form-field" style="flex:2;min-width:160px"><label>Nom</label><input type="text" id="new-task-name" placeholder="Nom de la tâche" /></div>';
+  thtml += '<div class="form-field"><label>Échéance</label><input type="date" id="new-task-date" /></div>';
+  thtml += '<div class="form-field" style="max-width:80px"><label>Poids</label><select id="new-task-weight"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>';
+  thtml += '</div>';
+  thtml += '<div class="form-field" style="margin-top:.5rem"><label>Descriptif (optionnel)</label><textarea id="new-task-desc" placeholder="Détails, étapes, comment faire..."></textarea></div>';
+  thtml += '<div style="display:flex;gap:8px;margin-top:.5rem">';
+  thtml += '<button class="btn-primary-sm" onclick="addTask()">Enregistrer</button>';
+  thtml += '<button class="btn-cancel-sm" onclick="hideTaskForm()">Annuler</button>';
+  thtml += '</div><div class="feedback" id="new-task-fb"></div>';
+  thtml += '</div></div>';
 
-  document.getElementById('tab-tasks').innerHTML = tasksHtml;
+  document.getElementById('tab-tasks').innerHTML = thtml;
+}
+
+function showTaskForm(){
+  var p = document.getElementById('task-form-panel');
+  if(p){ p.style.display='block'; setTimeout(function(){ var n=document.getElementById('new-task-name'); if(n)n.focus(); },100); }
+}
+function hideTaskForm(){
+  var p = document.getElementById('task-form-panel');
+  if(p) p.style.display='none';
 }
 
 // ── TOGGLE TASK ──
 async function toggleTask(taskId){
-  const task = tasks.find(t=>t.id===taskId);
+  var task = tasks.find(function(t){ return t.id===taskId; });
   if(!task) return;
   task.done = !task.done;
   await sb.from('tasks').update({done:task.done}).eq('id',taskId);
   await renderDetailTabs();
-  // refresh home data silently
-  const g = await sb.from('goals').select('*').order('created_at');
-  goals = g.data||[];
 }
 
 // ── ADD TASK ──
-function toggleTaskForm(){
-  const panel = document.getElementById('task-form-panel');
-  if(!panel) return;
-  const isOpen = panel.style.display !== 'none';
-  panel.style.display = isOpen ? 'none' : 'block';
-  if(!isOpen) setTimeout(()=>{const n=document.getElementById('new-task-name');if(n)n.focus();},100);
-}
-
 async function addTask(){
-  const name = document.getElementById('new-task-name').value.trim();
-  const date = document.getElementById('new-task-date').value;
-  const weight = parseInt(document.getElementById('new-task-weight').value)||3;
-  const desc = document.getElementById('new-task-desc').value.trim();
-  const fb = document.getElementById('new-task-fb');
-  if(!name){fb.textContent='Nom requis';fb.style.color='#dc2626';return;}
-  const {data,error} = await sb.from('tasks').insert({goal_id:currentGoal.id,name,description:desc,due_date:date||null,weight,done:false}).select().single();
-  if(error){fb.textContent='Erreur: '+error.message;fb.style.color='#dc2626';return;}
-  tasks.push(data);
-  document.getElementById('new-task-name').value='';
-  document.getElementById('new-task-date').value='';
-  document.getElementById('new-task-desc').value='';
-  fb.textContent='Ajoutée ✓';fb.style.color='#059669';
-  setTimeout(()=>{if(fb)fb.textContent=''},2000);
+  var name = document.getElementById('new-task-name').value.trim();
+  var date = document.getElementById('new-task-date').value;
+  var weight = parseInt(document.getElementById('new-task-weight').value)||3;
+  var desc = document.getElementById('new-task-desc').value.trim();
+  var fb = document.getElementById('new-task-fb');
+  if(!name){ fb.textContent='Nom requis'; fb.style.color='#dc2626'; return; }
+  var res = await sb.from('tasks').insert({goal_id:currentGoal.id,name:name,description:desc,due_date:date||null,weight:weight,done:false}).select().single();
+  if(res.error){ fb.textContent='Erreur: '+res.error.message; fb.style.color='#dc2626'; return; }
+  tasks.push(res.data);
   await renderDetailTabs();
-  // form closes after re-render (hidden by default)
 }
 
-// ── TASK EDIT MODAL ──
+// ── TASK EDIT ──
 function openTaskEdit(taskId){
-  const t = tasks.find(t=>t.id===taskId);
+  var t = tasks.find(function(t){ return t.id===taskId; });
   if(!t) return;
   editTaskId = taskId;
   document.getElementById('modal-task-title').textContent = t.name;
@@ -528,38 +451,36 @@ function openTaskEdit(taskId){
   document.getElementById('task-edit-desc').value = t.description||'';
   document.getElementById('task-edit-date').value = t.due_date||'';
   document.getElementById('task-edit-weight').value = t.weight||3;
-  document.getElementById('task-fb').textContent='';
+  document.getElementById('task-fb').textContent = '';
   document.getElementById('modal-task').classList.remove('hidden');
 }
 async function saveTaskEdit(){
-  const name = document.getElementById('task-edit-name').value.trim();
-  const desc = document.getElementById('task-edit-desc').value.trim();
-  const date = document.getElementById('task-edit-date').value;
-  const weight = parseInt(document.getElementById('task-edit-weight').value)||3;
-  const fb = document.getElementById('task-fb');
-  if(!name){fb.textContent='Nom requis';fb.style.color='#dc2626';return;}
-  const {error} = await sb.from('tasks').update({name,description:desc,due_date:date||null,weight}).eq('id',editTaskId);
-  if(error){fb.textContent='Erreur: '+error.message;fb.style.color='#dc2626';return;}
-  const t = tasks.find(t=>t.id===editTaskId);
-  if(t){t.name=name;t.description=desc;t.due_date=date||null;t.weight=weight;}
+  var name = document.getElementById('task-edit-name').value.trim();
+  var desc = document.getElementById('task-edit-desc').value.trim();
+  var date = document.getElementById('task-edit-date').value;
+  var weight = parseInt(document.getElementById('task-edit-weight').value)||3;
+  var fb = document.getElementById('task-fb');
+  if(!name){ fb.textContent='Nom requis'; fb.style.color='#dc2626'; return; }
+  var res = await sb.from('tasks').update({name:name,description:desc,due_date:date||null,weight:weight}).eq('id',editTaskId);
+  if(res.error){ fb.textContent='Erreur: '+res.error.message; fb.style.color='#dc2626'; return; }
+  var t = tasks.find(function(t){ return t.id===editTaskId; });
+  if(t){ t.name=name; t.description=desc; t.due_date=date||null; t.weight=weight; }
   closeModal('modal-task');
   await renderDetailTabs();
 }
 
 // ── GOAL MODAL ──
-function openGoalModal(goalId=null, presetQuality=null){
-  editGoalId = goalId;
-  const goal = goalId ? goals.find(g=>g.id===goalId) : null;
-
-  // populate quality select
-  const sel = document.getElementById('goal-quality');
-  sel.innerHTML = ALL_QUALITIES.map(({quality,horizon})=>
-    `<option value="${quality}" style="color:${horizon.color}">${horizon.label} — ${quality}</option>`
-  ).join('');
-
+function openGoalModal(goalId, presetQuality){
+  editGoalId = goalId||null;
+  var goal = goalId ? goals.find(function(g){ return g.id===goalId; }) : null;
+  var sel = document.getElementById('goal-quality');
+  sel.innerHTML = ALL_QUALITIES.map(function(item){
+    return '<option value="'+escAttr(item.quality)+'">'+item.horizon.label+' — '+escHtml(item.quality)+'</option>';
+  }).join('');
   if(goal){
-    document.getElementById('modal-goal-title').textContent = 'Modifier l\'objectif';
+    document.getElementById('modal-goal-title').textContent = "Modifier l'objectif";
     document.getElementById('goal-name').value = goal.name;
+    document.getElementById('goal-definition').value = goal.definition||'';
     sel.value = goal.quality;
   } else {
     document.getElementById('modal-goal-title').textContent = 'Nouvel objectif';
@@ -567,26 +488,26 @@ function openGoalModal(goalId=null, presetQuality=null){
     document.getElementById('goal-definition').value = '';
     if(presetQuality) sel.value = presetQuality;
   }
-  document.getElementById('goal-fb').textContent='';
+  document.getElementById('goal-fb').textContent = '';
   document.getElementById('modal-goal').classList.remove('hidden');
-  setTimeout(()=>document.getElementById('goal-name').focus(),100);
+  setTimeout(function(){ document.getElementById('goal-name').focus(); },100);
 }
 
 async function saveGoal(){
-  const name = document.getElementById('goal-name').value.trim();
-  const quality = document.getElementById('goal-quality').value;
-  const fb = document.getElementById('goal-fb');
-  if(!name){fb.textContent='Nom requis';fb.style.color='#dc2626';return;}
-  const definition = document.getElementById('goal-definition').value.trim();
+  var name = document.getElementById('goal-name').value.trim();
+  var quality = document.getElementById('goal-quality').value;
+  var definition = document.getElementById('goal-definition').value.trim();
+  var fb = document.getElementById('goal-fb');
+  if(!name){ fb.textContent='Nom requis'; fb.style.color='#dc2626'; return; }
   if(editGoalId){
-    const {error} = await sb.from('goals').update({name,quality,definition}).eq('id',editGoalId);
-    if(error){fb.textContent='Erreur: '+error.message;fb.style.color='#dc2626';return;}
-    const g = goals.find(g=>g.id===editGoalId);
-    if(g){g.name=name;g.quality=quality;g.definition=definition;}
+    var res = await sb.from('goals').update({name:name,quality:quality,definition:definition}).eq('id',editGoalId);
+    if(res.error){ fb.textContent='Erreur: '+res.error.message; fb.style.color='#dc2626'; return; }
+    var g = goals.find(function(g){ return g.id===editGoalId; });
+    if(g){ g.name=name; g.quality=quality; g.definition=definition; }
   } else {
-    const {data,error} = await sb.from('goals').insert({name,quality,definition}).select().single();
-    if(error){fb.textContent='Erreur: '+error.message;fb.style.color='#dc2626';return;}
-    goals.push(data);
+    var res2 = await sb.from('goals').insert({name:name,quality:quality,definition:definition}).select().single();
+    if(res2.error){ fb.textContent='Erreur: '+res2.error.message; fb.style.color='#dc2626'; return; }
+    goals.push(res2.data);
   }
   closeModal('modal-goal');
   renderHome();
@@ -594,11 +515,11 @@ async function saveGoal(){
 
 // ── DELETE ──
 function confirmDelete(type, id, label){
-  const msg = type==='goal'
-    ? `Supprimer l'objectif "<strong>${label}</strong>" et toutes ses tâches ? Cette action est irréversible.`
-    : `Supprimer la tâche "<strong>${label}</strong>" ?`;
+  var msg = type==='goal'
+    ? 'Supprimer l\'objectif "<strong>'+escHtml(label)+'</strong>" et toutes ses tâches ? Cette action est irréversible.'
+    : 'Supprimer la tâche "<strong>'+escHtml(label)+'</strong>" ?';
   document.getElementById('confirm-msg').innerHTML = msg;
-  document.getElementById('confirm-ok').onclick = ()=>doDelete(type,id);
+  document.getElementById('confirm-ok').onclick = function(){ doDelete(type,id); };
   document.getElementById('modal-confirm').classList.remove('hidden');
 }
 async function doDelete(type, id){
@@ -606,29 +527,29 @@ async function doDelete(type, id){
   if(type==='goal'){
     await sb.from('tasks').delete().eq('goal_id',id);
     await sb.from('goals').delete().eq('id',id);
-    goals = goals.filter(g=>g.id!==id);
-    tasks = tasks.filter(t=>t.goal_id!==id);
+    goals = goals.filter(function(g){ return g.id!==id; });
+    tasks = tasks.filter(function(t){ return t.goal_id!==id; });
     renderHome();
   } else {
     await sb.from('tasks').delete().eq('id',id);
-    tasks = tasks.filter(t=>t.id!==id);
+    tasks = tasks.filter(function(t){ return t.id!==id; });
     await renderDetailTabs();
   }
 }
 
-// ── NAVIGATION ──
+// ── NAV ──
 function goHome(){
   document.getElementById('screen-detail').classList.remove('active');
   document.getElementById('screen-home').classList.add('active');
   document.getElementById('nav-back').classList.remove('visible');
-  document.getElementById('btn-add-goal').style.display='';
+  document.getElementById('btn-add-goal').style.display = '';
   currentGoal = null;
   renderHome();
 }
 
 function switchTab(tab, btn){
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
   if(btn) btn.classList.add('active');
   document.getElementById('tab-'+tab).classList.add('active');
 }
