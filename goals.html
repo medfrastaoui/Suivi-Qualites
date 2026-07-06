@@ -18,12 +18,19 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;height:54px}
-.nav-brand{font-size:14px;font-weight:700;letter-spacing:-.01em}
+.nav-brand{font-size:14px;font-weight:700}
 .nav-back{background:transparent;border:1px solid var(--border);border-radius:8px;padding:5px 12px;cursor:pointer;font-size:13px;color:var(--muted);display:none;align-items:center;gap:5px}
 .nav-back.visible{display:flex}
 .btn-add-goal{background:var(--text);color:var(--bg);border:none;border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600}
 .screen{display:none;padding:1.25rem;max-width:900px;margin:0 auto}
 .screen.active{display:block}
+
+/* HOME TABS */
+.home-tabs{display:flex;gap:4px;margin-bottom:1.25rem;border-bottom:1px solid var(--border)}
+.home-tab-btn{padding:8px 18px;border:none;background:transparent;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.home-tab-btn.active{color:var(--text);border-bottom-color:var(--text)}
+
+/* OBJECTIFS */
 .horizon-section{margin-bottom:2rem}
 .horizon-label{display:flex;align-items:center;gap:8px;margin-bottom:.75rem;flex-wrap:wrap}
 .horizon-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
@@ -49,6 +56,29 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 @media(prefers-color-scheme:dark){.health-green{background:#064e35;color:#6ee7b7}.health-red{background:#450a0a;color:#fca5a5}}
 .empty-card{background:transparent;border:2px dashed var(--border);border-radius:14px;padding:1.25rem;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:12px;transition:border-color .15s;text-align:center;line-height:1.4}
 .empty-card:hover{border-color:var(--muted)}
+
+/* TACHES HOME */
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
+.filter-bar label{font-size:12px;color:var(--muted)}
+.filter-bar input[type=date]{padding:5px 8px;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text);font-size:12px;font-family:inherit}
+.btn-filter{padding:6px 12px;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text);font-size:12px;cursor:pointer}
+.task-group{margin-bottom:1.25rem}
+.task-group-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem;padding-left:2px}
+.task-group-label.late{color:#dc2626}
+.task-group-label.today-lbl{color:#059669}
+.home-task-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.65rem .9rem;display:flex;align-items:center;gap:10px;margin-bottom:5px;box-shadow:var(--shadow)}
+.home-task-row.overdue{border-color:#fca5a5}
+.home-task-row.done-row{opacity:.5}
+@media(prefers-color-scheme:dark){.home-task-row.overdue{border-color:#7f1d1d}}
+.home-task-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s}
+.home-task-check.done-check{background:#059669;border-color:#059669;color:#fff}
+.home-task-info{flex:1;min-width:0}
+.home-task-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.home-task-name.done-name{text-decoration:line-through}
+.home-task-goal{font-size:10px;margin-top:1px}
+.no-tasks{text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:13px}
+
+/* DETAIL */
 .detail-header{margin-bottom:1.25rem}
 .detail-horizon-tag{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.5rem;opacity:.7}
 .detail-title{font-size:22px;font-weight:800;line-height:1.2;margin-bottom:.3rem}
@@ -77,7 +107,7 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .btn-primary-sm{background:var(--text);color:var(--bg);border:none;border-radius:8px;padding:9px 18px;cursor:pointer;font-size:13px;font-weight:600}
 .btn-cancel-sm{background:transparent;border:1px solid var(--border);border-radius:8px;padding:9px 16px;cursor:pointer;font-size:13px;color:var(--muted)}
 .tasks-list{display:flex;flex-direction:column;gap:6px}
-.task-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.7rem .9rem;display:flex;align-items:center;gap:10px;transition:all .15s;box-shadow:var(--shadow)}
+.task-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.7rem .9rem;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow)}
 .task-row.done{opacity:.55}
 .task-row.overdue{border-color:#fca5a5}
 @media(prefers-color-scheme:dark){.task-row.overdue{border-color:#7f1d1d}}
@@ -121,7 +151,12 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 </nav>
 
 <div id="screen-home" class="screen active">
+  <div class="home-tabs">
+    <button class="home-tab-btn active" onclick="switchHomeTab('objectifs',this)">Objectifs</button>
+    <button class="home-tab-btn" onclick="switchHomeTab('taches',this)">Tâches</button>
+  </div>
   <div id="home-content"><div class="loading">Chargement...</div></div>
+  <div id="tasks-content" style="display:none"></div>
 </div>
 
 <div id="screen-detail" class="screen">
@@ -152,7 +187,7 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
     </div>
     <div class="modal-field">
       <label>Définition (optionnel)</label>
-      <textarea id="goal-definition" placeholder="Décrivez cet objectif, son contexte, ce qu'il représente pour vous..."></textarea>
+      <textarea id="goal-definition" placeholder="Décrivez cet objectif, son contexte..."></textarea>
     </div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal('modal-goal')">Annuler</button>
@@ -178,23 +213,11 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 <div class="modal-overlay hidden" id="modal-task">
   <div class="modal">
     <div class="modal-title" id="modal-task-title">Tâche</div>
-    <div class="modal-field">
-      <label>Nom</label>
-      <input type="text" id="task-edit-name" />
-    </div>
-    <div class="modal-field">
-      <label>Descriptif</label>
-      <textarea id="task-edit-desc"></textarea>
-    </div>
-    <div class="modal-field">
-      <label>Date d'échéance</label>
-      <input type="date" id="task-edit-date" />
-    </div>
-    <div class="modal-field">
-      <label>Poids (1–5)</label>
-      <select id="task-edit-weight">
-        <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
-      </select>
+    <div class="modal-field"><label>Nom</label><input type="text" id="task-edit-name" /></div>
+    <div class="modal-field"><label>Descriptif</label><textarea id="task-edit-desc"></textarea></div>
+    <div class="modal-field"><label>Date d'échéance</label><input type="date" id="task-edit-date" /></div>
+    <div class="modal-field"><label>Poids (1–5)</label>
+      <select id="task-edit-weight"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select>
     </div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal('modal-task')">Annuler</button>
@@ -225,340 +248,382 @@ const HORIZONS = [
 ];
 
 const ALL_QUALITIES = HORIZONS.flatMap(function(h){
-  return h.qualities.map(function(q){ return {quality:q, horizon:h}; });
+  return h.qualities.map(function(q){ return {quality:q,horizon:h}; });
 });
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let goals = [];
-let tasks = [];
-let currentGoal = null;
-let editGoalId = null;
-let editTaskId = null;
+var goals = [], tasks = [], currentGoal = null, editGoalId = null, editTaskId = null;
 
 // ── UTILS ──
-function localDateStr(d){
-  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-}
-function todayStr(){ return localDateStr(new Date()); }
-function fmtDate(s){
-  if(!s) return '—';
-  var d = new Date(s+'T00:00:00');
-  return d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});
-}
-function horizonOf(quality){
-  return HORIZONS.find(function(h){ return h.qualities.indexOf(quality)>=0; })||HORIZONS[0];
-}
-
-// ── CALCULS ──
-function calcGoal(goal, gt){
-  var today = todayStr();
-  var dates = gt.map(function(t){return t.due_date;}).filter(Boolean).sort();
-  var dateStart = dates[0]||null;
-  var dateEnd = dates[dates.length-1]||null;
-  var totalW = gt.reduce(function(s,t){return s+t.weight;},0);
-  var doneW = gt.filter(function(t){return t.done;}).reduce(function(s,t){return s+t.weight;},0);
-  var progGlobal = totalW>0 ? Math.round(doneW/totalW*100) : 0;
-  var dueTasks = gt.filter(function(t){return t.due_date && t.due_date<=today;});
-  var dueW = dueTasks.reduce(function(s,t){return s+t.weight;},0);
-  var dueDoneW = dueTasks.filter(function(t){return t.done;}).reduce(function(s,t){return s+t.weight;},0);
-  var progDate = dueW>0 ? Math.round(dueDoneW/dueW*100) : 100;
-  var healthy = progDate===100;
-  return {dateStart:dateStart, dateEnd:dateEnd, progGlobal:progGlobal, progDate:progDate, healthy:healthy};
-}
+function dStr(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function todayStr(){ return dStr(new Date()); }
+function addDays(s,n){ var d=new Date(s+'T00:00:00'); d.setDate(d.getDate()+n); return dStr(d); }
+function fmtDate(s){ if(!s) return '—'; var d=new Date(s+'T00:00:00'); return d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}); }
+function horizonOf(q){ return HORIZONS.find(function(h){ return h.qualities.indexOf(q)>=0; })||HORIZONS[0]; }
+function escH(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escA(s){ return String(s).replace(/'/g,'&#39;'); }
 
 // ── GRADIENT ──
-function lerp(a,b,t){
-  return [Math.round(a[0]+(b[0]-a[0])*t), Math.round(a[1]+(b[1]-a[1])*t), Math.round(a[2]+(b[2]-a[2])*t)];
-}
-function pctGradient(p){
-  var t=p/100, red=[220,38,38], orange=[234,88,12], green=[5,150,105], rgb;
-  if(t<=0.5) rgb=lerp(red,orange,t*2); else rgb=lerp(orange,green,(t-0.5)*2);
-  return 'rgb('+rgb[0]+','+rgb[1]+','+rgb[2]+')';
+function lerp(a,b,t){ return [Math.round(a[0]+(b[0]-a[0])*t),Math.round(a[1]+(b[1]-a[1])*t),Math.round(a[2]+(b[2]-a[2])*t)]; }
+function grad(p){ var t=p/100,r=[220,38,38],o=[234,88,12],g=[5,150,105],rgb; if(t<=0.5)rgb=lerp(r,o,t*2);else rgb=lerp(o,g,(t-0.5)*2); return 'rgb('+rgb[0]+','+rgb[1]+','+rgb[2]+')'; }
+
+// ── CALCULS ──
+function calcGoal(goal,gt){
+  var today=todayStr();
+  var dates=gt.map(function(t){return t.due_date;}).filter(Boolean).sort();
+  var dateStart=dates[0]||null, dateEnd=dates[dates.length-1]||null;
+  var totalW=gt.reduce(function(s,t){return s+t.weight;},0);
+  var doneW=gt.filter(function(t){return t.done;}).reduce(function(s,t){return s+t.weight;},0);
+  var progGlobal=totalW>0?Math.round(doneW/totalW*100):0;
+  var due=gt.filter(function(t){return t.due_date&&t.due_date<=today;});
+  var dueW=due.reduce(function(s,t){return s+t.weight;},0);
+  var dueDoneW=due.filter(function(t){return t.done;}).reduce(function(s,t){return s+t.weight;},0);
+  var progDate=dueW>0?Math.round(dueDoneW/dueW*100):100;
+  return {dateStart:dateStart,dateEnd:dateEnd,progGlobal:progGlobal,progDate:progDate,healthy:progDate===100};
 }
 
 // ── LOAD ──
 async function loadAll(){
-  var res = await Promise.all([
-    sb.from('goals').select('*').order('created_at'),
-    sb.from('tasks').select('*').order('due_date')
-  ]);
-  goals = res[0].data||[];
-  tasks = res[1].data||[];
+  var res=await Promise.all([sb.from('goals').select('*').order('created_at'),sb.from('tasks').select('*').order('due_date')]);
+  goals=res[0].data||[]; tasks=res[1].data||[];
 }
 
-// ── HOME ──
-async function renderHome(){
-  document.getElementById('home-content').innerHTML = '<div class="loading">Chargement...</div>';
-  await loadAll();
-  var html = '';
-  HORIZONS.forEach(function(h){
-    html += '<div class="horizon-section">';
-    html += '<div class="horizon-label">';
-    html += '<div class="horizon-dot" style="background:'+h.color+'"></div>';
-    html += '<div class="horizon-name" style="color:'+h.color+'">'+h.label+'</div>';
-    html += '<div class="horizon-vision">'+h.vision+'</div>';
-    html += '</div><div class="goals-grid">';
-    h.qualities.forEach(function(q){
-      var qGoals = goals.filter(function(g){ return g.quality===q; });
-      qGoals.forEach(function(goal){
-        var gt = tasks.filter(function(t){ return t.goal_id===goal.id; });
-        var c = calcGoal(goal, gt);
-        html += '<div class="goal-card" style="border-color:'+h.color+'" onclick="openGoal(\''+goal.id+'\')">';
-        html += '<div class="goal-card-top">';
-        html += '<div class="goal-card-name">'+escHtml(goal.name)+'</div>';
-        html += '<div class="goal-card-actions" onclick="event.stopPropagation()">';
-        html += '<button class="btn-card-action" onclick="openGoalModal(\''+goal.id+'\',null)" title="Modifier">✏️</button>';
-        html += '<button class="btn-card-action" onclick="confirmDelete(\'goal\',\''+goal.id+'\',\''+escAttr(goal.name)+'\')" title="Supprimer">🗑</button>';
-        html += '</div></div>';
-        html += '<div class="goal-card-quality">'+escHtml(q)+'</div>';
-        html += '<div class="goal-card-dates">📅 '+fmtDate(c.dateStart)+' → '+fmtDate(c.dateEnd)+'</div>';
-        html += '<div class="progress-block"><div class="progress-label"><span>Global</span><span>'+c.progGlobal+'%</span></div>';
-        html += '<div class="progress-bar"><div class="progress-fill" style="width:'+c.progGlobal+'%;background:'+pctGradient(c.progGlobal)+'"></div></div></div>';
-        html += '<div class="progress-block"><div class="progress-label"><span>À date</span><span>'+c.progDate+'%</span></div>';
-        html += '<div class="progress-bar"><div class="progress-fill" style="width:'+c.progDate+'%;background:'+pctGradient(c.progDate)+'"></div></div></div>';
-        html += '<div class="health-badge '+(c.healthy?'health-green':'health-red')+'">'+(c.healthy?'🟢 En bonne santé':'🔴 En retard')+'</div>';
-        html += '</div>';
-      });
-      html += '<div class="empty-card" onclick="openGoalModal(null,\''+escAttr(q)+'\')">+ Objectif<br><em>'+escHtml(q)+'</em></div>';
+// ── HOME TABS ──
+function switchHomeTab(tab,btn){
+  document.querySelectorAll('.home-tab-btn').forEach(function(b){b.classList.remove('active');});
+  if(btn) btn.classList.add('active');
+  var isObj=tab==='objectifs';
+  document.getElementById('home-content').style.display=isObj?'':'none';
+  document.getElementById('tasks-content').style.display=isObj?'none':'';
+  if(!isObj) renderTasksView(null,null);
+}
+
+// ── TASKS HOME VIEW ──
+var taskFilterFrom=null, taskFilterTo=null;
+
+function renderTasksView(filterFrom, filterTo){
+  var today=todayStr();
+  var defaultTo=addDays(today,8);
+  taskFilterFrom=filterFrom; taskFilterTo=filterTo;
+  var to=filterTo||defaultTo;
+
+  var filtered;
+  if(filterFrom){
+    filtered=tasks.filter(function(t){ return t.due_date&&t.due_date>=filterFrom&&t.due_date<=to; });
+  } else {
+    filtered=tasks.filter(function(t){
+      if(!t.due_date) return false;
+      var isOverdue=t.due_date<today&&!t.done;
+      var isUpcoming=t.due_date>=today&&t.due_date<=to;
+      return isOverdue||isUpcoming;
     });
-    html += '</div></div>';
+  }
+
+  filtered.sort(function(a,b){return a.due_date.localeCompare(b.due_date);});
+
+  var groups={}, groupOrder=[];
+  filtered.forEach(function(t){
+    if(!groups[t.due_date]){groups[t.due_date]=[];groupOrder.push(t.due_date);}
+    groups[t.due_date].push(t);
   });
-  document.getElementById('home-content').innerHTML = html;
+
+  var html='<div class="filter-bar">';
+  html+='<label>Du</label><input type="date" id="filter-from" value="'+(filterFrom||'')+'" />';
+  html+='<label>Au</label><input type="date" id="filter-to" value="'+(filterTo||defaultTo)+'" />';
+  html+='<button class="btn-filter" onclick="applyFilter()">Filtrer</button>';
+  if(filterFrom) html+='<button class="btn-filter" onclick="renderTasksView(null,null)">Réinitialiser</button>';
+  html+='</div>';
+
+  if(groupOrder.length===0){
+    html+='<div class="no-tasks">Aucune tâche en retard ou à venir sur cette période.</div>';
+  } else {
+    groupOrder.forEach(function(dk){
+      var isLate=dk<today;
+      var isToday=dk===today;
+      var isTomorrow=dk===addDays(today,1);
+      var lbl=isLate?('En retard — '+fmtDate(dk)):isToday?'Aujourd\'hui':isTomorrow?'Demain':fmtDate(dk);
+      var lCls=isLate?'late':isToday?'today-lbl':'';
+      html+='<div class="task-group"><div class="task-group-label '+lCls+'">'+lbl+'</div>';
+      groups[dk].forEach(function(t){
+        var goal=goals.find(function(g){return g.id===t.goal_id;});
+        var h=goal?horizonOf(goal.quality):null;
+        var hColor=h?h.color:'var(--muted)';
+        html+='<div class="home-task-row'+(isLate&&!t.done?' overdue':'')+(t.done?' done-row':'')+'">';
+        html+='<div class="home-task-check'+(t.done?' done-check':'')+'" onclick="toggleTaskHome(\''+t.id+'\')">'+(t.done?'✓':'')+'</div>';
+        html+='<div class="home-task-info">';
+        html+='<div class="home-task-name'+(t.done?' done-name':'')+'">'+escH(t.name)+'</div>';
+        html+='<div class="home-task-goal" style="color:'+hColor+'">'+(goal?escH(goal.name):'')+'</div>';
+        html+='</div>';
+        html+='<div style="font-size:10px;background:var(--bg);border-radius:4px;padding:1px 6px;color:var(--muted);flex-shrink:0">×'+t.weight+'</div>';
+        html+='</div>';
+      });
+      html+='</div>';
+    });
+  }
+  document.getElementById('tasks-content').innerHTML=html;
 }
 
-function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function escAttr(s){ return String(s).replace(/'/g,'&#39;'); }
+function applyFilter(){
+  var from=document.getElementById('filter-from').value||null;
+  var to=document.getElementById('filter-to').value||null;
+  renderTasksView(from,to);
+}
+
+async function toggleTaskHome(taskId){
+  var t=tasks.find(function(t){return t.id===taskId;});
+  if(!t) return;
+  t.done=!t.done;
+  await sb.from('tasks').update({done:t.done}).eq('id',taskId);
+  renderTasksView(taskFilterFrom,taskFilterTo);
+}
+
+// ── HOME OBJECTIFS ──
+async function renderHome(){
+  document.getElementById('home-content').innerHTML='<div class="loading">Chargement...</div>';
+  await loadAll();
+  var html='';
+  HORIZONS.forEach(function(h){
+    html+='<div class="horizon-section"><div class="horizon-label">';
+    html+='<div class="horizon-dot" style="background:'+h.color+'"></div>';
+    html+='<div class="horizon-name" style="color:'+h.color+'">'+h.label+'</div>';
+    html+='<div class="horizon-vision">'+h.vision+'</div>';
+    html+='</div><div class="goals-grid">';
+    h.qualities.forEach(function(q){
+      goals.filter(function(g){return g.quality===q;}).forEach(function(goal){
+        var gt=tasks.filter(function(t){return t.goal_id===goal.id;});
+        var c=calcGoal(goal,gt);
+        html+='<div class="goal-card" style="border-color:'+h.color+'" onclick="openGoal(\''+goal.id+'\')">';
+        html+='<div class="goal-card-top"><div class="goal-card-name">'+escH(goal.name)+'</div>';
+        html+='<div class="goal-card-actions" onclick="event.stopPropagation()">';
+        html+='<button class="btn-card-action" onclick="openGoalModal(\''+goal.id+'\',null)">✏️</button>';
+        html+='<button class="btn-card-action" onclick="confirmDelete(\'goal\',\''+goal.id+'\',\''+escA(goal.name)+'\')">🗑</button>';
+        html+='</div></div>';
+        html+='<div class="goal-card-quality">'+escH(q)+'</div>';
+        html+='<div class="goal-card-dates">📅 '+fmtDate(c.dateStart)+' → '+fmtDate(c.dateEnd)+'</div>';
+        html+='<div class="progress-block"><div class="progress-label"><span>Global</span><span>'+c.progGlobal+'%</span></div>';
+        html+='<div class="progress-bar"><div class="progress-fill" style="width:'+c.progGlobal+'%;background:'+grad(c.progGlobal)+'"></div></div></div>';
+        html+='<div class="progress-block"><div class="progress-label"><span>À date</span><span>'+c.progDate+'%</span></div>';
+        html+='<div class="progress-bar"><div class="progress-fill" style="width:'+c.progDate+'%;background:'+grad(c.progDate)+'"></div></div></div>';
+        html+='<div class="health-badge '+(c.healthy?'health-green':'health-red')+'">'+(c.healthy?'🟢 En bonne santé':'🔴 En retard')+'</div>';
+        html+='</div>';
+      });
+      html+='<div class="empty-card" onclick="openGoalModal(null,\''+escA(q)+'\')">+ Objectif<br><em>'+escH(q)+'</em></div>';
+    });
+    html+='</div></div>';
+  });
+  document.getElementById('home-content').innerHTML=html;
+}
 
 // ── GOAL DETAIL ──
 async function openGoal(goalId){
-  currentGoal = goals.find(function(g){ return g.id===goalId; });
+  currentGoal=goals.find(function(g){return g.id===goalId;});
   if(!currentGoal) return;
-  var h = horizonOf(currentGoal.quality);
-  document.getElementById('detail-horizon-tag').innerHTML = '<span style="width:8px;height:8px;border-radius:50%;background:'+h.color+';display:inline-block"></span>&nbsp;'+h.label;
-  document.getElementById('detail-title').textContent = currentGoal.name;
-  document.getElementById('detail-quality').textContent = currentGoal.quality;
+  var h=horizonOf(currentGoal.quality);
+  document.getElementById('detail-horizon-tag').innerHTML='<span style="width:8px;height:8px;border-radius:50%;background:'+h.color+';display:inline-block"></span>&nbsp;'+h.label;
+  document.getElementById('detail-title').textContent=currentGoal.name;
+  document.getElementById('detail-quality').textContent=currentGoal.quality;
   document.getElementById('screen-home').classList.remove('active');
   document.getElementById('screen-detail').classList.add('active');
   document.getElementById('nav-back').classList.add('visible');
-  document.getElementById('btn-add-goal').style.display = 'none';
-  document.querySelectorAll('.tab-btn').forEach(function(b,i){ b.classList.toggle('active',i===0); });
-  document.querySelectorAll('.tab-content').forEach(function(c,i){ c.classList.toggle('active',i===0); });
+  document.getElementById('btn-add-goal').style.display='none';
+  document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',i===0);});
+  document.querySelectorAll('.tab-content').forEach(function(c,i){c.classList.toggle('active',i===0);});
   await renderDetailTabs();
 }
 
 async function renderDetailTabs(){
-  var gt = tasks.filter(function(t){ return t.goal_id===currentGoal.id; });
-  var c = calcGoal(currentGoal, gt);
-  var h = horizonOf(currentGoal.quality);
-  var today = todayStr();
+  var gt=tasks.filter(function(t){return t.goal_id===currentGoal.id;});
+  var c=calcGoal(currentGoal,gt);
+  var h=horizonOf(currentGoal.quality);
+  var today=todayStr();
 
   // VISION
-  var vhtml = '<div class="vision-box">';
-  vhtml += '<div class="vision-phrase">"'+escHtml(h.vision)+'"</div>';
+  var vhtml='<div class="vision-box">';
+  vhtml+='<div class="vision-phrase">"'+escH(h.vision)+'"</div>';
   if(currentGoal.definition){
-    vhtml += '<div class="definition-box"><div class="definition-label">Définition</div>'+escHtml(currentGoal.definition)+'</div>';
+    vhtml+='<div class="definition-box"><div class="definition-label">Définition</div>'+escH(currentGoal.definition)+'</div>';
   }
-  vhtml += '<div class="kpi-grid">';
-  vhtml += '<div class="kpi-card"><div class="kpi-val" style="font-size:13px">'+fmtDate(c.dateStart)+'</div><div class="kpi-label">Début</div></div>';
-  vhtml += '<div class="kpi-card"><div class="kpi-val" style="font-size:13px">'+fmtDate(c.dateEnd)+'</div><div class="kpi-label">Fin</div></div>';
-  vhtml += '<div class="kpi-card"><div class="kpi-val" style="color:'+pctGradient(c.progGlobal)+'">'+c.progGlobal+'%</div><div class="kpi-label">Global</div></div>';
-  vhtml += '<div class="kpi-card"><div class="kpi-val" style="color:'+pctGradient(c.progDate)+'">'+c.progDate+'%</div><div class="kpi-label">À date</div></div>';
-  vhtml += '</div>';
-  vhtml += '<div style="margin-top:.75rem"><div class="health-badge '+(c.healthy?'health-green':'health-red')+'">'+(c.healthy?'🟢 Toutes les tâches échues sont complétées':'🔴 Des tâches échues ne sont pas complétées')+'</div></div>';
-  vhtml += '</div>';
-  document.getElementById('tab-vision').innerHTML = vhtml;
+  vhtml+='<div class="kpi-grid">';
+  vhtml+='<div class="kpi-card"><div class="kpi-val" style="font-size:13px">'+fmtDate(c.dateStart)+'</div><div class="kpi-label">Début</div></div>';
+  vhtml+='<div class="kpi-card"><div class="kpi-val" style="font-size:13px">'+fmtDate(c.dateEnd)+'</div><div class="kpi-label">Fin</div></div>';
+  vhtml+='<div class="kpi-card"><div class="kpi-val" style="color:'+grad(c.progGlobal)+'">'+c.progGlobal+'%</div><div class="kpi-label">Global</div></div>';
+  vhtml+='<div class="kpi-card"><div class="kpi-val" style="color:'+grad(c.progDate)+'">'+c.progDate+'%</div><div class="kpi-label">À date</div></div>';
+  vhtml+='</div><div style="margin-top:.75rem"><div class="health-badge '+(c.healthy?'health-green':'health-red')+'">'+(c.healthy?'🟢 Toutes les tâches échues sont complétées':'🔴 Des tâches échues ne sont pas complétées')+'</div></div></div>';
+  document.getElementById('tab-vision').innerHTML=vhtml;
 
   // TASKS
-  var thtml = '<div class="tasks-list">';
+  var thtml='<div class="tasks-list">';
   if(gt.length===0){
-    thtml += '<div class="tasks-empty">Aucune tâche pour cet objectif.</div>';
+    thtml+='<div class="tasks-empty">Aucune tâche pour cet objectif.</div>';
   } else {
     gt.forEach(function(t){
-      var overdue = !t.done && t.due_date && t.due_date<today;
-      thtml += '<div class="task-row'+(t.done?' done':'')+(overdue?' overdue':'')+'">';
-      thtml += '<div class="task-check" onclick="toggleTask(\''+t.id+'\')">'+(t.done?'✓':'')+'</div>';
-      thtml += '<div class="task-main" onclick="openTaskEdit(\''+t.id+'\')">';
-      thtml += '<div class="task-name">'+escHtml(t.name)+'</div>';
-      thtml += '<div class="task-meta"><span class="task-date'+(overdue?' late':'')+'">'+fmtDate(t.due_date)+'</span>';
-      thtml += '<span class="task-weight">Poids '+t.weight+'</span>';
-      if(t.description) thtml += '<span style="font-size:10px;color:var(--muted)">📝</span>';
-      thtml += '</div></div>';
-      thtml += '<button class="task-delete" onclick="confirmDelete(\'task\',\''+t.id+'\',\''+escAttr(t.name)+'\')">🗑</button>';
-      thtml += '</div>';
+      var overdue=!t.done&&t.due_date&&t.due_date<today;
+      thtml+='<div class="task-row'+(t.done?' done':'')+(overdue?' overdue':'')+'">';
+      thtml+='<div class="task-check" onclick="toggleTask(\''+t.id+'\')">'+(t.done?'✓':'')+'</div>';
+      thtml+='<div class="task-main" onclick="openTaskEdit(\''+t.id+'\')">';
+      thtml+='<div class="task-name">'+escH(t.name)+'</div>';
+      thtml+='<div class="task-meta"><span class="task-date'+(overdue?' late':'')+'">'+fmtDate(t.due_date)+'</span>';
+      thtml+='<span class="task-weight">Poids '+t.weight+'</span>';
+      if(t.description) thtml+='<span style="font-size:10px;color:var(--muted)">📝</span>';
+      thtml+='</div></div>';
+      thtml+='<button class="task-delete" onclick="confirmDelete(\'task\',\''+t.id+'\',\''+escA(t.name)+'\')">🗑</button>';
+      thtml+='</div>';
     });
   }
-  thtml += '</div>';
-
-  // Add task button at bottom
-  thtml += '<button class="btn-add-task-bottom" onclick="showTaskForm()">+ Ajouter une tâche</button>';
-  thtml += '<div id="task-form-panel" style="display:none">';
-  thtml += '<div class="task-form"><div class="task-form-title">Nouvelle tâche</div>';
-  thtml += '<div class="form-row">';
-  thtml += '<div class="form-field" style="flex:2;min-width:160px"><label>Nom</label><input type="text" id="new-task-name" placeholder="Nom de la tâche" /></div>';
-  thtml += '<div class="form-field"><label>Échéance</label><input type="date" id="new-task-date" /></div>';
-  thtml += '<div class="form-field" style="max-width:80px"><label>Poids</label><select id="new-task-weight"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>';
-  thtml += '</div>';
-  thtml += '<div class="form-field" style="margin-top:.5rem"><label>Descriptif (optionnel)</label><textarea id="new-task-desc" placeholder="Détails, étapes, comment faire..."></textarea></div>';
-  thtml += '<div style="display:flex;gap:8px;margin-top:.5rem">';
-  thtml += '<button class="btn-primary-sm" onclick="addTask()">Enregistrer</button>';
-  thtml += '<button class="btn-cancel-sm" onclick="hideTaskForm()">Annuler</button>';
-  thtml += '</div><div class="feedback" id="new-task-fb"></div>';
-  thtml += '</div></div>';
-
-  document.getElementById('tab-tasks').innerHTML = thtml;
+  thtml+='</div>';
+  thtml+='<button class="btn-add-task-bottom" onclick="showTaskForm()">+ Ajouter une tâche</button>';
+  thtml+='<div id="task-form-panel" style="display:none">';
+  thtml+='<div class="task-form"><div class="task-form-title">Nouvelle tâche</div>';
+  thtml+='<div class="form-row">';
+  thtml+='<div class="form-field" style="flex:2;min-width:160px"><label>Nom</label><input type="text" id="new-task-name" placeholder="Nom de la tâche" /></div>';
+  thtml+='<div class="form-field"><label>Échéance</label><input type="date" id="new-task-date" /></div>';
+  thtml+='<div class="form-field" style="max-width:80px"><label>Poids</label><select id="new-task-weight"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>';
+  thtml+='</div>';
+  thtml+='<div class="form-field" style="margin-top:.5rem"><label>Descriptif (optionnel)</label><textarea id="new-task-desc" placeholder="Détails, étapes..."></textarea></div>';
+  thtml+='<div style="display:flex;gap:8px;margin-top:.5rem">';
+  thtml+='<button class="btn-primary-sm" onclick="addTask()">Enregistrer</button>';
+  thtml+='<button class="btn-cancel-sm" onclick="hideTaskForm()">Annuler</button>';
+  thtml+='</div><div class="feedback" id="new-task-fb"></div></div></div>';
+  document.getElementById('tab-tasks').innerHTML=thtml;
 }
 
-function showTaskForm(){
-  var p = document.getElementById('task-form-panel');
-  if(p){ p.style.display='block'; setTimeout(function(){ var n=document.getElementById('new-task-name'); if(n)n.focus(); },100); }
-}
-function hideTaskForm(){
-  var p = document.getElementById('task-form-panel');
-  if(p) p.style.display='none';
-}
+function showTaskForm(){ var p=document.getElementById('task-form-panel'); if(p){p.style.display='block';setTimeout(function(){var n=document.getElementById('new-task-name');if(n)n.focus();},100);} }
+function hideTaskForm(){ var p=document.getElementById('task-form-panel'); if(p)p.style.display='none'; }
 
-// ── TOGGLE TASK ──
 async function toggleTask(taskId){
-  var task = tasks.find(function(t){ return t.id===taskId; });
-  if(!task) return;
-  task.done = !task.done;
-  await sb.from('tasks').update({done:task.done}).eq('id',taskId);
+  var t=tasks.find(function(t){return t.id===taskId;});
+  if(!t) return;
+  t.done=!t.done;
+  await sb.from('tasks').update({done:t.done}).eq('id',taskId);
   await renderDetailTabs();
 }
 
-// ── ADD TASK ──
 async function addTask(){
-  var name = document.getElementById('new-task-name').value.trim();
-  var date = document.getElementById('new-task-date').value;
-  var weight = parseInt(document.getElementById('new-task-weight').value)||3;
-  var desc = document.getElementById('new-task-desc').value.trim();
-  var fb = document.getElementById('new-task-fb');
-  if(!name){ fb.textContent='Nom requis'; fb.style.color='#dc2626'; return; }
-  var res = await sb.from('tasks').insert({goal_id:currentGoal.id,name:name,description:desc,due_date:date||null,weight:weight,done:false}).select().single();
-  if(res.error){ fb.textContent='Erreur: '+res.error.message; fb.style.color='#dc2626'; return; }
+  var name=document.getElementById('new-task-name').value.trim();
+  var date=document.getElementById('new-task-date').value;
+  var weight=parseInt(document.getElementById('new-task-weight').value)||3;
+  var desc=document.getElementById('new-task-desc').value.trim();
+  var fb=document.getElementById('new-task-fb');
+  if(!name){fb.textContent='Nom requis';fb.style.color='#dc2626';return;}
+  var res=await sb.from('tasks').insert({goal_id:currentGoal.id,name:name,description:desc,due_date:date||null,weight:weight,done:false}).select().single();
+  if(res.error){fb.textContent='Erreur: '+res.error.message;fb.style.color='#dc2626';return;}
   tasks.push(res.data);
   await renderDetailTabs();
 }
 
-// ── TASK EDIT ──
 function openTaskEdit(taskId){
-  var t = tasks.find(function(t){ return t.id===taskId; });
+  var t=tasks.find(function(t){return t.id===taskId;});
   if(!t) return;
-  editTaskId = taskId;
-  document.getElementById('modal-task-title').textContent = t.name;
-  document.getElementById('task-edit-name').value = t.name;
-  document.getElementById('task-edit-desc').value = t.description||'';
-  document.getElementById('task-edit-date').value = t.due_date||'';
-  document.getElementById('task-edit-weight').value = t.weight||3;
-  document.getElementById('task-fb').textContent = '';
+  editTaskId=taskId;
+  document.getElementById('modal-task-title').textContent=t.name;
+  document.getElementById('task-edit-name').value=t.name;
+  document.getElementById('task-edit-desc').value=t.description||'';
+  document.getElementById('task-edit-date').value=t.due_date||'';
+  document.getElementById('task-edit-weight').value=t.weight||3;
+  document.getElementById('task-fb').textContent='';
   document.getElementById('modal-task').classList.remove('hidden');
 }
+
 async function saveTaskEdit(){
-  var name = document.getElementById('task-edit-name').value.trim();
-  var desc = document.getElementById('task-edit-desc').value.trim();
-  var date = document.getElementById('task-edit-date').value;
-  var weight = parseInt(document.getElementById('task-edit-weight').value)||3;
-  var fb = document.getElementById('task-fb');
-  if(!name){ fb.textContent='Nom requis'; fb.style.color='#dc2626'; return; }
-  var res = await sb.from('tasks').update({name:name,description:desc,due_date:date||null,weight:weight}).eq('id',editTaskId);
-  if(res.error){ fb.textContent='Erreur: '+res.error.message; fb.style.color='#dc2626'; return; }
-  var t = tasks.find(function(t){ return t.id===editTaskId; });
-  if(t){ t.name=name; t.description=desc; t.due_date=date||null; t.weight=weight; }
+  var name=document.getElementById('task-edit-name').value.trim();
+  var desc=document.getElementById('task-edit-desc').value.trim();
+  var date=document.getElementById('task-edit-date').value;
+  var weight=parseInt(document.getElementById('task-edit-weight').value)||3;
+  var fb=document.getElementById('task-fb');
+  if(!name){fb.textContent='Nom requis';fb.style.color='#dc2626';return;}
+  var res=await sb.from('tasks').update({name:name,description:desc,due_date:date||null,weight:weight}).eq('id',editTaskId);
+  if(res.error){fb.textContent='Erreur: '+res.error.message;fb.style.color='#dc2626';return;}
+  var t=tasks.find(function(t){return t.id===editTaskId;});
+  if(t){t.name=name;t.description=desc;t.due_date=date||null;t.weight=weight;}
   closeModal('modal-task');
   await renderDetailTabs();
 }
 
-// ── GOAL MODAL ──
-function openGoalModal(goalId, presetQuality){
-  editGoalId = goalId||null;
-  var goal = goalId ? goals.find(function(g){ return g.id===goalId; }) : null;
-  var sel = document.getElementById('goal-quality');
-  sel.innerHTML = ALL_QUALITIES.map(function(item){
-    return '<option value="'+escAttr(item.quality)+'">'+item.horizon.label+' — '+escHtml(item.quality)+'</option>';
+function openGoalModal(goalId,presetQuality){
+  editGoalId=goalId||null;
+  var goal=goalId?goals.find(function(g){return g.id===goalId;}):null;
+  var sel=document.getElementById('goal-quality');
+  sel.innerHTML=ALL_QUALITIES.map(function(item){
+    return '<option value="'+escA(item.quality)+'">'+item.horizon.label+' — '+escH(item.quality)+'</option>';
   }).join('');
   if(goal){
-    document.getElementById('modal-goal-title').textContent = "Modifier l'objectif";
-    document.getElementById('goal-name').value = goal.name;
-    document.getElementById('goal-definition').value = goal.definition||'';
-    sel.value = goal.quality;
+    document.getElementById('modal-goal-title').textContent="Modifier l'objectif";
+    document.getElementById('goal-name').value=goal.name;
+    document.getElementById('goal-definition').value=goal.definition||'';
+    sel.value=goal.quality;
   } else {
-    document.getElementById('modal-goal-title').textContent = 'Nouvel objectif';
-    document.getElementById('goal-name').value = '';
-    document.getElementById('goal-definition').value = '';
-    if(presetQuality) sel.value = presetQuality;
+    document.getElementById('modal-goal-title').textContent='Nouvel objectif';
+    document.getElementById('goal-name').value='';
+    document.getElementById('goal-definition').value='';
+    if(presetQuality) sel.value=presetQuality;
   }
-  document.getElementById('goal-fb').textContent = '';
+  document.getElementById('goal-fb').textContent='';
   document.getElementById('modal-goal').classList.remove('hidden');
-  setTimeout(function(){ document.getElementById('goal-name').focus(); },100);
+  setTimeout(function(){document.getElementById('goal-name').focus();},100);
 }
 
 async function saveGoal(){
-  var name = document.getElementById('goal-name').value.trim();
-  var quality = document.getElementById('goal-quality').value;
-  var definition = document.getElementById('goal-definition').value.trim();
-  var fb = document.getElementById('goal-fb');
-  if(!name){ fb.textContent='Nom requis'; fb.style.color='#dc2626'; return; }
+  var name=document.getElementById('goal-name').value.trim();
+  var quality=document.getElementById('goal-quality').value;
+  var definition=document.getElementById('goal-definition').value.trim();
+  var fb=document.getElementById('goal-fb');
+  if(!name){fb.textContent='Nom requis';fb.style.color='#dc2626';return;}
   if(editGoalId){
-    var res = await sb.from('goals').update({name:name,quality:quality,definition:definition}).eq('id',editGoalId);
-    if(res.error){ fb.textContent='Erreur: '+res.error.message; fb.style.color='#dc2626'; return; }
-    var g = goals.find(function(g){ return g.id===editGoalId; });
-    if(g){ g.name=name; g.quality=quality; g.definition=definition; }
+    var res=await sb.from('goals').update({name:name,quality:quality,definition:definition}).eq('id',editGoalId);
+    if(res.error){fb.textContent='Erreur: '+res.error.message;fb.style.color='#dc2626';return;}
+    var g=goals.find(function(g){return g.id===editGoalId;});
+    if(g){g.name=name;g.quality=quality;g.definition=definition;}
   } else {
-    var res2 = await sb.from('goals').insert({name:name,quality:quality,definition:definition}).select().single();
-    if(res2.error){ fb.textContent='Erreur: '+res2.error.message; fb.style.color='#dc2626'; return; }
+    var res2=await sb.from('goals').insert({name:name,quality:quality,definition:definition}).select().single();
+    if(res2.error){fb.textContent='Erreur: '+res2.error.message;fb.style.color='#dc2626';return;}
     goals.push(res2.data);
   }
   closeModal('modal-goal');
   renderHome();
 }
 
-// ── DELETE ──
-function confirmDelete(type, id, label){
-  var msg = type==='goal'
-    ? 'Supprimer l\'objectif "<strong>'+escHtml(label)+'</strong>" et toutes ses tâches ? Cette action est irréversible.'
-    : 'Supprimer la tâche "<strong>'+escHtml(label)+'</strong>" ?';
-  document.getElementById('confirm-msg').innerHTML = msg;
-  document.getElementById('confirm-ok').onclick = function(){ doDelete(type,id); };
+function confirmDelete(type,id,label){
+  document.getElementById('confirm-msg').innerHTML=type==='goal'
+    ?'Supprimer "<strong>'+escH(label)+'</strong>" et toutes ses tâches ?'
+    :'Supprimer la tâche "<strong>'+escH(label)+'</strong>" ?';
+  document.getElementById('confirm-ok').onclick=function(){doDelete(type,id);};
   document.getElementById('modal-confirm').classList.remove('hidden');
 }
-async function doDelete(type, id){
+
+async function doDelete(type,id){
   closeModal('modal-confirm');
   if(type==='goal'){
     await sb.from('tasks').delete().eq('goal_id',id);
     await sb.from('goals').delete().eq('id',id);
-    goals = goals.filter(function(g){ return g.id!==id; });
-    tasks = tasks.filter(function(t){ return t.goal_id!==id; });
+    goals=goals.filter(function(g){return g.id!==id;});
+    tasks=tasks.filter(function(t){return t.goal_id!==id;});
     renderHome();
   } else {
     await sb.from('tasks').delete().eq('id',id);
-    tasks = tasks.filter(function(t){ return t.id!==id; });
+    tasks=tasks.filter(function(t){return t.id!==id;});
     await renderDetailTabs();
   }
 }
 
-// ── NAV ──
 function goHome(){
   document.getElementById('screen-detail').classList.remove('active');
   document.getElementById('screen-home').classList.add('active');
   document.getElementById('nav-back').classList.remove('visible');
-  document.getElementById('btn-add-goal').style.display = '';
-  currentGoal = null;
+  document.getElementById('btn-add-goal').style.display='';
+  currentGoal=null;
   renderHome();
 }
 
-function switchTab(tab, btn){
-  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
-  document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active');});
   if(btn) btn.classList.add('active');
   document.getElementById('tab-'+tab).classList.add('active');
 }
 
-function closeModal(id){
-  document.getElementById(id).classList.add('hidden');
-}
+function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
 
-// ── INIT ──
 renderHome();
 </script>
 </body>
