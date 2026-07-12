@@ -37,33 +37,36 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .horizon-name{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
 .horizon-vision{font-size:11px;font-style:italic;opacity:.6}
 .goals-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
-.goal-card{background:var(--surface);border:2px solid transparent;border-radius:14px;padding:1rem;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:var(--shadow)}
+
+/* GOAL CARD — compact */
+.goal-card{background:var(--surface);border:2px solid transparent;border-radius:14px;padding:.875rem 1rem;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:var(--shadow)}
 .goal-card:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,0,0,.1)}
-.goal-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:.4rem}
+.goal-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:.25rem}
 .goal-card-name{font-size:14px;font-weight:700;line-height:1.3;flex:1}
 .goal-card-quality{font-size:11px;color:var(--muted);margin-bottom:.6rem}
-.goal-card-dates{font-size:10px;color:var(--muted);margin-bottom:.6rem}
 .goal-card-actions{display:flex;gap:4px;flex-shrink:0}
 .btn-card-action{background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:3px 5px;border-radius:6px}
 .btn-card-action:hover{background:var(--border)}
-.progress-block{margin-bottom:.35rem}
-.progress-label{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:3px}
-.progress-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
-.progress-fill{height:100%;border-radius:3px;transition:width .3s}
-.health-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;margin-top:.5rem}
+.goal-card-body{display:flex;gap:10px;align-items:flex-start}
+.goal-card-left{flex:1;min-width:0}
+.goal-card-right{flex:1;min-width:0}
+.goal-dates{font-size:10px;color:var(--muted);margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.health-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px}
 .health-green{background:#d1fae5;color:#065f46}
 .health-red{background:#fee2e2;color:#7f1d1d}
 @media(prefers-color-scheme:dark){.health-green{background:#064e35;color:#6ee7b7}.health-red{background:#450a0a;color:#fca5a5}}
-.empty-card{background:transparent;border:2px dashed var(--border);border-radius:14px;padding:1.25rem;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:12px;transition:border-color .15s;text-align:center;line-height:1.4}
-.empty-card:hover{border-color:var(--muted)}
+.prog-block{margin-bottom:4px}
+.prog-label{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:2px}
+.prog-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;border-radius:2px;transition:width .3s}
 
-/* TACHES HOME */
+/* À FAIRE TAB */
 .filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
 .filter-bar label{font-size:12px;color:var(--muted)}
 .filter-bar input[type=date]{padding:5px 8px;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text);font-size:12px;font-family:inherit}
 .btn-filter{padding:6px 12px;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text);font-size:12px;cursor:pointer}
 .task-group{margin-bottom:1.25rem}
-.task-group-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem;padding-left:2px}
+.task-group-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
 .task-group-label.late{color:#dc2626}
 .task-group-label.today-lbl{color:#059669}
 .home-task-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.65rem .9rem;display:flex;align-items:center;gap:10px;margin-bottom:5px;box-shadow:var(--shadow)}
@@ -88,6 +91,8 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .tab-btn.active{color:var(--text);border-bottom-color:var(--text)}
 .tab-content{display:none}
 .tab-content.active{display:block}
+
+/* VISION TAB */
 .vision-box{background:var(--surface);border-radius:14px;padding:1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
 .vision-phrase{font-size:17px;font-style:italic;line-height:1.6;margin-bottom:1.25rem;opacity:.8}
 .definition-box{background:var(--bg);border-radius:10px;padding:1rem;margin-bottom:1.25rem;font-size:14px;line-height:1.6}
@@ -97,34 +102,64 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .kpi-card{background:var(--bg);border-radius:10px;padding:.75rem;text-align:center}
 .kpi-val{font-size:20px;font-weight:700;line-height:1}
 .kpi-label{font-size:10px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.04em}
-.task-form{background:var(--surface);border-radius:14px;padding:1rem;margin-top:.75rem;box-shadow:var(--shadow)}
-.task-form-title{font-size:12px;font-weight:600;margin-bottom:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-.form-row{display:flex;gap:8px;flex-wrap:wrap}
-.form-field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px}
-.form-field label{font-size:11px;color:var(--muted);font-weight:500}
-.form-field input,.form-field select,.form-field textarea{padding:.55rem .7rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;font-family:inherit;width:100%}
-.form-field textarea{min-height:60px;resize:vertical}
-.btn-primary-sm{background:var(--text);color:var(--bg);border:none;border-radius:8px;padding:9px 18px;cursor:pointer;font-size:13px;font-weight:600}
-.btn-cancel-sm{background:transparent;border:1px solid var(--border);border-radius:8px;padding:9px 16px;cursor:pointer;font-size:13px;color:var(--muted)}
-.tasks-list{display:flex;flex-direction:column;gap:6px}
-.task-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.7rem .9rem;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow)}
+
+/* STEPS & TASKS TAB */
+.step-block{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:1rem;box-shadow:var(--shadow);overflow:hidden}
+.step-header{padding:.875rem 1rem;cursor:pointer;display:flex;align-items:center;gap:10px}
+.step-header:hover{background:var(--bg)}
+.step-toggle-icon{font-size:11px;color:var(--muted);transition:transform .2s;flex-shrink:0}
+.step-toggle-icon.open{transform:rotate(90deg)}
+.step-info{flex:1;min-width:0}
+.step-name{font-size:14px;font-weight:600;margin-bottom:3px}
+.step-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.step-dates{font-size:10px;color:var(--muted)}
+.step-weight-badge{font-size:10px;background:var(--bg);border-radius:4px;padding:1px 6px;color:var(--muted)}
+.step-scores{display:flex;gap:8px;flex-shrink:0;align-items:center}
+.step-score-item{text-align:center}
+.step-score-val{font-size:13px;font-weight:700}
+.step-score-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.step-actions{display:flex;gap:4px;flex-shrink:0}
+.step-body{border-top:1px solid var(--border);padding:.75rem 1rem}
+.step-prog{margin-bottom:.75rem}
+.step-prog-row{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:3px}
+.step-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:4px}
+.step-bar-fill{height:100%;border-radius:2px}
+
+/* TASK LIST in step */
+.tasks-in-step{display:flex;flex-direction:column;gap:5px}
+.task-row{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:.6rem .9rem;display:flex;align-items:center;gap:10px}
 .task-row.done{opacity:.55}
 .task-row.overdue{border-color:#fca5a5}
 @media(prefers-color-scheme:dark){.task-row.overdue{border-color:#7f1d1d}}
-.task-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s}
+.task-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s}
 .task-row.done .task-check{background:#059669;border-color:#059669;color:#fff}
 .task-main{flex:1;cursor:pointer;min-width:0}
 .task-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .task-row.done .task-name{text-decoration:line-through}
-.task-meta{display:flex;align-items:center;gap:8px;margin-top:2px;flex-wrap:wrap}
-.task-date{font-size:11px;color:var(--muted)}
+.task-meta-row{display:flex;align-items:center;gap:8px;margin-top:2px}
+.task-date{font-size:10px;color:var(--muted)}
 .task-date.late{color:#dc2626}
-.task-weight{font-size:10px;background:var(--bg);border-radius:4px;padding:1px 5px;color:var(--muted)}
-.task-delete{background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:15px;padding:3px 5px;border-radius:6px;flex-shrink:0}
+.task-wt{font-size:10px;background:var(--surface);border-radius:4px;padding:1px 5px;color:var(--muted)}
+.task-delete{background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:2px 4px;border-radius:5px;flex-shrink:0}
 .task-delete:hover{color:#dc2626}
-.btn-add-task-bottom{margin-top:.75rem;background:transparent;border:2px dashed var(--border);border-radius:10px;width:100%;padding:10px;cursor:pointer;font-size:13px;color:var(--muted);transition:border-color .15s}
-.btn-add-task-bottom:hover{border-color:var(--muted)}
-.tasks-empty{text-align:center;padding:1.5rem;color:var(--muted);font-size:13px}
+
+.btn-add-bottom{margin-top:.6rem;background:transparent;border:2px dashed var(--border);border-radius:9px;width:100%;padding:8px;cursor:pointer;font-size:12px;color:var(--muted);transition:border-color .15s}
+.btn-add-bottom:hover{border-color:var(--muted)}
+.btn-add-step{margin-top:1rem;background:transparent;border:2px dashed var(--border);border-radius:12px;width:100%;padding:10px;cursor:pointer;font-size:13px;color:var(--muted);transition:border-color .15s}
+.btn-add-step:hover{border-color:var(--muted)}
+
+.inline-form{background:var(--bg);border-radius:10px;padding:.75rem;margin-top:.6rem}
+.form-row{display:flex;gap:8px;flex-wrap:wrap}
+.form-field{display:flex;flex-direction:column;gap:3px;flex:1;min-width:110px}
+.form-field label{font-size:10px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.form-field input,.form-field select,.form-field textarea{padding:.5rem .65rem;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text);font-size:13px;font-family:inherit;width:100%}
+.form-field textarea{min-height:55px;resize:vertical}
+.form-btns{display:flex;gap:6px;margin-top:.5rem}
+.btn-save-sm{background:var(--text);color:var(--bg);border:none;border-radius:7px;padding:7px 16px;cursor:pointer;font-size:13px;font-weight:600}
+.btn-cancel-sm{background:transparent;border:1px solid var(--border);border-radius:7px;padding:7px 12px;cursor:pointer;font-size:13px;color:var(--muted)}
+.feedback-sm{font-size:11px;margin-top:4px;min-height:16px}
+
+/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:flex-end;justify-content:center}
 .modal-overlay.hidden{display:none}
 .modal{background:var(--surface);border-radius:16px 16px 0 0;padding:1.25rem 1rem 2rem;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
@@ -140,6 +175,8 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .confirm-msg{font-size:14px;color:var(--muted);margin-bottom:1rem;line-height:1.5}
 .feedback{text-align:center;font-size:12px;min-height:18px;margin-top:6px}
 .loading{text-align:center;padding:3rem;color:var(--muted);font-size:13px}
+.btn-icon-sm{background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:2px 4px;border-radius:5px}
+.btn-icon-sm:hover{background:var(--border)}
 </style>
 </head>
 <body>
@@ -153,10 +190,10 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 <div id="screen-home" class="screen active">
   <div class="home-tabs">
     <button class="home-tab-btn active" onclick="switchHomeTab('objectifs',this)">Objectifs</button>
-    <button class="home-tab-btn" onclick="switchHomeTab('taches',this)">Tâches</button>
+    <button class="home-tab-btn" onclick="switchHomeTab('todo',this)">À faire</button>
   </div>
   <div id="home-content"><div class="loading">Chargement...</div></div>
-  <div id="tasks-content" style="display:none"></div>
+  <div id="todo-content" style="display:none"></div>
 </div>
 
 <div id="screen-detail" class="screen">
@@ -167,28 +204,19 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
   </div>
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('vision',this)">Vision</button>
-    <button class="tab-btn" onclick="switchTab('tasks',this)">Tâches</button>
+    <button class="tab-btn" onclick="switchTab('steps',this)">Tâches</button>
   </div>
   <div id="tab-vision" class="tab-content active"></div>
-  <div id="tab-tasks" class="tab-content"></div>
+  <div id="tab-steps" class="tab-content"></div>
 </div>
 
 <!-- MODAL GOAL -->
 <div class="modal-overlay hidden" id="modal-goal">
   <div class="modal">
     <div class="modal-title" id="modal-goal-title">Nouvel objectif</div>
-    <div class="modal-field">
-      <label>Nom de l'objectif</label>
-      <input type="text" id="goal-name" placeholder="Ex: Lancer mon activité freelance" />
-    </div>
-    <div class="modal-field">
-      <label>Qualité associée</label>
-      <select id="goal-quality"></select>
-    </div>
-    <div class="modal-field">
-      <label>Définition (optionnel)</label>
-      <textarea id="goal-definition" placeholder="Décrivez cet objectif, son contexte..."></textarea>
-    </div>
+    <div class="modal-field"><label>Nom de l'objectif</label><input type="text" id="goal-name" placeholder="Ex: Lancer mon activité freelance" /></div>
+    <div class="modal-field"><label>Qualité associée</label><select id="goal-quality"></select></div>
+    <div class="modal-field"><label>Définition (optionnel)</label><textarea id="goal-definition" placeholder="Contexte, pourquoi cet objectif..."></textarea></div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal('modal-goal')">Annuler</button>
       <button class="btn-primary" onclick="saveGoal()">Enregistrer</button>
@@ -227,66 +255,100 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
   </div>
 </div>
 
+<!-- MODAL STEP EDIT -->
+<div class="modal-overlay hidden" id="modal-step">
+  <div class="modal">
+    <div class="modal-title" id="modal-step-title">Étape</div>
+    <div class="modal-field"><label>Nom de l'étape</label><input type="text" id="step-edit-name" /></div>
+    <div class="modal-field"><label>Poids (1–5)</label>
+      <select id="step-edit-weight"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('modal-step')">Annuler</button>
+      <button class="btn-primary" onclick="saveStepEdit()">Enregistrer</button>
+    </div>
+    <div class="feedback" id="step-fb"></div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
-const SUPABASE_URL = 'https://gzfliakogbmuvwurwqfy.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6ZmxpYWtvZ2JtdXZ3dXJ3cWZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NjQ5NTMsImV4cCI6MjA5ODE0MDk1M30.35aNfS9uS1oCxvhk-6Tgg9wi93hGzU10bBBN4-Lz1KM';
+var SUPABASE_URL = 'https://gzfliakogbmuvwurwqfy.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6ZmxpYWtvZ2JtdXZ3dXJ3cWZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NjQ5NTMsImV4cCI6MjA5ODE0MDk1M30.35aNfS9uS1oCxvhk-6Tgg9wi93hGzU10bBBN4-Lz1KM';
 
-const HORIZONS = [
-  {id:'spirituel',label:'Spirituel',color:'#7c3aed',
-   vision:'I am living in a World of Love, Joy and Peace of God',
-   qualities:['Rester Conscient','Être droit','Contribuer dans la société']},
-  {id:'professionnel',label:'Professionnel',color:'#059669',
-   vision:'I am giving perfect services for a perfect Pay',
-   qualities:['Apprendre de nouvelles compétences','Donner un service de qualité','Avoir un revenu']},
-  {id:'social',label:'Social',color:'#dc2626',
-   vision:'I am sharing life with beautiful spirits',
-   qualities:['Prendre soins de ma petite famille','Prendre soins de ma grande famille','Garder une bonne relation avec amis et proches']},
-  {id:'personnel',label:'Personnel',color:'#2563eb',
-   vision:'I am living in perfect life conditions and perfect life style',
-   qualities:['Prendre soins de mon corps','Vivre avec confort','Faire des activités de loisirs']}
+var HORIZONS = [
+  {id:'spirituel',label:'Spirituel',color:'#7c3aed',vision:'I am living in a World of Love, Joy and Peace of God',qualities:['Rester Conscient','Être droit','Contribuer dans la société']},
+  {id:'professionnel',label:'Professionnel',color:'#059669',vision:'I am giving perfect services for a perfect Pay',qualities:['Apprendre de nouvelles compétences','Donner un service de qualité','Avoir un revenu']},
+  {id:'social',label:'Social',color:'#dc2626',vision:'I am sharing life with beautiful spirits',qualities:['Prendre soins de ma petite famille','Prendre soins de ma grande famille','Garder une bonne relation avec amis et proches']},
+  {id:'personnel',label:'Personnel',color:'#2563eb',vision:'I am living in perfect life conditions and perfect life style',qualities:['Prendre soins de mon corps','Vivre avec confort','Faire des activités de loisirs']}
 ];
+var ALL_QUALITIES = HORIZONS.flatMap(function(h){return h.qualities.map(function(q){return {quality:q,horizon:h};});});
 
-const ALL_QUALITIES = HORIZONS.flatMap(function(h){
-  return h.qualities.map(function(q){ return {quality:q,horizon:h}; });
-});
+var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+var goals=[], steps=[], tasks=[], currentGoal=null, editGoalId=null, editTaskId=null, editStepId=null;
+var openSteps=new Set();
+var todoFilterFrom=null, todoFilterTo=null;
 
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function dStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function todayStr(){return dStr(new Date());}
+function addDays(s,n){var d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return dStr(d);}
+function fmtDate(s){if(!s)return'—';var d=new Date(s+'T00:00:00');return d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'});}
+function fmtDateFull(s){if(!s)return'—';var d=new Date(s+'T00:00:00');return d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});}
+function horizonOf(quality){return HORIZONS.find(function(h){return h.qualities.indexOf(quality)>=0;})||HORIZONS[0];}
 
-var goals = [], tasks = [], currentGoal = null, editGoalId = null, editTaskId = null;
-
-// ── UTILS ──
-function dStr(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
-function todayStr(){ return dStr(new Date()); }
-function addDays(s,n){ var d=new Date(s+'T00:00:00'); d.setDate(d.getDate()+n); return dStr(d); }
-function fmtDate(s){ if(!s) return '—'; var d=new Date(s+'T00:00:00'); return d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}); }
-function horizonOf(q){ return HORIZONS.find(function(h){ return h.qualities.indexOf(q)>=0; })||HORIZONS[0]; }
-function escH(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function escA(s){ return String(s).replace(/'/g,'&#39;'); }
-
-// ── GRADIENT ──
-function lerp(a,b,t){ return [Math.round(a[0]+(b[0]-a[0])*t),Math.round(a[1]+(b[1]-a[1])*t),Math.round(a[2]+(b[2]-a[2])*t)]; }
-function grad(p){ var t=p/100,r=[220,38,38],o=[234,88,12],g=[5,150,105],rgb; if(t<=0.5)rgb=lerp(r,o,t*2);else rgb=lerp(o,g,(t-0.5)*2); return 'rgb('+rgb[0]+','+rgb[1]+','+rgb[2]+')'; }
+function lerp(a,b,t){return[Math.round(a[0]+(b[0]-a[0])*t),Math.round(a[1]+(b[1]-a[1])*t),Math.round(a[2]+(b[2]-a[2])*t)];}
+function grad(p){var t=p/100,r=[220,38,38],o=[234,88,12],g=[5,150,105],rgb;if(t<=0.5)rgb=lerp(r,o,t*2);else rgb=lerp(o,g,(t-0.5)*2);return 'rgb('+rgb[0]+','+rgb[1]+','+rgb[2]+')';}
+function gradBg(p){var t=p/100,r=[220,38,38],o=[234,88,12],g=[5,150,105],rgb;if(t<=0.5)rgb=lerp(r,o,t*2);else rgb=lerp(o,g,(t-0.5)*2);var dk=window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches;return 'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+','+(dk?0.25:0.13)+')';}
 
 // ── CALCULS ──
-function calcGoal(goal,gt){
+function calcStep(step){
   var today=todayStr();
-  var dates=gt.map(function(t){return t.due_date;}).filter(Boolean).sort();
+  var st=tasks.filter(function(t){return t.step_id===step.id;});
+  if(!st.length) return {progGlobal:0,progDate:100,dateStart:null,dateEnd:null};
+  var dates=st.map(function(t){return t.due_date;}).filter(Boolean).sort();
   var dateStart=dates[0]||null, dateEnd=dates[dates.length-1]||null;
-  var totalW=gt.reduce(function(s,t){return s+t.weight;},0);
-  var doneW=gt.filter(function(t){return t.done;}).reduce(function(s,t){return s+t.weight;},0);
+  var totalW=st.reduce(function(s,t){return s+t.weight;},0);
+  var doneW=st.filter(function(t){return t.done;}).reduce(function(s,t){return s+t.weight;},0);
   var progGlobal=totalW>0?Math.round(doneW/totalW*100):0;
-  var due=gt.filter(function(t){return t.due_date&&t.due_date<=today;});
+  var due=st.filter(function(t){return t.due_date&&t.due_date<=today;});
   var dueW=due.reduce(function(s,t){return s+t.weight;},0);
   var dueDoneW=due.filter(function(t){return t.done;}).reduce(function(s,t){return s+t.weight;},0);
   var progDate=dueW>0?Math.round(dueDoneW/dueW*100):100;
-  return {dateStart:dateStart,dateEnd:dateEnd,progGlobal:progGlobal,progDate:progDate,healthy:progDate===100};
+  return {progGlobal:progGlobal,progDate:progDate,dateStart:dateStart,dateEnd:dateEnd};
+}
+
+function calcGoal(goal){
+  var gs=steps.filter(function(s){return s.goal_id===goal.id;});
+  if(!gs.length) return {progGlobal:0,progDate:100,dateStart:null,dateEnd:null,healthy:true};
+  var totalW=gs.reduce(function(s,st){return s+st.weight;},0);
+  var sumGlobal=0, sumDate=0;
+  var allDateStarts=[], allDateEnds=[];
+  gs.forEach(function(st){
+    var c=calcStep(st);
+    sumGlobal+=c.progGlobal*st.weight;
+    sumDate+=c.progDate*st.weight;
+    if(c.dateStart) allDateStarts.push(c.dateStart);
+    if(c.dateEnd) allDateEnds.push(c.dateEnd);
+  });
+  var progGlobal=totalW>0?Math.round(sumGlobal/totalW):0;
+  var progDate=totalW>0?Math.round(sumDate/totalW):100;
+  allDateStarts.sort(); allDateEnds.sort();
+  return {
+    progGlobal:progGlobal, progDate:progDate,
+    dateStart:allDateStarts[0]||null, dateEnd:allDateEnds[allDateEnds.length-1]||null,
+    healthy:progDate===100
+  };
 }
 
 // ── LOAD ──
 async function loadAll(){
-  var res=await Promise.all([sb.from('goals').select('*').order('created_at'),sb.from('tasks').select('*').order('due_date')]);
-  goals=res[0].data||[]; tasks=res[1].data||[];
+  var res=await Promise.all([
+    sb.from('goals').select('*').order('created_at'),
+    sb.from('steps').select('*').order('position'),
+    sb.from('tasks').select('*').order('due_date')
+  ]);
+  goals=res[0].data||[]; steps=res[1].data||[]; tasks=res[2].data||[];
 }
 
 // ── HOME TABS ──
@@ -295,130 +357,124 @@ function switchHomeTab(tab,btn){
   if(btn) btn.classList.add('active');
   var isObj=tab==='objectifs';
   document.getElementById('home-content').style.display=isObj?'':'none';
-  document.getElementById('tasks-content').style.display=isObj?'none':'';
-  if(!isObj) renderTasksView(null,null);
-}
-
-// ── TASKS HOME VIEW ──
-var taskFilterFrom=null, taskFilterTo=null;
-
-function renderTasksView(filterFrom, filterTo){
-  var today=todayStr();
-  var defaultTo=addDays(today,8);
-  taskFilterFrom=filterFrom; taskFilterTo=filterTo;
-  var to=filterTo||defaultTo;
-
-  var filtered;
-  if(filterFrom){
-    filtered=tasks.filter(function(t){ return t.due_date&&t.due_date>=filterFrom&&t.due_date<=to; });
-  } else {
-    filtered=tasks.filter(function(t){
-      if(!t.due_date) return false;
-      var isOverdue=t.due_date<today&&!t.done;
-      var isUpcoming=t.due_date>=today&&t.due_date<=to;
-      return isOverdue||isUpcoming;
-    });
-  }
-
-  filtered.sort(function(a,b){return a.due_date.localeCompare(b.due_date);});
-
-  var groups={}, groupOrder=[];
-  filtered.forEach(function(t){
-    if(!groups[t.due_date]){groups[t.due_date]=[];groupOrder.push(t.due_date);}
-    groups[t.due_date].push(t);
-  });
-
-  var html='<div class="filter-bar">';
-  html+='<label>Du</label><input type="date" id="filter-from" value="'+(filterFrom||'')+'" />';
-  html+='<label>Au</label><input type="date" id="filter-to" value="'+(filterTo||defaultTo)+'" />';
-  html+='<button class="btn-filter" onclick="applyFilter()">Filtrer</button>';
-  if(filterFrom) html+='<button class="btn-filter" onclick="renderTasksView(null,null)">Réinitialiser</button>';
-  html+='</div>';
-
-  if(groupOrder.length===0){
-    html+='<div class="no-tasks">Aucune tâche en retard ou à venir sur cette période.</div>';
-  } else {
-    groupOrder.forEach(function(dk){
-      var isLate=dk<today;
-      var isToday=dk===today;
-      var isTomorrow=dk===addDays(today,1);
-      var lbl=isLate?('En retard — '+fmtDate(dk)):isToday?'Aujourd\'hui':isTomorrow?'Demain':fmtDate(dk);
-      var lCls=isLate?'late':isToday?'today-lbl':'';
-      html+='<div class="task-group"><div class="task-group-label '+lCls+'">'+lbl+'</div>';
-      groups[dk].forEach(function(t){
-        var goal=goals.find(function(g){return g.id===t.goal_id;});
-        var h=goal?horizonOf(goal.quality):null;
-        var hColor=h?h.color:'var(--muted)';
-        html+='<div class="home-task-row'+(isLate&&!t.done?' overdue':'')+(t.done?' done-row':'')+'">';
-        html+='<div class="home-task-check'+(t.done?' done-check':'')+'" onclick="toggleTaskHome(\''+t.id+'\')">'+(t.done?'✓':'')+'</div>';
-        html+='<div class="home-task-info">';
-        html+='<div class="home-task-name'+(t.done?' done-name':'')+'">'+escH(t.name)+'</div>';
-        html+='<div class="home-task-goal" style="color:'+hColor+'">'+(goal?escH(goal.name):'')+'</div>';
-        html+='</div>';
-        html+='<div style="font-size:10px;background:var(--bg);border-radius:4px;padding:1px 6px;color:var(--muted);flex-shrink:0">×'+t.weight+'</div>';
-        html+='</div>';
-      });
-      html+='</div>';
-    });
-  }
-  document.getElementById('tasks-content').innerHTML=html;
-}
-
-function applyFilter(){
-  var from=document.getElementById('filter-from').value||null;
-  var to=document.getElementById('filter-to').value||null;
-  renderTasksView(from,to);
-}
-
-async function toggleTaskHome(taskId){
-  var t=tasks.find(function(t){return t.id===taskId;});
-  if(!t) return;
-  t.done=!t.done;
-  await sb.from('tasks').update({done:t.done}).eq('id',taskId);
-  renderTasksView(taskFilterFrom,taskFilterTo);
+  document.getElementById('todo-content').style.display=isObj?'none':'';
+  if(!isObj) renderTodo(null,null);
 }
 
 // ── HOME OBJECTIFS ──
 async function renderHome(){
   document.getElementById('home-content').innerHTML='<div class="loading">Chargement...</div>';
   await loadAll();
-  var html='';
-  HORIZONS.forEach(function(h){
-    html+='<div class="horizon-section"><div class="horizon-label">';
-    html+='<div class="horizon-dot" style="background:'+h.color+'"></div>';
-    html+='<div class="horizon-name" style="color:'+h.color+'">'+h.label+'</div>';
-    html+='<div class="horizon-vision">'+h.vision+'</div>';
-    html+='</div><div class="goals-grid">';
-    h.qualities.forEach(function(q){
-      goals.filter(function(g){return g.quality===q;}).forEach(function(goal){
-        var gt=tasks.filter(function(t){return t.goal_id===goal.id;});
-        var c=calcGoal(goal,gt);
-        html+='<div class="goal-card" style="border-color:'+h.color+'" onclick="openGoal(\''+goal.id+'\')">';
-        html+='<div class="goal-card-top"><div class="goal-card-name">'+escH(goal.name)+'</div>';
-        html+='<div class="goal-card-actions" onclick="event.stopPropagation()">';
-        html+='<button class="btn-card-action" onclick="openGoalModal(\''+goal.id+'\',null)">✏️</button>';
-        html+='<button class="btn-card-action" onclick="confirmDelete(\'goal\',\''+goal.id+'\',\''+escA(goal.name)+'\')">🗑</button>';
-        html+='</div></div>';
-        html+='<div class="goal-card-quality">'+escH(q)+'</div>';
-        html+='<div class="goal-card-dates">📅 '+fmtDate(c.dateStart)+' → '+fmtDate(c.dateEnd)+'</div>';
-        html+='<div class="progress-block"><div class="progress-label"><span>Global</span><span>'+c.progGlobal+'%</span></div>';
-        html+='<div class="progress-bar"><div class="progress-fill" style="width:'+c.progGlobal+'%;background:'+grad(c.progGlobal)+'"></div></div></div>';
-        html+='<div class="progress-block"><div class="progress-label"><span>À date</span><span>'+c.progDate+'%</span></div>';
-        html+='<div class="progress-bar"><div class="progress-fill" style="width:'+c.progDate+'%;background:'+grad(c.progDate)+'"></div></div></div>';
-        html+='<div class="health-badge '+(c.healthy?'health-green':'health-red')+'">'+(c.healthy?'🟢 En bonne santé':'🔴 En retard')+'</div>';
-        html+='</div>';
-      });
-      html+='<div class="empty-card" onclick="openGoalModal(null,\''+escA(q)+'\')">+ Objectif<br><em>'+escH(q)+'</em></div>';
+  var h='';
+  HORIZONS.forEach(function(horizon){
+    var hGoals=goals.filter(function(g){return horizon.qualities.indexOf(g.quality)>=0;});
+    if(!hGoals.length) return;
+    h+='<div class="horizon-section">';
+    h+='<div class="horizon-label"><div class="horizon-dot" style="background:'+horizon.color+'"></div>';
+    h+='<div class="horizon-name" style="color:'+horizon.color+'">'+horizon.label+'</div>';
+    h+='<div class="horizon-vision">'+horizon.vision+'</div></div>';
+    h+='<div class="goals-grid">';
+    hGoals.forEach(function(goal){
+      var c=calcGoal(goal);
+      var h2=horizon.color;
+      h+='<div class="goal-card" style="border-color:'+h2+'" onclick="openGoal(\''+goal.id+'\')">';
+      h+='<div class="goal-card-top"><div class="goal-card-name">'+esc(goal.name)+'</div>';
+      h+='<div class="goal-card-actions" onclick="event.stopPropagation()">';
+      h+='<button class="btn-card-action" onclick="openGoalModal(\''+goal.id+'\',null)">✏️</button>';
+      h+='<button class="btn-card-action" onclick="confirmDelete(\'goal\',\''+goal.id+'\',\''+goal.name.replace(/'/g,"&#39;")+'\')">🗑</button>';
+      h+='</div></div>';
+      h+='<div class="goal-card-quality">'+esc(goal.quality)+'</div>';
+      h+='<div class="goal-card-body">';
+      // Left: dates + health
+      h+='<div class="goal-card-left">';
+      h+='<div class="goal-dates">📅 '+fmtDate(c.dateStart)+' → '+fmtDate(c.dateEnd)+'</div>';
+      h+='<div class="health-badge '+(c.healthy?'health-green':'health-red')+'">'+(c.healthy?'🟢 OK':'🔴 Retard')+'</div>';
+      h+='</div>';
+      // Right: progress bars
+      h+='<div class="goal-card-right">';
+      h+='<div class="prog-block"><div class="prog-label"><span>Global</span><span>'+c.progGlobal+'%</span></div>';
+      h+='<div class="prog-bar"><div class="prog-fill" style="width:'+c.progGlobal+'%;background:'+grad(c.progGlobal)+'"></div></div></div>';
+      h+='<div class="prog-block"><div class="prog-label"><span>À date</span><span>'+c.progDate+'%</span></div>';
+      h+='<div class="prog-bar"><div class="prog-fill" style="width:'+c.progDate+'%;background:'+grad(c.progDate)+'"></div></div></div>';
+      h+='</div>';
+      h+='</div></div>';
     });
-    html+='</div></div>';
+    h+='</div></div>';
   });
-  document.getElementById('home-content').innerHTML=html;
+  if(!h) h='<div class="loading">Aucun objectif — cliquez sur "+ Objectif" pour commencer.</div>';
+  document.getElementById('home-content').innerHTML=h;
+}
+
+// ── À FAIRE ──
+function renderTodo(filterFrom,filterTo){
+  var today=todayStr();
+  var defaultTo=addDays(today,8);
+  todoFilterFrom=filterFrom; todoFilterTo=filterTo;
+  var to=filterTo||defaultTo;
+  var filtered;
+  if(filterFrom){
+    filtered=tasks.filter(function(t){return t.due_date&&t.due_date>=filterFrom&&t.due_date<=to;});
+  } else {
+    filtered=tasks.filter(function(t){
+      if(!t.due_date)return false;
+      return (!t.done&&t.due_date<today)||(t.due_date>=today&&t.due_date<=to);
+    });
+  }
+  filtered.sort(function(a,b){return a.due_date.localeCompare(b.due_date);});
+  var groups={},groupOrder=[];
+  filtered.forEach(function(t){if(!groups[t.due_date]){groups[t.due_date]=[];groupOrder.push(t.due_date);}groups[t.due_date].push(t);});
+
+  var h='<div class="filter-bar">';
+  h+='<label>Du</label><input type="date" id="todo-from" value="'+(filterFrom||'')+'" />';
+  h+='<label>Au</label><input type="date" id="todo-to" value="'+(filterTo||defaultTo)+'" />';
+  h+='<button class="btn-filter" onclick="applyTodoFilter()">Filtrer</button>';
+  if(filterFrom) h+='<button class="btn-filter" onclick="renderTodo(null,null)">Réinitialiser</button>';
+  h+='</div>';
+
+  if(!groupOrder.length){
+    h+='<div class="no-tasks">Aucune tâche en retard ou à venir sur cette période.</div>';
+  } else {
+    groupOrder.forEach(function(dk){
+      var isLate=dk<today,isToday=dk===today,isTomorrow=dk===addDays(today,1);
+      var lbl=isLate?('En retard — '+fmtDateFull(dk)):isToday?'Aujourd\'hui':isTomorrow?'Demain':fmtDateFull(dk);
+      var lCls=isLate?'late':isToday?'today-lbl':'';
+      h+='<div class="task-group"><div class="task-group-label '+lCls+'">'+lbl+'</div>';
+      groups[dk].forEach(function(t){
+        var step=steps.find(function(s){return s.id===t.step_id;});
+        var goal=step?goals.find(function(g){return g.id===step.goal_id;}):null;
+        var horizon=goal?horizonOf(goal.quality):null;
+        var hColor=horizon?horizon.color:'var(--muted)';
+        h+='<div class="home-task-row'+(isLate&&!t.done?' overdue':'')+(t.done?' done-row':'')+'">';
+        h+='<div class="home-task-check'+(t.done?' done-check':'')+'" onclick="toggleTaskTodo(\''+t.id+'\')">'+  (t.done?'✓':'')+'</div>';
+        h+='<div class="home-task-info"><div class="home-task-name'+(t.done?' done-name':'')+'">'+esc(t.name)+'</div>';
+        h+='<div class="home-task-goal" style="color:'+hColor+'">'+(goal?esc(goal.name):'')+(step?' · '+esc(step.name):'')+'</div></div>';
+        h+='<div style="font-size:10px;background:var(--bg);border-radius:4px;padding:1px 6px;color:var(--muted);flex-shrink:0">×'+t.weight+'</div>';
+        h+='</div>';
+      });
+      h+='</div>';
+    });
+  }
+  document.getElementById('todo-content').innerHTML=h;
+}
+
+function applyTodoFilter(){
+  var from=document.getElementById('todo-from').value||null;
+  var to=document.getElementById('todo-to').value||null;
+  renderTodo(from,to);
+}
+
+async function toggleTaskTodo(taskId){
+  var t=tasks.find(function(t){return t.id===taskId;});
+  if(!t)return;
+  t.done=!t.done;
+  await sb.from('tasks').update({done:t.done}).eq('id',taskId);
+  renderTodo(todoFilterFrom,todoFilterTo);
 }
 
 // ── GOAL DETAIL ──
 async function openGoal(goalId){
   currentGoal=goals.find(function(g){return g.id===goalId;});
-  if(!currentGoal) return;
+  if(!currentGoal)return;
   var h=horizonOf(currentGoal.quality);
   document.getElementById('detail-horizon-tag').innerHTML='<span style="width:8px;height:8px;border-radius:50%;background:'+h.color+';display:inline-block"></span>&nbsp;'+h.label;
   document.getElementById('detail-title').textContent=currentGoal.name;
@@ -429,92 +485,194 @@ async function openGoal(goalId){
   document.getElementById('btn-add-goal').style.display='none';
   document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',i===0);});
   document.querySelectorAll('.tab-content').forEach(function(c,i){c.classList.toggle('active',i===0);});
+  openSteps=new Set();
   await renderDetailTabs();
 }
 
 async function renderDetailTabs(){
-  var gt=tasks.filter(function(t){return t.goal_id===currentGoal.id;});
-  var c=calcGoal(currentGoal,gt);
+  var c=calcGoal(currentGoal);
   var h=horizonOf(currentGoal.quality);
-  var today=todayStr();
 
   // VISION
-  var vhtml='<div class="vision-box">';
-  vhtml+='<div class="vision-phrase">"'+escH(h.vision)+'"</div>';
-  if(currentGoal.definition){
-    vhtml+='<div class="definition-box"><div class="definition-label">Définition</div>'+escH(currentGoal.definition)+'</div>';
-  }
-  vhtml+='<div class="kpi-grid">';
-  vhtml+='<div class="kpi-card"><div class="kpi-val" style="font-size:13px">'+fmtDate(c.dateStart)+'</div><div class="kpi-label">Début</div></div>';
-  vhtml+='<div class="kpi-card"><div class="kpi-val" style="font-size:13px">'+fmtDate(c.dateEnd)+'</div><div class="kpi-label">Fin</div></div>';
-  vhtml+='<div class="kpi-card"><div class="kpi-val" style="color:'+grad(c.progGlobal)+'">'+c.progGlobal+'%</div><div class="kpi-label">Global</div></div>';
-  vhtml+='<div class="kpi-card"><div class="kpi-val" style="color:'+grad(c.progDate)+'">'+c.progDate+'%</div><div class="kpi-label">À date</div></div>';
-  vhtml+='</div><div style="margin-top:.75rem"><div class="health-badge '+(c.healthy?'health-green':'health-red')+'">'+(c.healthy?'🟢 Toutes les tâches échues sont complétées':'🔴 Des tâches échues ne sont pas complétées')+'</div></div></div>';
-  document.getElementById('tab-vision').innerHTML=vhtml;
+  var v='<div class="vision-box">';
+  v+='<div class="vision-phrase">"'+esc(h.vision)+'"</div>';
+  if(currentGoal.definition) v+='<div class="definition-box"><div class="definition-label">Définition</div>'+esc(currentGoal.definition)+'</div>';
+  v+='<div class="kpi-grid">';
+  v+='<div class="kpi-card"><div class="kpi-val" style="font-size:13px">'+fmtDateFull(c.dateStart)+'</div><div class="kpi-label">Début</div></div>';
+  v+='<div class="kpi-card"><div class="kpi-val" style="font-size:13px">'+fmtDateFull(c.dateEnd)+'</div><div class="kpi-label">Fin</div></div>';
+  v+='<div class="kpi-card"><div class="kpi-val" style="color:'+grad(c.progGlobal)+'">'+c.progGlobal+'%</div><div class="kpi-label">Global</div></div>';
+  v+='<div class="kpi-card"><div class="kpi-val" style="color:'+grad(c.progDate)+'">'+c.progDate+'%</div><div class="kpi-label">À date</div></div>';
+  v+='</div><div style="margin-top:.75rem"><div class="health-badge '+(c.healthy?'health-green':'health-red')+'">'+(c.healthy?'🟢 Toutes les tâches échues complétées':'🔴 Des tâches échues non complétées')+'</div></div>';
+  v+='</div>';
+  document.getElementById('tab-vision').innerHTML=v;
 
-  // TASKS
-  var thtml='<div class="tasks-list">';
-  if(gt.length===0){
-    thtml+='<div class="tasks-empty">Aucune tâche pour cet objectif.</div>';
-  } else {
-    gt.forEach(function(t){
-      var overdue=!t.done&&t.due_date&&t.due_date<today;
-      thtml+='<div class="task-row'+(t.done?' done':'')+(overdue?' overdue':'')+'">';
-      thtml+='<div class="task-check" onclick="toggleTask(\''+t.id+'\')">'+(t.done?'✓':'')+'</div>';
-      thtml+='<div class="task-main" onclick="openTaskEdit(\''+t.id+'\')">';
-      thtml+='<div class="task-name">'+escH(t.name)+'</div>';
-      thtml+='<div class="task-meta"><span class="task-date'+(overdue?' late':'')+'">'+fmtDate(t.due_date)+'</span>';
-      thtml+='<span class="task-weight">Poids '+t.weight+'</span>';
-      if(t.description) thtml+='<span style="font-size:10px;color:var(--muted)">📝</span>';
-      thtml+='</div></div>';
-      thtml+='<button class="task-delete" onclick="confirmDelete(\'task\',\''+t.id+'\',\''+escA(t.name)+'\')">🗑</button>';
-      thtml+='</div>';
-    });
-  }
-  thtml+='</div>';
-  thtml+='<button class="btn-add-task-bottom" onclick="showTaskForm()">+ Ajouter une tâche</button>';
-  thtml+='<div id="task-form-panel" style="display:none">';
-  thtml+='<div class="task-form"><div class="task-form-title">Nouvelle tâche</div>';
-  thtml+='<div class="form-row">';
-  thtml+='<div class="form-field" style="flex:2;min-width:160px"><label>Nom</label><input type="text" id="new-task-name" placeholder="Nom de la tâche" /></div>';
-  thtml+='<div class="form-field"><label>Échéance</label><input type="date" id="new-task-date" /></div>';
-  thtml+='<div class="form-field" style="max-width:80px"><label>Poids</label><select id="new-task-weight"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>';
-  thtml+='</div>';
-  thtml+='<div class="form-field" style="margin-top:.5rem"><label>Descriptif (optionnel)</label><textarea id="new-task-desc" placeholder="Détails, étapes..."></textarea></div>';
-  thtml+='<div style="display:flex;gap:8px;margin-top:.5rem">';
-  thtml+='<button class="btn-primary-sm" onclick="addTask()">Enregistrer</button>';
-  thtml+='<button class="btn-cancel-sm" onclick="hideTaskForm()">Annuler</button>';
-  thtml+='</div><div class="feedback" id="new-task-fb"></div></div></div>';
-  document.getElementById('tab-tasks').innerHTML=thtml;
+  // STEPS & TASKS
+  renderStepsTab();
 }
 
-function showTaskForm(){ var p=document.getElementById('task-form-panel'); if(p){p.style.display='block';setTimeout(function(){var n=document.getElementById('new-task-name');if(n)n.focus();},100);} }
-function hideTaskForm(){ var p=document.getElementById('task-form-panel'); if(p)p.style.display='none'; }
+function renderStepsTab(){
+  var today=todayStr();
+  var goalSteps=steps.filter(function(s){return s.goal_id===currentGoal.id;});
+  var h='';
 
+  goalSteps.forEach(function(step){
+    var sc=calcStep(step);
+    var st=tasks.filter(function(t){return t.step_id===step.id;});
+    var isOpen=openSteps.has(step.id);
+
+    h+='<div class="step-block">';
+    // Step header
+    h+='<div class="step-header" onclick="toggleStep(\''+step.id+'\')">';
+    h+='<div class="step-toggle-icon '+(isOpen?'open':'')+'">▶</div>';
+    h+='<div class="step-info">';
+    h+='<div class="step-name">'+esc(step.name)+'</div>';
+    h+='<div class="step-meta">';
+    h+='<span class="step-dates">'+fmtDate(sc.dateStart)+' → '+fmtDate(sc.dateEnd)+'</span>';
+    h+='<span class="step-weight-badge">Poids '+step.weight+'</span>';
+    h+='</div></div>';
+    h+='<div class="step-scores">';
+    h+='<div class="step-score-item"><div class="step-score-val" style="color:'+grad(sc.progGlobal)+'">'+sc.progGlobal+'%</div><div class="step-score-lbl">Global</div></div>';
+    h+='<div class="step-score-item"><div class="step-score-val" style="color:'+grad(sc.progDate)+'">'+sc.progDate+'%</div><div class="step-score-lbl">À date</div></div>';
+    h+='</div>';
+    h+='<div class="step-actions" onclick="event.stopPropagation()">';
+    h+='<button class="btn-icon-sm" onclick="openStepEdit(\''+step.id+'\')">✏️</button>';
+    h+='<button class="btn-icon-sm" onclick="confirmDelete(\'step\',\''+step.id+'\',\''+step.name.replace(/'/g,"&#39;")+'\')">🗑</button>';
+    h+='</div></div>';
+
+    if(isOpen){
+      h+='<div class="step-body">';
+      // Prog bars
+      h+='<div class="step-prog">';
+      h+='<div class="step-prog-row"><span>Global</span><span>'+sc.progGlobal+'%</span></div>';
+      h+='<div class="step-bar"><div class="step-bar-fill" style="width:'+sc.progGlobal+'%;background:'+grad(sc.progGlobal)+'"></div></div>';
+      h+='<div class="step-prog-row"><span>À date</span><span>'+sc.progDate+'%</span></div>';
+      h+='<div class="step-bar"><div class="step-bar-fill" style="width:'+sc.progDate+'%;background:'+grad(sc.progDate)+'"></div></div>';
+      h+='</div>';
+      // Tasks
+      h+='<div class="tasks-in-step">';
+      if(!st.length){
+        h+='<div style="font-size:12px;color:var(--muted);text-align:center;padding:.5rem">Aucune tâche dans cette étape</div>';
+      } else {
+        st.forEach(function(t){
+          var overdue=!t.done&&t.due_date&&t.due_date<today;
+          h+='<div class="task-row'+(t.done?' done':'')+(overdue?' overdue':'')+'">';
+          h+='<div class="task-check" onclick="toggleTask(\''+t.id+'\')">'+  (t.done?'✓':'')+'</div>';
+          h+='<div class="task-main" onclick="openTaskEdit(\''+t.id+'\')">';
+          h+='<div class="task-name">'+esc(t.name)+'</div>';
+          h+='<div class="task-meta-row"><span class="task-date'+(overdue?' late':'')+'">'+fmtDateFull(t.due_date)+'</span>';
+          h+='<span class="task-wt">×'+t.weight+'</span>';
+          if(t.description) h+='<span style="font-size:10px;color:var(--muted)">📝</span>';
+          h+='</div></div>';
+          h+='<button class="task-delete" onclick="confirmDelete(\'task\',\''+t.id+'\',\''+t.name.replace(/'/g,"&#39;")+'\')">🗑</button>';
+          h+='</div>';
+        });
+      }
+      h+='</div>';
+      // Add task button
+      h+='<button class="btn-add-bottom" onclick="showAddTaskForm(\''+step.id+'\')">+ Ajouter une tâche</button>';
+      h+='<div id="add-task-form-'+step.id+'" style="display:none">';
+      h+='<div class="inline-form"><div class="form-row">';
+      h+='<div class="form-field" style="flex:2;min-width:140px"><label>Nom</label><input type="text" id="nt-name-'+step.id+'" placeholder="Nom de la tâche" /></div>';
+      h+='<div class="form-field"><label>Échéance</label><input type="date" id="nt-date-'+step.id+'" /></div>';
+      h+='<div class="form-field" style="max-width:75px"><label>Poids</label><select id="nt-weight-'+step.id+'"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>';
+      h+='</div>';
+      h+='<div class="form-field" style="margin-top:.4rem"><label>Descriptif</label><textarea id="nt-desc-'+step.id+'" placeholder="Optionnel..."></textarea></div>';
+      h+='<div class="form-btns">';
+      h+='<button class="btn-save-sm" onclick="addTask(\''+step.id+'\')">Enregistrer</button>';
+      h+='<button class="btn-cancel-sm" onclick="hideAddTaskForm(\''+step.id+'\')">Annuler</button>';
+      h+='</div><div class="feedback-sm" id="nt-fb-'+step.id+'"></div></div>';
+      h+='</div>';
+      h+='</div>';
+    }
+    h+='</div>';
+  });
+
+  // Add step button
+  h+='<button class="btn-add-step" onclick="showAddStepForm()">+ Ajouter une étape</button>';
+  h+='<div id="add-step-form" style="display:none">';
+  h+='<div class="inline-form"><div class="form-row">';
+  h+='<div class="form-field" style="flex:2"><label>Nom de l\'étape</label><input type="text" id="ns-name" placeholder="Ex: Phase de recherche" /></div>';
+  h+='<div class="form-field" style="max-width:75px"><label>Poids</label><select id="ns-weight"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>';
+  h+='</div>';
+  h+='<div class="form-btns">';
+  h+='<button class="btn-save-sm" onclick="addStep()">Enregistrer</button>';
+  h+='<button class="btn-cancel-sm" onclick="hideAddStepForm()">Annuler</button>';
+  h+='</div><div class="feedback-sm" id="ns-fb"></div></div>';
+  h+='</div>';
+
+  document.getElementById('tab-steps').innerHTML=h;
+}
+
+function toggleStep(stepId){ openSteps.has(stepId)?openSteps.delete(stepId):openSteps.add(stepId); renderStepsTab(); }
+function showAddTaskForm(sid){ var p=document.getElementById('add-task-form-'+sid); if(p){p.style.display='block';setTimeout(function(){var n=document.getElementById('nt-name-'+sid);if(n)n.focus();},100);} }
+function hideAddTaskForm(sid){ var p=document.getElementById('add-task-form-'+sid); if(p) p.style.display='none'; }
+function showAddStepForm(){ var p=document.getElementById('add-step-form'); if(p){p.style.display='block';setTimeout(function(){var n=document.getElementById('ns-name');if(n)n.focus();},100);} }
+function hideAddStepForm(){ var p=document.getElementById('add-step-form'); if(p) p.style.display='none'; }
+
+// ── ADD STEP ──
+async function addStep(){
+  var name=(document.getElementById('ns-name').value||'').trim();
+  var weight=parseInt(document.getElementById('ns-weight').value)||3;
+  var fb=document.getElementById('ns-fb');
+  if(!name){fb.textContent='Nom requis';fb.style.color='#dc2626';return;}
+  var goalSteps=steps.filter(function(s){return s.goal_id===currentGoal.id;});
+  var res=await sb.from('steps').insert({goal_id:currentGoal.id,name:name,weight:weight,position:goalSteps.length}).select().single();
+  if(res.error){fb.textContent='Erreur: '+res.error.message;fb.style.color='#dc2626';return;}
+  steps.push(res.data);
+  openSteps.add(res.data.id);
+  renderStepsTab();
+}
+
+// ── STEP EDIT ──
+function openStepEdit(stepId){
+  var s=steps.find(function(s){return s.id===stepId;});
+  if(!s)return;
+  editStepId=stepId;
+  document.getElementById('modal-step-title').textContent=s.name;
+  document.getElementById('step-edit-name').value=s.name;
+  document.getElementById('step-edit-weight').value=s.weight||3;
+  document.getElementById('step-fb').textContent='';
+  document.getElementById('modal-step').classList.remove('hidden');
+}
+async function saveStepEdit(){
+  var name=(document.getElementById('step-edit-name').value||'').trim();
+  var weight=parseInt(document.getElementById('step-edit-weight').value)||3;
+  var fb=document.getElementById('step-fb');
+  if(!name){fb.textContent='Nom requis';fb.style.color='#dc2626';return;}
+  var res=await sb.from('steps').update({name:name,weight:weight}).eq('id',editStepId);
+  if(res.error){fb.textContent='Erreur: '+res.error.message;fb.style.color='#dc2626';return;}
+  var s=steps.find(function(s){return s.id===editStepId;});
+  if(s){s.name=name;s.weight=weight;}
+  closeModal('modal-step'); renderStepsTab();
+}
+
+// ── ADD TASK ──
+async function addTask(stepId){
+  var name=(document.getElementById('nt-name-'+stepId).value||'').trim();
+  var date=document.getElementById('nt-date-'+stepId).value;
+  var weight=parseInt(document.getElementById('nt-weight-'+stepId).value)||3;
+  var desc=(document.getElementById('nt-desc-'+stepId).value||'').trim();
+  var fb=document.getElementById('nt-fb-'+stepId);
+  if(!name){fb.textContent='Nom requis';fb.style.color='#dc2626';return;}
+  var res=await sb.from('tasks').insert({step_id:stepId,goal_id:currentGoal.id,name:name,description:desc,due_date:date||null,weight:weight,done:false}).select().single();
+  if(res.error){fb.textContent='Erreur: '+res.error.message;fb.style.color='#dc2626';return;}
+  tasks.push(res.data);
+  renderStepsTab();
+}
+
+// ── TOGGLE TASK ──
 async function toggleTask(taskId){
   var t=tasks.find(function(t){return t.id===taskId;});
-  if(!t) return;
+  if(!t)return;
   t.done=!t.done;
   await sb.from('tasks').update({done:t.done}).eq('id',taskId);
   await renderDetailTabs();
 }
 
-async function addTask(){
-  var name=document.getElementById('new-task-name').value.trim();
-  var date=document.getElementById('new-task-date').value;
-  var weight=parseInt(document.getElementById('new-task-weight').value)||3;
-  var desc=document.getElementById('new-task-desc').value.trim();
-  var fb=document.getElementById('new-task-fb');
-  if(!name){fb.textContent='Nom requis';fb.style.color='#dc2626';return;}
-  var res=await sb.from('tasks').insert({goal_id:currentGoal.id,name:name,description:desc,due_date:date||null,weight:weight,done:false}).select().single();
-  if(res.error){fb.textContent='Erreur: '+res.error.message;fb.style.color='#dc2626';return;}
-  tasks.push(res.data);
-  await renderDetailTabs();
-}
-
+// ── TASK EDIT ──
 function openTaskEdit(taskId){
   var t=tasks.find(function(t){return t.id===taskId;});
-  if(!t) return;
+  if(!t)return;
   editTaskId=taskId;
   document.getElementById('modal-task-title').textContent=t.name;
   document.getElementById('task-edit-name').value=t.name;
@@ -524,10 +682,9 @@ function openTaskEdit(taskId){
   document.getElementById('task-fb').textContent='';
   document.getElementById('modal-task').classList.remove('hidden');
 }
-
 async function saveTaskEdit(){
-  var name=document.getElementById('task-edit-name').value.trim();
-  var desc=document.getElementById('task-edit-desc').value.trim();
+  var name=(document.getElementById('task-edit-name').value||'').trim();
+  var desc=(document.getElementById('task-edit-desc').value||'').trim();
   var date=document.getElementById('task-edit-date').value;
   var weight=parseInt(document.getElementById('task-edit-weight').value)||3;
   var fb=document.getElementById('task-fb');
@@ -536,17 +693,15 @@ async function saveTaskEdit(){
   if(res.error){fb.textContent='Erreur: '+res.error.message;fb.style.color='#dc2626';return;}
   var t=tasks.find(function(t){return t.id===editTaskId;});
   if(t){t.name=name;t.description=desc;t.due_date=date||null;t.weight=weight;}
-  closeModal('modal-task');
-  await renderDetailTabs();
+  closeModal('modal-task'); renderStepsTab();
 }
 
+// ── GOAL MODAL ──
 function openGoalModal(goalId,presetQuality){
   editGoalId=goalId||null;
   var goal=goalId?goals.find(function(g){return g.id===goalId;}):null;
   var sel=document.getElementById('goal-quality');
-  sel.innerHTML=ALL_QUALITIES.map(function(item){
-    return '<option value="'+escA(item.quality)+'">'+item.horizon.label+' — '+escH(item.quality)+'</option>';
-  }).join('');
+  sel.innerHTML=ALL_QUALITIES.map(function(item){return '<option value="'+item.quality.replace(/"/g,'&quot;')+'">'+item.horizon.label+' — '+esc(item.quality)+'</option>';}).join('');
   if(goal){
     document.getElementById('modal-goal-title').textContent="Modifier l'objectif";
     document.getElementById('goal-name').value=goal.name;
@@ -562,11 +717,10 @@ function openGoalModal(goalId,presetQuality){
   document.getElementById('modal-goal').classList.remove('hidden');
   setTimeout(function(){document.getElementById('goal-name').focus();},100);
 }
-
 async function saveGoal(){
-  var name=document.getElementById('goal-name').value.trim();
+  var name=(document.getElementById('goal-name').value||'').trim();
   var quality=document.getElementById('goal-quality').value;
-  var definition=document.getElementById('goal-definition').value.trim();
+  var definition=(document.getElementById('goal-definition').value||'').trim();
   var fb=document.getElementById('goal-fb');
   if(!name){fb.textContent='Nom requis';fb.style.color='#dc2626';return;}
   if(editGoalId){
@@ -579,51 +733,61 @@ async function saveGoal(){
     if(res2.error){fb.textContent='Erreur: '+res2.error.message;fb.style.color='#dc2626';return;}
     goals.push(res2.data);
   }
-  closeModal('modal-goal');
-  renderHome();
+  closeModal('modal-goal'); renderHome();
 }
 
+// ── DELETE ──
 function confirmDelete(type,id,label){
-  document.getElementById('confirm-msg').innerHTML=type==='goal'
-    ?'Supprimer "<strong>'+escH(label)+'</strong>" et toutes ses tâches ?'
-    :'Supprimer la tâche "<strong>'+escH(label)+'</strong>" ?';
+  var msgs={
+    goal:'Supprimer "<strong>'+esc(label)+'</strong>" et toutes ses étapes et tâches ?',
+    step:'Supprimer l\'étape "<strong>'+esc(label)+'</strong>" et toutes ses tâches ?',
+    task:'Supprimer la tâche "<strong>'+esc(label)+'</strong>" ?'
+  };
+  document.getElementById('confirm-msg').innerHTML=msgs[type]||'Confirmer la suppression ?';
   document.getElementById('confirm-ok').onclick=function(){doDelete(type,id);};
   document.getElementById('modal-confirm').classList.remove('hidden');
 }
-
 async function doDelete(type,id){
   closeModal('modal-confirm');
   if(type==='goal'){
-    await sb.from('tasks').delete().eq('goal_id',id);
+    var goalStepIds=steps.filter(function(s){return s.goal_id===id;}).map(function(s){return s.id;});
+    if(goalStepIds.length) await sb.from('tasks').delete().in('step_id',goalStepIds);
+    await sb.from('steps').delete().eq('goal_id',id);
     await sb.from('goals').delete().eq('id',id);
     goals=goals.filter(function(g){return g.id!==id;});
-    tasks=tasks.filter(function(t){return t.goal_id!==id;});
+    steps=steps.filter(function(s){return s.goal_id!==id;});
+    tasks=tasks.filter(function(t){return goalStepIds.indexOf(t.step_id)<0;});
     renderHome();
+  } else if(type==='step'){
+    await sb.from('tasks').delete().eq('step_id',id);
+    await sb.from('steps').delete().eq('id',id);
+    steps=steps.filter(function(s){return s.id!==id;});
+    tasks=tasks.filter(function(t){return t.step_id!==id;});
+    renderStepsTab();
   } else {
     await sb.from('tasks').delete().eq('id',id);
     tasks=tasks.filter(function(t){return t.id!==id;});
-    await renderDetailTabs();
+    renderStepsTab();
   }
 }
 
+// ── NAV ──
 function goHome(){
   document.getElementById('screen-detail').classList.remove('active');
   document.getElementById('screen-home').classList.add('active');
   document.getElementById('nav-back').classList.remove('visible');
   document.getElementById('btn-add-goal').style.display='';
-  currentGoal=null;
-  renderHome();
+  currentGoal=null; renderHome();
 }
-
 function switchTab(tab,btn){
   document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
   document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active');});
   if(btn) btn.classList.add('active');
   document.getElementById('tab-'+tab).classList.add('active');
 }
+function closeModal(id){document.getElementById(id).classList.add('hidden');}
 
-function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
-
+// ── INIT ──
 renderHome();
 </script>
 </body>
