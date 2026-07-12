@@ -564,33 +564,44 @@ function renderSaisie(){
           html += '</div></div>';
         });
 
-        // archived comps — show if current day is before archivedAt
-        var visibleArchived = archivedComps.filter(function(c){
-          return !c.archivedAt || currentDay < c.archivedAt;
+        // archived comps:
+        // - on a past day BEFORE archivedAt: show as active (was active then)
+        // - always show archived section with reactivate option
+        var activeArchivedOnThisDay = archivedComps.filter(function(c){
+          return c.archivedAt && currentDay < c.archivedAt;
         });
-        if(visibleArchived.length){
+        activeArchivedOnThisDay.forEach(function(c){
+          var val = dayChecked[c.id];
+          var cls = compStateClass(val);
+          var icon = compStateIcon(val);
+          var descOpen = openDescs.has(c.id);
+          html += '<div class="comp-row '+(cls||'')+'">';
+          html += '<div class="comp-check" onclick="toggleComp(\''+c.id+'\')">'+icon+'</div>';
+          html += '<div class="comp-info" onclick="toggleDesc(\''+c.id+'\')"><div class="comp-name">'+c.name+'<span class="comp-archived-badge">archivée</span></div>';
+          if(c.desc) html += '<div class="comp-desc '+(descOpen?'open':'')+'">'+c.desc+'</div>';
+          html += '</div></div>';
+        });
+
+        if(archivedComps.length){
           var aOpen = openArchived.has(q);
           html += '<div class="archived-section">';
-          html += '<button class="archived-toggle" onclick="toggleArchived(\''+q.replace(/'/g,"\\'")+'\')">'+( aOpen?'▾':'▸')+' Archivées ('+visibleArchived.length+')</button>';
+          html += '<button class="archived-toggle" onclick="toggleArchived(\''+q.replace(/'/g,"\\'")+'\')">'+(aOpen?'▾':'▸')+' Archivées ('+archivedComps.length+')</button>';
           if(aOpen){
-            visibleArchived.forEach(function(c){
-              var val = dayChecked[c.id];
-              var cls = compStateClass(val);
-              var icon = compStateIcon(val);
-              html += '<div class="comp-row state-archived '+(cls||'')+'">';
-              html += '<div class="comp-check" onclick="toggleComp(\''+c.id+'\')">'+icon+'</div>';
-              html += '<div class="comp-info"><div class="comp-name">'+c.name+'<span class="comp-archived-badge">archivée</span></div></div>';
-              html += '<div class="comp-actions">';
+            archivedComps.forEach(function(c){
+              html += '<div class="comp-row state-archived">';
+              html += '<div class="comp-check" style="opacity:.4"></div>';
+              html += '<div class="comp-info"><div class="comp-name">'+c.name;
+              if(c.archivedAt) html += '<span class="comp-archived-badge">archivée le '+c.archivedAt+'</span>';
+              html += '</div></div>';
               html += '<button class="btn-icon-sm" onclick="unarchiveComp(\''+q.replace(/'/g,"\\'")+'\',\''+c.id+'\')" title="Réactiver">♻️</button>';
               html += '<button class="btn-icon-sm" onclick="deleteComp(\''+q.replace(/'/g,"\\'")+'\',\''+c.id+'\')" title="Supprimer">🗑</button>';
+              html += '<button class="btn-icon-sm" onclick="deleteComp(\''+q.replace(/'/g,"\\'")+'\'\,\''+c.id+'\')" title="Supprimer">🗑</button>';
               html += '</div></div>';
             });
           }
           html += '</div>';
         }
 
-        html += '<div class="add-comp-row" onclick="addComp(\''+q.replace(/'/g,"\\'")+'\')">+ Ajouter une composante</div>';
-        html += '</div>';
       }
       html += '</div>';
     });
