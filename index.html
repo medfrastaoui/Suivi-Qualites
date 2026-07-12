@@ -189,6 +189,7 @@ var savedDates = new Set();
 var dashDays = 30;
 var weekDays = 7;
 var openDashCards = new Set();
+var Q_INDEX = {}; ALL_QUALITIES.forEach(function(q,i){ Q_INDEX[q]=i; }); function qByIdx(i){ return ALL_QUALITIES[i]; }
 
 var COMPONENTS = {};
 ALL_QUALITIES.forEach(function(q){
@@ -257,8 +258,8 @@ function toggleComp(id){
   renderSaisie();
 }
 function toggleDesc(id){ openDescs.has(id)?openDescs.delete(id):openDescs.add(id); renderSaisie(); }
-function toggleQ(q){ openQualities.has(q)?openQualities.delete(q):openQualities.add(q); renderSaisie(); }
-function toggleArchived(q){ openArchived.has(q)?openArchived.delete(q):openArchived.add(q); renderSaisie(); }
+function toggleQ(qi){ var q=qByIdx(qi); openQualities.has(q)?openQualities.delete(q):openQualities.add(q); renderSaisie(); }
+function toggleArchived(qi){ var q=qByIdx(qi); openArchived.has(q)?openArchived.delete(q):openArchived.add(q); renderSaisie(); }
 
 // Init
 (async function init(){
@@ -334,14 +335,14 @@ async function saveDay(){
   renderSaisie();
 }
 
-async function archiveComp(q,id){
+async function archiveComp(qi,id){ var q=qByIdx(qi);
   var comp=(COMPONENTS[q]||[]).find(function(c){return c.id===id;});
   if(!comp) return;
   comp.archived=true; comp.archivedAt=todayStr();
   await saveComponentsToDB(); renderSaisie();
 }
 
-async function unarchiveComp(q,id){
+async function unarchiveComp(qi,id){ var q=qByIdx(qi);
   var comp=(COMPONENTS[q]||[]).find(function(c){return c.id===id;});
   if(!comp||!comp.archived) return;
   var archivedAt=comp.archivedAt;
@@ -431,7 +432,7 @@ function renderSaisie(){
       var scoreHtml=score!==null?'<span class="quality-score" style="background:'+grad(score)+'22;color:'+grad(score)+'">'+score+'%</span>':'';
 
       h+='<div class="quality-block">';
-      h+='<div class="quality-title '+(isOpen?'open':'')+'" onclick="toggleQ('+JSON.stringify(q)+')">';
+      h+='<div class="quality-title '+(isOpen?'open':'')+'" onclick="toggleQ('+Q_INDEX[q]+')">';
       h+='<span class="quality-title-name">'+esc(q)+'</span>'+scoreHtml;
       h+='<span class="arrow">&#9654;</span></div>';
 
@@ -445,15 +446,15 @@ function renderSaisie(){
           var icon=compStateIcon(val);
           var descOpen=openDescs.has(c.id);
           h+='<div class="comp-row '+(cls||'')+'">';
-          h+='<div class="comp-check" onclick="toggleComp('+JSON.stringify(c.id)+')">'+icon+'</div>';
-          h+='<div class="comp-info" onclick="toggleDesc('+JSON.stringify(c.id)+')">';
+          h+='<div class="comp-check" onclick="toggleComp(\'+c.id+\')">'+icon+'</div>';
+          h+='<div class="comp-info" onclick="toggleDesc(\'+c.id+\')">';
           h+='<div class="comp-name">'+esc(c.name)+'</div>';
           if(c.desc) h+='<div class="comp-desc '+(descOpen?'open':'')+'">'+esc(c.desc)+'</div>';
           h+='</div>';
           h+='<div class="comp-actions">';
-          h+='<button class="btn-icon-sm" onclick="editComp('+JSON.stringify(q)+','+JSON.stringify(c.id)+')" title="Modifier">✏️</button>';
-          h+='<button class="btn-icon-sm" onclick="archiveComp('+JSON.stringify(q)+','+JSON.stringify(c.id)+')" title="Archiver">📦</button>';
-          h+='<button class="btn-icon-sm" onclick="deleteComp('+JSON.stringify(q)+','+JSON.stringify(c.id)+')" title="Supprimer">🗑</button>';
+          h+='<button class="btn-icon-sm" onclick="editComp('+Q_INDEX[q]+',\'+c.id+\')" title="Modifier">✏️</button>';
+          h+='<button class="btn-icon-sm" onclick="archiveComp('+Q_INDEX[q]+',\'+c.id+\')" title="Archiver">📦</button>';
+          h+='<button class="btn-icon-sm" onclick="deleteComp('+Q_INDEX[q]+',\'+c.id+\')" title="Supprimer">🗑</button>';
           h+='</div></div>';
         });
 
@@ -466,8 +467,8 @@ function renderSaisie(){
           var icon=compStateIcon(val);
           var descOpen=openDescs.has(c.id);
           h+='<div class="comp-row '+(cls||'')+'">';
-          h+='<div class="comp-check" onclick="toggleComp('+JSON.stringify(c.id)+')">'+icon+'</div>';
-          h+='<div class="comp-info" onclick="toggleDesc('+JSON.stringify(c.id)+')">';
+          h+='<div class="comp-check" onclick="toggleComp(\'+c.id+\')">'+icon+'</div>';
+          h+='<div class="comp-info" onclick="toggleDesc(\'+c.id+\')">';
           h+='<div class="comp-name">'+esc(c.name)+'<span class="comp-archived-badge">archivée</span></div>';
           if(c.desc) h+='<div class="comp-desc '+(descOpen?'open':'')+'">'+esc(c.desc)+'</div>';
           h+='</div></div>';
@@ -477,7 +478,7 @@ function renderSaisie(){
         if(archivedComps.length){
           var aOpen=openArchived.has(q);
           h+='<div class="archived-section">';
-          h+='<button class="archived-toggle" onclick="toggleArchived('+JSON.stringify(q)+')">'+(aOpen?'▾':'▸')+' Archivées ('+archivedComps.length+')</button>';
+          h+='<button class="archived-toggle" onclick="toggleArchived('+Q_INDEX[q]+')">'+(aOpen?'▾':'▸')+' Archivées ('+archivedComps.length+')</button>';
           if(aOpen){
             archivedComps.forEach(function(c){
               h+='<div class="comp-row state-archived">';
@@ -486,15 +487,15 @@ function renderSaisie(){
               if(c.archivedAt) h+='<span class="comp-archived-badge">archivée le '+c.archivedAt+'</span>';
               h+='</div></div>';
               h+='<div class="comp-actions">';
-              h+='<button class="btn-icon-sm" onclick="unarchiveComp('+JSON.stringify(q)+','+JSON.stringify(c.id)+')" title="Réactiver">♻️</button>';
-              h+='<button class="btn-icon-sm" onclick="deleteComp('+JSON.stringify(q)+','+JSON.stringify(c.id)+')" title="Supprimer">🗑</button>';
+              h+='<button class="btn-icon-sm" onclick="unarchiveComp('+Q_INDEX[q]+',\'+c.id+\')" title="Réactiver">♻️</button>';
+              h+='<button class="btn-icon-sm" onclick="deleteComp('+Q_INDEX[q]+',\'+c.id+\')" title="Supprimer">🗑</button>';
               h+='</div></div>';
             });
           }
           h+='</div>';
         }
 
-        h+='<div class="add-comp-row" onclick="addComp('+JSON.stringify(q)+')">+ Ajouter une composante</div>';
+        h+='<div class="add-comp-row" onclick="addComp('+Q_INDEX[q]+')">+ Ajouter une composante</div>';
         h+='</div>';
       }
       h+='</div>';
@@ -528,7 +529,7 @@ function saveModal(){
   closeModal();
 }
 
-function addComp(q){
+function addComp(qi){ var q=qByIdx(qi);
   openModal('Nouvelle composante','','',async function(name,desc){
     if(!COMPONENTS[q])COMPONENTS[q]=[];
     var newId=uid();
@@ -538,7 +539,7 @@ function addComp(q){
     renderSaisie();
   });
 }
-function editComp(q,id){
+function editComp(qi,id){ var q=qByIdx(qi);
   var comp=(COMPONENTS[q]||[]).find(function(c){return c.id===id;});
   if(!comp)return;
   openModal('Modifier',comp.name,comp.desc,async function(name,desc){
@@ -546,7 +547,7 @@ function editComp(q,id){
     await saveComponentsToDB();renderSaisie();
   });
 }
-async function deleteComp(q,id){
+async function deleteComp(qi,id){ var q=qByIdx(qi);
   if(!confirm('Supprimer définitivement ? L\'historique sera impacté.'))return;
   COMPONENTS[q]=(COMPONENTS[q]||[]).filter(function(c){return c.id!==id;});
   await saveComponentsToDB();renderSaisie();
@@ -596,7 +597,7 @@ async function renderDashboard(){
         });
         detail+='</div>';
       }
-      h+='<div class="dash-card" style="background:'+cardBg+';color:'+cardColor+';border-color:'+cardBorder+'" onclick="toggleDashCard('+JSON.stringify(q)+')">';
+      h+='<div class="dash-card" style="background:'+cardBg+';color:'+cardColor+';border-color:'+cardBorder+'" onclick="toggleDashCard('+Q_INDEX[q]+')">';
       h+='<div class="dash-card-name" style="color:'+cardColor+'">'+esc(q)+'</div>';
       h+='<div class="dash-card-pct" style="color:'+cardColor+'">'+(a!==null?a+'%':'—')+'</div>';
       h+='<div class="dash-card-sub">'+scores[q].length+' jours · détail</div>';
@@ -606,7 +607,7 @@ async function renderDashboard(){
   });
   el.innerHTML=h;
 }
-function toggleDashCard(q){openDashCards.has(q)?openDashCards.delete(q):openDashCards.add(q);renderDashboard();}
+function toggleDashCard(qi){ var q=qByIdx(qi);openDashCards.has(q)?openDashCards.delete(q):openDashCards.add(q);renderDashboard();}
 function setDashDays(){dashDays=parseInt(document.getElementById('dash-days-input').value)||30;openDashCards=new Set();renderDashboard();}
 
 // Hebdo
