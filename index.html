@@ -215,6 +215,11 @@ var HORIZONS = [
 ];
 var ALL_QUALITIES = HORIZONS.flatMap(function(h){return h.qualities;});
 
+// Quality index helpers — safe for onclick attributes
+var Q_IDX = {};
+ALL_QUALITIES.forEach(function(q,i){ Q_IDX[q]=i; });
+function Q(i){ return ALL_QUALITIES[i]; }
+
 // State
 var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 var currentOffset = 0;
@@ -400,7 +405,7 @@ function toggleComp(compId){
 }
 
 // ── TOGGLE QUALITE ──
-function toggleQuality(qName){
+function toggleQuality(qi){ var qName=Q(qi);
   openQualities[qName]=!openQualities[qName];
   renderSaisie();
 }
@@ -412,13 +417,13 @@ function toggleDesc(compId){
 }
 
 // ── TOGGLE ARCHIVED SECTION ──
-function toggleArchivedSection(qName){
+function toggleArchivedSection(qi){ var qName=Q(qi);
   openArchived[qName]=!openArchived[qName];
   renderSaisie();
 }
 
 // ── ARCHIVE / UNARCHIVE ──
-function archiveComp(qName, compId){
+function archiveComp(qi, compId){ var qName=Q(qi);
   var comps=COMPONENTS[qName]||[];
   var comp=null;
   for(var i=0;i<comps.length;i++){ if(comps[i].id===compId){comp=comps[i];break;} }
@@ -428,7 +433,7 @@ function archiveComp(qName, compId){
   saveComponents().then(function(){ renderSaisie(); });
 }
 
-function unarchiveComp(qName, compId){
+function unarchiveComp(qi, compId){ var qName=Q(qi);
   var comps=COMPONENTS[qName]||[];
   var comp=null;
   for(var i=0;i<comps.length;i++){ if(comps[i].id===compId){comp=comps[i];break;} }
@@ -446,7 +451,7 @@ function unarchiveComp(qName, compId){
 }
 
 // ── EDIT COMP ──
-function editComp(qName, compId){
+function editComp(qi, compId){ var qName=Q(qi);
   var comps=COMPONENTS[qName]||[];
   var comp=null;
   for(var i=0;i<comps.length;i++){ if(comps[i].id===compId){comp=comps[i];break;} }
@@ -463,7 +468,7 @@ function editComp(qName, compId){
 }
 
 // ── ADD COMP ──
-function addComp(qName){
+function addComp(qi){ var qName=Q(qi);
   document.getElementById('modal-comp-title').textContent='Nouvelle composante';
   document.getElementById('modal-comp-name').value='';
   document.getElementById('modal-comp-desc').value='';
@@ -489,7 +494,7 @@ function saveModalComp(){
 }
 
 // ── DELETE COMP ──
-function deleteComp(qName, compId){
+function deleteComp(qi, compId){ var qName=Q(qi);
   document.getElementById('modal-delete-msg').textContent='Supprimer définitivement cette composante ? L\'historique des scores sera impacté.';
   modalDeleteCallback=function(){
     COMPONENTS[qName]=(COMPONENTS[qName]||[]).filter(function(c){return c.id!==compId;});
@@ -592,7 +597,7 @@ function renderSaisie(){
       var scoreHtml=score!==null?('<span class="quality-score" style="background:'+grad(score)+'22;color:'+grad(score)+'">'+score+'%</span>'):'';
 
       h+='<div class="quality-block">';
-      h+='<div class="quality-title" onclick="toggleQuality('+JSON.stringify(qName)+')">';
+      h+='<div class="quality-title" onclick="toggleQuality('+Q_IDX[qName]+')">';
       h+='<span class="quality-title-name">'+qName+'</span>'+scoreHtml;
       h+='<span class="arrow '+(isOpen?'open':'')+'">&#9654;</span>';
       h+='</div>';
@@ -607,15 +612,15 @@ function renderSaisie(){
           var icon=stateIcon(val);
           var descOpen=!!openDescs[c.id];
           h+='<div class="comp-row '+(cls||'')+'">';
-          h+='<div class="comp-check" onclick="toggleComp('+JSON.stringify(c.id)+')">'+icon+'</div>';
-          h+='<div class="comp-info" onclick="toggleDesc('+JSON.stringify(c.id)+')">';
+          h+='<div class="comp-check" onclick="toggleComp(\''+c.id+'\')">'+icon+'</div>';
+          h+='<div class="comp-info" onclick="toggleDesc(\''+c.id+'\')">';
           h+='<div class="comp-name">'+c.name+'</div>';
           if(c.desc) h+='<div class="comp-desc '+(descOpen?'open':'')+'">'+c.desc+'</div>';
           h+='</div>';
           h+='<div class="comp-actions">';
-          h+='<button class="btn-icon" onclick="editComp('+JSON.stringify(qName)+','+JSON.stringify(c.id)+')">✏️</button>';
-          h+='<button class="btn-icon" onclick="archiveComp('+JSON.stringify(qName)+','+JSON.stringify(c.id)+')">📦</button>';
-          h+='<button class="btn-icon" onclick="deleteComp('+JSON.stringify(qName)+','+JSON.stringify(c.id)+')">🗑</button>';
+          h+='<button class="btn-icon" onclick="editComp('+Q_IDX[qName]+',\''+c.id+'\')">✏️</button>';
+          h+='<button class="btn-icon" onclick="archiveComp('+Q_IDX[qName]+',\''+c.id+'\')">📦</button>';
+          h+='<button class="btn-icon" onclick="deleteComp('+Q_IDX[qName]+',\''+c.id+'\')">🗑</button>';
           h+='</div></div>';
         });
 
@@ -627,7 +632,7 @@ function renderSaisie(){
           var cls=stateClass(val);
           var icon=stateIcon(val);
           h+='<div class="comp-row '+(cls||'')+'">';
-          h+='<div class="comp-check" onclick="toggleComp('+JSON.stringify(c.id)+')">'+icon+'</div>';
+          h+='<div class="comp-check" onclick="toggleComp(\''+c.id+'\')">'+icon+'</div>';
           h+='<div class="comp-info">';
           h+='<div class="comp-name">'+c.name+'<span class="comp-archived-badge">archivée</span></div>';
           h+='</div></div>';
@@ -637,7 +642,7 @@ function renderSaisie(){
         if(archivedComps.length){
           var aOpen=!!openArchived[qName];
           h+='<div class="archived-section">';
-          h+='<button class="archived-toggle" onclick="toggleArchivedSection('+JSON.stringify(qName)+')">';
+          h+='<button class="archived-toggle" onclick="toggleArchivedSection('+Q_IDX[qName]+')">';
           h+=(aOpen?'▾':'▸')+' Archivées ('+archivedComps.length+')</button>';
           if(aOpen){
             archivedComps.forEach(function(c){
@@ -647,15 +652,15 @@ function renderSaisie(){
               if(c.archivedAt) h+='<span class="comp-archived-badge">archivée le '+c.archivedAt+'</span>';
               h+='</div></div>';
               h+='<div class="comp-actions">';
-              h+='<button class="btn-icon" onclick="unarchiveComp('+JSON.stringify(qName)+','+JSON.stringify(c.id)+')">♻️</button>';
-              h+='<button class="btn-icon" onclick="deleteComp('+JSON.stringify(qName)+','+JSON.stringify(c.id)+')">🗑</button>';
+              h+='<button class="btn-icon" onclick="unarchiveComp('+Q_IDX[qName]+',\''+c.id+'\')">♻️</button>';
+              h+='<button class="btn-icon" onclick="deleteComp('+Q_IDX[qName]+',\''+c.id+'\')">🗑</button>';
               h+='</div></div>';
             });
           }
           h+='</div>';
         }
 
-        h+='<button class="add-comp-btn" onclick="addComp('+JSON.stringify(qName)+')">+ Ajouter une composante</button>';
+        h+='<button class="add-comp-btn" onclick="addComp('+Q_IDX[qName]+')">+ Ajouter une composante</button>';
         h+='</div>'; // components-list
       }
       h+='</div>'; // quality-block
@@ -714,7 +719,7 @@ async function renderDashboard(){
         });
         detail+='</div>';
       }
-      h+='<div class="dash-card" style="background:'+cardBg+';color:'+cardColor+';border-color:'+cardBorder+'" onclick="toggleDashCard('+JSON.stringify(q)+')">';
+      h+='<div class="dash-card" style="background:'+cardBg+';color:'+cardColor+';border-color:'+cardBorder+'" onclick="toggleDashCard('+Q_IDX[q]+')">';
       h+='<div class="dash-card-name" style="color:'+cardColor+'">'+q+'</div>';
       h+='<div class="dash-card-pct" style="color:'+cardColor+'">'+(a!==null?a+'%':'—')+'</div>';
       h+='<div class="dash-card-sub">'+scores[q].length+' jours · détail</div>';
@@ -724,7 +729,7 @@ async function renderDashboard(){
   });
   el.innerHTML=h;
 }
-function toggleDashCard(q){ openDashCards[q]=!openDashCards[q]; renderDashboard(); }
+function toggleDashCard(qi){ var q=Q(qi); openDashCards[q]=!openDashCards[q]; renderDashboard(); }
 function setDashDays(){ dashDays=parseInt(document.getElementById('dash-days-in').value)||30; openDashCards={}; renderDashboard(); }
 
 // ── HEBDO ──
