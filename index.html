@@ -508,8 +508,9 @@ function deleteComp(qi, compId){ var qName=Q(qi);
     });
   };
   document.getElementById('modal-delete-confirm').onclick=function(){
+    var cb=modalDeleteCallback;
     closeModalDelete();
-    if(modalDeleteCallback) modalDeleteCallback();
+    if(cb) cb();
   };
   document.getElementById('modal-delete').classList.remove('hidden');
 }
