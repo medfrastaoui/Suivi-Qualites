@@ -499,10 +499,12 @@ function saveModalComp(){
 function deleteComp(qi, compId){ var qName=Q(qi);
   document.getElementById('modal-delete-msg').textContent='Supprimer définitivement cette composante ? L\'historique des scores sera impacté.';
   modalDeleteCallback=function(){
+    console.log('Before delete, COMPONENTS[qName] length:', (COMPONENTS[qName]||[]).length);
     COMPONENTS[qName]=(COMPONENTS[qName]||[]).filter(function(c){return c.id!==compId;});
-    saveComponents().then(function(){
-      // reload from DB to confirm save
-      syncComponents().then(function(){renderSaisie();});
+    console.log('After delete, COMPONENTS[qName] length:', (COMPONENTS[qName]||[]).length);
+    saveComponents().then(function(res){
+      console.log('saveComponents done, COMPONENTS[qName] length:', (COMPONENTS[qName]||[]).length);
+      renderSaisie();
     });
   };
   document.getElementById('modal-delete-confirm').onclick=function(){
