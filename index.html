@@ -19,7 +19,6 @@
 }}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-
 nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1rem;height:54px}
 .nav-brand{font-size:14px;font-weight:700}
 .nav-tabs{display:flex;gap:3px}
@@ -28,87 +27,68 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .page{display:none;padding:1rem;max-width:520px;margin:0 auto}
 .page.active{display:block}
 #page-dashboard{max-width:700px}
-
-/* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a18;color:#f0efe8;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.25)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @media(prefers-color-scheme:dark){.toast{background:#f0efe8;color:#1a1a18}}
-
-/* SAISIE */
 .day-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
 .day-label{font-size:16px;font-weight:600}
 .day-btns{display:flex;gap:5px}
 .btn-sm{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 11px;cursor:pointer;font-size:13px;color:var(--text)}
 .btn-sm:disabled{opacity:.35;cursor:default}
-
 .horizon-block{margin-bottom:1.1rem}
 .h-header{display:flex;align-items:center;gap:7px;padding:.35rem .7rem;border-radius:8px;margin-bottom:.5rem}
 .h-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .h-name{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .h-vision{font-size:10px;opacity:.65;font-style:italic;margin-left:auto;max-width:52%;text-align:right;line-height:1.3}
-
 .quality-block{margin-bottom:.6rem}
 .quality-title{display:flex;align-items:center;justify-content:space-between;padding:.55rem .8rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;margin-bottom:2px}
 .quality-title-name{font-size:13px;font-weight:600}
 .quality-score{font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px}
 .quality-title .arrow{font-size:11px;color:var(--muted);margin-left:6px;transition:transform .2s}
 .quality-title.open .arrow{transform:rotate(90deg)}
-
 .components-list{display:flex;flex-direction:column;gap:5px;padding:0 2px 4px}
-
-/* COMP ROW — 4 états */
 .comp-row{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:.6rem .8rem;transition:all .15s}
 .comp-row.state-ok{border-color:#6ee7b7;background:#d1fae5}
 .comp-row.state-ko{border-color:#fca5a5;background:#fee2e2}
 .comp-row.state-skip{border-color:#a78bfa;background:#ede9fe;opacity:.7}
-.comp-row.state-archived{border-color:var(--border);background:var(--bg);opacity:.5}
+.comp-row.state-archived{background:var(--bg);opacity:.55}
 @media(prefers-color-scheme:dark){
   .comp-row.state-ok{border-color:#065f46;background:#064e35}
   .comp-row.state-ko{border-color:#7f1d1d;background:#450a0a}
   .comp-row.state-skip{border-color:#4c1d95;background:#2e1a5e}
 }
-
-.comp-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;transition:all .15s;font-weight:700}
+.comp-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;font-weight:700}
 .comp-row.state-ok .comp-check{background:#059669;border-color:#059669;color:#fff}
 .comp-row.state-ko .comp-check{background:#dc2626;border-color:#dc2626;color:#fff}
 .comp-row.state-skip .comp-check{background:#7c3aed;border-color:#7c3aed;color:#fff}
-
 .comp-info{flex:1;cursor:pointer}
 .comp-name{font-size:13px;font-weight:500}
 .comp-row.state-ok .comp-name{color:#065f46}
 .comp-row.state-ko .comp-name{color:#7f1d1d}
 .comp-row.state-skip .comp-name{color:#6d28d9}
-.comp-archived-badge{font-size:9px;background:var(--border);color:var(--muted);border-radius:4px;padding:1px 5px;margin-left:5px}
 @media(prefers-color-scheme:dark){
   .comp-row.state-ok .comp-name{color:#6ee7b7}
   .comp-row.state-ko .comp-name{color:#fca5a5}
   .comp-row.state-skip .comp-name{color:#a78bfa}
 }
+.comp-archived-badge{font-size:9px;background:var(--border);color:var(--muted);border-radius:4px;padding:1px 5px;margin-left:5px;vertical-align:middle}
 .comp-desc{font-size:11px;color:var(--muted);margin-top:2px;display:none;line-height:1.4}
 .comp-desc.open{display:block}
 .comp-actions{display:flex;gap:4px;flex-shrink:0}
 .btn-icon-sm{background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:15px;padding:2px 4px;border-radius:5px}
 .btn-icon-sm:hover{background:var(--border)}
-
 .archived-section{margin-top:4px}
 .archived-toggle{background:transparent;border:none;cursor:pointer;font-size:11px;color:var(--muted);padding:4px 0;display:flex;align-items:center;gap:4px}
-
 .add-comp-row{display:flex;align-items:center;gap:7px;padding:.4rem .5rem;cursor:pointer;color:var(--muted);font-size:12px;border-radius:8px;margin-top:2px}
 .add-comp-row:hover{background:var(--surface)}
-
 .save-area{margin-top:1.25rem}
 .btn-save{width:100%;padding:13px;background:var(--text);color:var(--bg);border:none;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer}
 .day-total{text-align:center;font-size:12px;color:var(--muted);margin-top:6px}
-
-/* DAY INDICATOR */
 .day-indicator{width:10px;height:10px;border-radius:50%;flex-shrink:0;display:inline-block;margin-left:8px;vertical-align:middle}
 .day-indicator.saved{background:#059669}
 .day-indicator.unsaved{background:var(--border);border:1px solid var(--muted)}
-
-/* MINI CAL */
 .cal-toggle{background:transparent;border:1px solid var(--border);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px;color:var(--muted)}
-.mini-cal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem;margin-bottom:1rem;display:none}
-.mini-cal.open{display:block}
+.mini-cal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem;margin-bottom:1rem}
 .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
 .cal-month{font-size:13px;font-weight:600}
 .cal-nav{background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:2px 6px}
@@ -120,14 +100,9 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .cal-day.today-d{border-color:var(--muted)}
 .cal-day.current-d{border-color:var(--text);font-weight:700}
 .cal-day.has-data{background:#d1fae5;color:#065f46}
-.cal-day.has-data:hover{background:#a7f3d0}
 .cal-day.no-data{background:var(--bg)}
 .cal-day.no-data:hover{background:var(--border)}
-@media(prefers-color-scheme:dark){
-  .cal-day.has-data{background:#064e35;color:#6ee7b7}
-}
-
-/* MODAL */
+@media(prefers-color-scheme:dark){.cal-day.has-data{background:#064e35;color:#6ee7b7}}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:flex-end;justify-content:center}
 .modal-overlay.hidden{display:none}
 .modal{background:var(--surface);border-radius:16px 16px 0 0;padding:1.25rem 1rem 2rem;width:100%;max-width:520px}
@@ -137,8 +112,6 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .modal-btns{display:flex;gap:8px}
 .btn-primary{flex:1;padding:11px;background:var(--text);color:var(--bg);border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
 .btn-cancel{flex:1;padding:11px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;font-size:14px;cursor:pointer}
-
-/* DASHBOARD */
 .dash-controls{display:flex;align-items:center;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
 .dash-controls label{font-size:12px;color:var(--muted)}
 .dash-controls input[type=number]{width:58px;padding:5px 8px;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text);font-size:13px;text-align:center}
@@ -154,8 +127,6 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .dash-card-detail{display:none;margin-top:.5rem;border-top:1px solid rgba(0,0,0,.1);padding-top:.4rem}
 .dash-card-detail.open{display:block}
 .comp-detail-row{font-size:10px;display:flex;justify-content:space-between;margin-bottom:2px}
-
-/* HEBDO */
 .week-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:.75rem}
 .week-card-title{font-size:12px;font-weight:600;margin-bottom:.6rem}
 .week-bars{display:flex;gap:4px;align-items:flex-end;height:60px}
@@ -164,15 +135,11 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .week-bar{width:100%;border-radius:3px 3px 0 0;min-height:4px}
 .week-bar-label{font-size:9px;color:var(--muted)}
 .week-bar-pct{font-size:9px;font-weight:600}
-.fill-none{background:var(--surface);color:var(--muted);border-color:var(--border)!important}
 .loading{text-align:center;padding:2rem;color:var(--muted);font-size:13px}
-.empty-state{text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:13px}
 </style>
 </head>
 <body>
-
 <div class="toast" id="toast"></div>
-
 <nav>
   <div class="nav-brand">Qualités & Horizons</div>
   <div class="nav-tabs">
@@ -181,11 +148,9 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
     <button class="nav-tab" onclick="showPage('hebdo',this)">Hebdo</button>
   </div>
 </nav>
-
 <div id="page-saisie" class="page active"></div>
 <div id="page-dashboard" class="page"></div>
 <div id="page-hebdo" class="page"></div>
-
 <div class="modal-overlay hidden" id="modal-overlay">
   <div class="modal">
     <div class="modal-title" id="modal-title">Composante</div>
@@ -197,28 +162,18 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
     </div>
   </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
-const SUPABASE_URL = 'https://gzfliakogbmuvwurwqfy.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6ZmxpYWtvZ2JtdXZ3dXJ3cWZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NjQ5NTMsImV4cCI6MjA5ODE0MDk1M30.35aNfS9uS1oCxvhk-6Tgg9wi93hGzU10bBBN4-Lz1KM';
+var SUPABASE_URL = 'https://gzfliakogbmuvwurwqfy.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6ZmxpYWtvZ2JtdXZ3dXJ3cWZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NjQ5NTMsImV4cCI6MjA5ODE0MDk1M30.35aNfS9uS1oCxvhk-6Tgg9wi93hGzU10bBBN4-Lz1KM';
 
-const HORIZONS = [
-  {id:'spirituel',label:'Spirituel',cls:'border-spirituel',cssVar:'--spirituel',
-   vision:'I am living in a World of Love, Joy and Peace of God',
-   qualities:['Rester Conscient','Être droit','Contribuer dans la société']},
-  {id:'professionnel',label:'Professionnel',cls:'border-professionnel',cssVar:'--professionnel',
-   vision:'I am giving perfect services for a perfect Pay',
-   qualities:['Apprendre de nouvelles compétences','Donner un service de qualité','Avoir un revenu']},
-  {id:'social',label:'Social',cls:'border-social',cssVar:'--social',
-   vision:'I am sharing life with beautiful spirits',
-   qualities:['Prendre soins de ma petite famille','Prendre soins de ma grande famille','Garder une bonne relation avec amis et proches']},
-  {id:'personnel',label:'Personnel',cls:'border-personnel',cssVar:'--personnel',
-   vision:'I am living in perfect life conditions and perfect life style',
-   qualities:['Prendre soins de mon corps','Vivre avec confort','Faire des activités de loisirs']}
+var HORIZONS = [
+  {id:'spirituel',label:'Spirituel',cssVar:'--spirituel',vision:'I am living in a World of Love, Joy and Peace of God',qualities:['Rester Conscient','Être droit','Contribuer dans la société']},
+  {id:'professionnel',label:'Professionnel',cssVar:'--professionnel',vision:'I am giving perfect services for a perfect Pay',qualities:['Apprendre de nouvelles compétences','Donner un service de qualité','Avoir un revenu']},
+  {id:'social',label:'Social',cssVar:'--social',vision:'I am sharing life with beautiful spirits',qualities:['Prendre soins de ma petite famille','Prendre soins de ma grande famille','Garder une bonne relation avec amis et proches']},
+  {id:'personnel',label:'Personnel',cssVar:'--personnel',vision:'I am living in perfect life conditions and perfect life style',qualities:['Prendre soins de mon corps','Vivre avec confort','Faire des activités de loisirs']}
 ];
-
-const ALL_QUALITIES = HORIZONS.flatMap(function(h){ return h.qualities; });
+var ALL_QUALITIES = HORIZONS.flatMap(function(h){return h.qualities;});
 
 var sb = null;
 var currentOffset = 0;
@@ -231,14 +186,15 @@ var calOpen = false;
 var calViewYear = new Date().getFullYear();
 var calViewMonth = new Date().getMonth();
 var savedDates = new Set();
+var dashDays = 30;
+var weekDays = 7;
+var openDashCards = new Set();
 
-// COMPONENTS structure: {id, name, desc, archived, archivedAt}
 var COMPONENTS = {};
 ALL_QUALITIES.forEach(function(q){
-  COMPONENTS[q] = [{id:uid(),name:'A',desc:'',archived:false},{id:uid(),name:'B',desc:'',archived:false}];
+  COMPONENTS[q] = [{id:uid(),name:'A',desc:'',archived:false,archivedAt:null},{id:uid(),name:'B',desc:'',archived:false,archivedAt:null}];
 });
 
-// ── UTILS ──
 function uid(){ return Math.random().toString(36).slice(2,9); }
 function dStr(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function todayStr(){ return dStr(new Date()); }
@@ -247,225 +203,169 @@ function dateStr(offset){ var d=new Date(); d.setDate(d.getDate()+offset); retur
 function dateFR(offset){ var d=new Date(); d.setDate(d.getDate()+offset); var s=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}); return s.charAt(0).toUpperCase()+s.slice(1); }
 function lsGet(k){ try{return JSON.parse(localStorage.getItem(k));}catch{return null;} }
 function lsSet(k,v){ try{localStorage.setItem(k,JSON.stringify(v));}catch{} }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// ── TOAST ──
 function showToast(msg){
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); }, 2800);
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2800);
 }
 
-// ── GRADIENT ──
-function lerp(a,b,t){ return [Math.round(a[0]+(b[0]-a[0])*t),Math.round(a[1]+(b[1]-a[1])*t),Math.round(a[2]+(b[2]-a[2])*t)]; }
+function lerp(a,b,t){return[Math.round(a[0]+(b[0]-a[0])*t),Math.round(a[1]+(b[1]-a[1])*t),Math.round(a[2]+(b[2]-a[2])*t)];}
 function grad(p){
-  var t=p/100, r=[220,38,38], o=[234,88,12], g=[5,150,105], rgb;
-  if(t<=0.5) rgb=lerp(r,o,t*2); else rgb=lerp(o,g,(t-0.5)*2);
+  var t=p/100,r=[220,38,38],o=[234,88,12],g=[5,150,105],rgb;
+  if(t<=0.5)rgb=lerp(r,o,t*2);else rgb=lerp(o,g,(t-0.5)*2);
   return 'rgb('+rgb[0]+','+rgb[1]+','+rgb[2]+')';
 }
-
-// ── SCORE — 4 états: true=OK, 'ko'=KO, 'skip'=skip, undefined/false=vide(KO) ──
-function qualityScore(qName, checks){
-  var comps = (COMPONENTS[qName]||[]).filter(function(c){ return !c.archived; });
-  if(!comps.length) return null;
-  var active = comps.filter(function(c){ return checks[c.id] !== 'skip'; });
-  if(!active.length) return null;
-  var ok = active.filter(function(c){ return checks[c.id] === true; }).length;
-  return Math.round((ok / active.length) * 100);
+function gradBg(p){
+  var t=p/100,r=[220,38,38],o=[234,88,12],g=[5,150,105],rgb;
+  if(t<=0.5)rgb=lerp(r,o,t*2);else rgb=lerp(o,g,(t-0.5)*2);
+  var dark=window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches;
+  return 'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+','+(dark?0.28:0.15)+')';
 }
 
-// ── INIT ──
+// Score: true=OK(100%), 'ko'=KO(0%), 'skip'=exclu, vide/false=KO(0%)
+function qualityScore(qName,checks){
+  var comps=(COMPONENTS[qName]||[]).filter(function(c){return !c.archived;});
+  if(!comps.length) return null;
+  var active=comps.filter(function(c){return checks[c.id]!=='skip';});
+  if(!active.length) return null;
+  var ok=active.filter(function(c){return checks[c.id]===true;}).length;
+  return Math.round((ok/active.length)*100);
+}
+
+function compStateClass(val){
+  if(val===true) return 'state-ok';
+  if(val==='ko') return 'state-ko';
+  if(val==='skip') return 'state-skip';
+  return '';
+}
+function compStateIcon(val){
+  if(val===true) return '✓';
+  if(val==='ko') return '✗';
+  if(val==='skip') return '⊘';
+  return '';
+}
+
+// Cycle: vide→ok→ko→skip→vide
+function toggleComp(id){
+  var cur=dayChecked[id];
+  if(!cur||cur===false) dayChecked[id]=true;
+  else if(cur===true) dayChecked[id]='ko';
+  else if(cur==='ko') dayChecked[id]='skip';
+  else dayChecked[id]=false;
+  renderSaisie();
+}
+function toggleDesc(id){ openDescs.has(id)?openDescs.delete(id):openDescs.add(id); renderSaisie(); }
+function toggleQ(q){ openQualities.has(q)?openQualities.delete(q):openQualities.add(q); renderSaisie(); }
+function toggleArchived(q){ openArchived.has(q)?openArchived.delete(q):openArchived.add(q); renderSaisie(); }
+
+// Init
 (async function init(){
-  // clean localStorage empty days
   for(var i=localStorage.length-1;i>=0;i--){
     var k=localStorage.key(i);
     if(k&&k.startsWith('day:')){
       var v=lsGet(k);
-      var hasTrue=v&&Object.values(v).some(function(val){return val===true;});
-      if(!hasTrue) localStorage.removeItem(k);
+      if(!v||!Object.values(v).some(function(x){return x===true;})) localStorage.removeItem(k);
     }
   }
-  var stored = lsGet('components');
-  if(stored) COMPONENTS = stored;
-  if(SUPABASE_URL !== 'VOTRE_URL'){
-    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    await syncComponentsFromDB();
-  }
+  var stored=lsGet('components');
+  if(stored) COMPONENTS=stored;
+  sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+  await syncComponentsFromDB();
   await loadDay();
   await loadSavedDates();
   renderSaisie();
 })();
 
 async function syncComponentsFromDB(){
-  if(!sb) return;
-  var res = await sb.from('components_config').select('*').maybeSingle();
-  if(res.data && res.data.config){
-    COMPONENTS = res.data.config;
-    lsSet('components', COMPONENTS);
-  } else {
-    var saved = lsGet('components');
-    if(saved) COMPONENTS = saved;
-    await sb.from('components_config').upsert({id:1,config:COMPONENTS},{onConflict:'id'});
-    lsSet('components', COMPONENTS);
-  }
+  var res=await sb.from('components_config').select('*').maybeSingle();
+  if(res.data&&res.data.config){ COMPONENTS=res.data.config; lsSet('components',COMPONENTS); }
+  else { var saved=lsGet('components'); if(saved) COMPONENTS=saved; await sb.from('components_config').upsert({id:1,config:COMPONENTS},{onConflict:'id'}); lsSet('components',COMPONENTS); }
 }
+async function saveComponentsToDB(){ lsSet('components',COMPONENTS); await sb.from('components_config').upsert({id:1,config:COMPONENTS},{onConflict:'id'}); }
 
-async function saveComponentsToDB(){
-  lsSet('components', COMPONENTS);
-  if(!sb) return;
-  await sb.from('components_config').upsert({id:1,config:COMPONENTS},{onConflict:'id'});
-}
-
-// ── BACKFILL ──
 async function backfillSkip(compId){
-  if(!sb) return;
-  var today = todayStr();
-  var res = await sb.from('suivi_jours').select('date,checks').lt('date',today);
-  if(!res.data||!res.data.length) return;
+  var today=todayStr();
+  var res=await sb.from('suivi_jours').select('date,checks').lt('date',today);
+  if(!res.data) return;
   for(var i=0;i<res.data.length;i++){
-    var row = res.data[i];
-    var checks = row.checks||{};
-    if(!(compId in checks)){
-      checks[compId] = 'skip';
-      await sb.from('suivi_jours').update({checks:checks}).eq('date',row.date);
-    }
+    var row=res.data[i]; var checks=row.checks||{};
+    if(!(compId in checks)){ checks[compId]='skip'; await sb.from('suivi_jours').update({checks:checks}).eq('date',row.date); }
+  }
+}
+async function backfillSkipRange(compId,fromDate,toDate){
+  var res=await sb.from('suivi_jours').select('date,checks').gte('date',fromDate).lte('date',toDate);
+  if(!res.data) return;
+  for(var i=0;i<res.data.length;i++){
+    var row=res.data[i]; var checks=row.checks||{};
+    checks[compId]='skip'; await sb.from('suivi_jours').update({checks:checks}).eq('date',row.date);
   }
 }
 
-async function backfillSkipRange(compId, fromDate, toDate){
-  // set skip for days between fromDate and toDate (archive period)
-  if(!sb) return;
-  var res = await sb.from('suivi_jours').select('date,checks').gte('date',fromDate).lte('date',toDate);
-  if(!res.data||!res.data.length) return;
-  for(var i=0;i<res.data.length;i++){
-    var row = res.data[i];
-    var checks = row.checks||{};
-    checks[compId] = 'skip';
-    await sb.from('suivi_jours').update({checks:checks}).eq('date',row.date);
-  }
-}
-
-// ── LOAD DAY ──
 async function loadDay(){
-  dayChecked = {};
-  if(sb){
-    var res = await sb.from('suivi_jours').select('*').eq('date',dateStr(currentOffset)).maybeSingle();
-    if(res.data && res.data.checks) dayChecked = res.data.checks;
-  } else {
-    var local = lsGet('day:'+dateStr(currentOffset));
-    if(local) dayChecked = local;
-  }
-  var hasTrue = Object.values(dayChecked).some(function(v){return v===true;});
-  if(hasTrue) savedDates.add(dateStr(currentOffset));
-  else savedDates.delete(dateStr(currentOffset));
+  dayChecked={};
+  var res=await sb.from('suivi_jours').select('*').eq('date',dateStr(currentOffset)).maybeSingle();
+  if(res.data&&res.data.checks) dayChecked=res.data.checks;
+  var hasTrue=Object.values(dayChecked).some(function(v){return v===true;});
+  if(hasTrue) savedDates.add(dateStr(currentOffset)); else savedDates.delete(dateStr(currentOffset));
 }
 
 async function loadSavedDates(){
-  if(sb){
-    var start = new Date(calViewYear,calViewMonth-1,1);
-    var end = new Date(calViewYear,calViewMonth+2,0);
-    var res = await sb.from('suivi_jours').select('date,checks').gte('date',dStr(start)).lte('date',dStr(end));
-    if(res.data) res.data.forEach(function(r){
-      var hasTrue = Object.values(r.checks||{}).some(function(v){return v===true;});
-      if(hasTrue) savedDates.add(r.date); else savedDates.delete(r.date);
-    });
-  }
+  var start=new Date(calViewYear,calViewMonth-1,1);
+  var end=new Date(calViewYear,calViewMonth+2,0);
+  var res=await sb.from('suivi_jours').select('date,checks').gte('date',dStr(start)).lte('date',dStr(end));
+  if(res.data) res.data.forEach(function(r){
+    var hasTrue=Object.values(r.checks||{}).some(function(v){return v===true;});
+    if(hasTrue) savedDates.add(r.date); else savedDates.delete(r.date);
+  });
 }
 
-// ── SAVE DAY ──
 async function saveDay(){
-  var date = dateStr(currentOffset);
-  lsSet('day:'+date, dayChecked);
-
-  if(!sb){
-    var hasTrue = Object.values(dayChecked).some(function(v){return v===true;});
-    if(hasTrue) savedDates.add(date); else savedDates.delete(date);
-    showToast('Journée enregistrée ✓');
-    renderSaisie();
-    return;
-  }
-
-  // check if exists
-  var existing = await sb.from('suivi_jours').select('date').eq('date',date).maybeSingle();
-  var isUpdate = !!(existing.data);
-
-  var res = await sb.from('suivi_jours').upsert({date:date,checks:dayChecked},{onConflict:'date'});
-  if(res.error){
-    showToast('Erreur d\'enregistrement');
-    return;
-  }
-  var hasTrue = Object.values(dayChecked).some(function(v){return v===true;});
+  var date=dateStr(currentOffset);
+  lsSet('day:'+date,dayChecked);
+  var existing=await sb.from('suivi_jours').select('date').eq('date',date).maybeSingle();
+  var isUpdate=!!(existing.data);
+  var res=await sb.from('suivi_jours').upsert({date:date,checks:dayChecked},{onConflict:'date'});
+  if(res.error){showToast('Erreur enregistrement');return;}
+  var hasTrue=Object.values(dayChecked).some(function(v){return v===true;});
   if(hasTrue) savedDates.add(date); else savedDates.delete(date);
-  showToast(isUpdate ? 'Journée mise à jour ✓' : 'Journée enregistrée ✓');
+  showToast(isUpdate?'Journée mise à jour ✓':'Journée enregistrée ✓');
   renderSaisie();
 }
 
-// ── TOGGLE COMP — 4 états: vide → ok → ko → skip → vide ──
-function toggleComp(id){
-  var cur = dayChecked[id];
-  if(!cur || cur === false) dayChecked[id] = true;
-  else if(cur === true) dayChecked[id] = 'ko';
-  else if(cur === 'ko') dayChecked[id] = 'skip';
-  else dayChecked[id] = false;
-  renderSaisie();
-}
-
-function compStateClass(val){
-  if(val === true) return 'state-ok';
-  if(val === 'ko') return 'state-ko';
-  if(val === 'skip') return 'state-skip';
-  return '';
-}
-function compStateIcon(val){
-  if(val === true) return '✓';
-  if(val === 'ko') return '✗';
-  if(val === 'skip') return '⊘';
-  return '';
-}
-
-// ── ARCHIVE ──
-async function archiveComp(q, id){
-  var comp = (COMPONENTS[q]||[]).find(function(c){return c.id===id;});
+async function archiveComp(q,id){
+  var comp=(COMPONENTS[q]||[]).find(function(c){return c.id===id;});
   if(!comp) return;
-  comp.archived = true;
-  comp.archivedAt = todayStr();
+  comp.archived=true; comp.archivedAt=todayStr();
+  await saveComponentsToDB(); renderSaisie();
+}
+
+async function unarchiveComp(q,id){
+  var comp=(COMPONENTS[q]||[]).find(function(c){return c.id===id;});
+  if(!comp||!comp.archived) return;
+  var archivedAt=comp.archivedAt;
+  var today=todayStr();
+  comp.archived=false; comp.archivedAt=null;
   await saveComponentsToDB();
+  if(archivedAt){ var yesterday=addDays(today,-1); if(archivedAt<=yesterday) await backfillSkipRange(id,archivedAt,yesterday); }
   renderSaisie();
 }
 
-async function unarchiveComp(q, id){
-  var comp = (COMPONENTS[q]||[]).find(function(c){return c.id===id;});
-  if(!comp || !comp.archived) return;
-  var archivedAt = comp.archivedAt;
-  var today = todayStr();
-  comp.archived = false;
-  comp.archivedAt = null;
-  await saveComponentsToDB();
-  // backfill skip for archive period
-  if(archivedAt && sb){
-    var yesterday = addDays(today, -1);
-    if(archivedAt <= yesterday){
-      await backfillSkipRange(id, archivedAt, yesterday);
-    }
-  }
-  renderSaisie();
-}
-
-// ── RENDER SAISIE ──
-function toggleCal(){ calOpen=!calOpen; if(calOpen) loadSavedDates().then(renderSaisie); else renderSaisie(); }
-function calPrev(){ calViewMonth--; if(calViewMonth<0){calViewMonth=11;calViewYear--;} loadSavedDates().then(renderSaisie); }
-function calNext(){ calViewMonth++; if(calViewMonth>11){calViewMonth=0;calViewYear++;} loadSavedDates().then(renderSaisie); }
+// Calendar
+function toggleCal(){calOpen=!calOpen;if(calOpen)loadSavedDates().then(renderSaisie);else renderSaisie();}
+function calPrev(){calViewMonth--;if(calViewMonth<0){calViewMonth=11;calViewYear--;}loadSavedDates().then(renderSaisie);}
+function calNext(){calViewMonth++;if(calViewMonth>11){calViewMonth=0;calViewYear++;}loadSavedDates().then(renderSaisie);}
 function calGoDay(ds){
   var today=new Date();today.setHours(0,0,0,0);
   var target=new Date(ds+'T00:00:00');
-  if(target>today) return;
+  if(target>today)return;
   var diff=Math.round((target-today)/(1000*60*60*24));
-  currentOffset=diff;
-  loadDay().then(renderSaisie);
+  currentOffset=diff; loadDay().then(renderSaisie);
 }
 
 function renderMiniCal(){
-  if(!calOpen) return '';
+  if(!calOpen)return'';
   var months=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
   var dows=['L','M','M','J','V','S','D'];
   var today=new Date();today.setHours(0,0,0,0);
@@ -473,159 +373,144 @@ function renderMiniCal(){
   var lastDay=new Date(calViewYear,calViewMonth+1,0);
   var startDow=(firstDay.getDay()+6)%7;
   var currentDate=dateStr(currentOffset);
-  var html='<div class="mini-cal open"><div class="cal-header">';
-  html+='<button class="cal-nav" onclick="calPrev()">&#8592;</button>';
-  html+='<div class="cal-month">'+months[calViewMonth]+' '+calViewYear+'</div>';
-  html+='<button class="cal-nav" onclick="calNext()">&#8594;</button>';
-  html+='</div><div class="cal-grid">';
-  dows.forEach(function(d){ html+='<div class="cal-dow">'+d+'</div>'; });
-  for(var i=0;i<startDow;i++) html+='<div class="cal-day empty"></div>';
+  var h='<div class="mini-cal"><div class="cal-header">';
+  h+='<button class="cal-nav" onclick="calPrev()">&#8592;</button>';
+  h+='<div class="cal-month">'+months[calViewMonth]+' '+calViewYear+'</div>';
+  h+='<button class="cal-nav" onclick="calNext()">&#8594;</button>';
+  h+='</div><div class="cal-grid">';
+  dows.forEach(function(d){h+='<div class="cal-dow">'+d+'</div>';});
+  for(var i=0;i<startDow;i++) h+='<div class="cal-day empty"></div>';
   for(var d=1;d<=lastDay.getDate();d++){
     var dt=new Date(calViewYear,calViewMonth,d);dt.setHours(0,0,0,0);
     var dtStr=dStr(dt);
-    var isFuture=dt>today;
-    var isToday=dt.getTime()===today.getTime();
-    var isCurrent=dtStr===currentDate;
-    var hasSave=savedDates.has(dtStr);
+    var isFuture=dt>today,isToday=dt.getTime()===today.getTime(),isCurrent=dtStr===currentDate,hasSave=savedDates.has(dtStr);
     var cls='cal-day';
-    if(isFuture) cls+=' future';
-    else if(hasSave) cls+=' has-data';
-    else cls+=' no-data';
-    if(isToday) cls+=' today-d';
-    if(isCurrent) cls+=' current-d';
-    html+='<div class="'+cls+'" '+(isFuture?'':'onclick="calGoDay(\''+dtStr+'\')"')+' title="'+dtStr+'">'+d+'</div>';
+    if(isFuture)cls+=' future';else if(hasSave)cls+=' has-data';else cls+=' no-data';
+    if(isToday)cls+=' today-d';if(isCurrent)cls+=' current-d';
+    h+='<div class="'+cls+'" '+(isFuture?'':'onclick="calGoDay(\''+dtStr+'\')"')+'>'+d+'</div>';
   }
-  html+='</div></div>';
-  return html;
+  h+='</div></div>'; return h;
 }
 
 function renderSaisie(){
-  var totalComps=0, okComps=0, koComps=0;
+  var totalComps=0,okComps=0;
   ALL_QUALITIES.forEach(function(q){
     (COMPONENTS[q]||[]).filter(function(c){return !c.archived;}).forEach(function(c){
       totalComps++;
-      var v=dayChecked[c.id];
-      if(v===true) okComps++;
-      else if(v==='ko'||!v||v===false) koComps++;
+      if(dayChecked[c.id]===true) okComps++;
     });
   });
+  var isSaved=savedDates.has(dateStr(currentOffset));
+  var currentDay=dateStr(currentOffset);
+  var today=todayStr();
 
-  var isSaved = savedDates.has(dateStr(currentOffset));
-  var html = '<div class="day-nav"><div class="day-label">'+dateFR(currentOffset);
-  html += '<span class="day-indicator '+(isSaved?'saved':'unsaved')+'"></span></div>';
-  html += '<div class="day-btns">';
-  html += '<button class="btn-sm" onclick="nav(-1)">&#8592;</button>';
-  html += '<button class="btn-sm" onclick="goToday()">Auj.</button>';
-  html += '<button class="btn-sm" onclick="nav(1)" '+(currentOffset>=0?'disabled':'')+'>&#8594;</button>';
-  html += '<button class="cal-toggle" onclick="toggleCal()">📅</button>';
-  html += '</div></div>';
-  html += renderMiniCal();
+  var h='<div class="day-nav"><div class="day-label">'+dateFR(currentOffset);
+  h+='<span class="day-indicator '+(isSaved?'saved':'unsaved')+'"></span></div>';
+  h+='<div class="day-btns">';
+  h+='<button class="btn-sm" onclick="nav(-1)">&#8592;</button>';
+  h+='<button class="btn-sm" onclick="goToday()">Auj.</button>';
+  h+='<button class="btn-sm" onclick="nav(1)" '+(currentOffset>=0?'disabled':'')+'>&#8594;</button>';
+  h+='<button class="cal-toggle" onclick="toggleCal()">📅</button>';
+  h+='</div></div>';
+  h+=renderMiniCal();
 
-  HORIZONS.forEach(function(h){
-    var bgVar = 'var(--'+h.id+'-l)';
-    var colorVar = 'var('+h.cssVar+')';
-    html += '<div class="horizon-block"><div class="h-header" style="background:'+bgVar+'">';
-    html += '<div class="h-dot" style="background:'+colorVar+'"></div>';
-    html += '<div class="h-name" style="color:'+colorVar+'">'+h.label+'</div>';
-    html += '<div class="h-vision">'+h.vision+'</div></div>';
+  HORIZONS.forEach(function(horizon){
+    var bgVar='var(--'+horizon.id+'-l)';
+    var colorVar='var('+horizon.cssVar+')';
+    h+='<div class="horizon-block"><div class="h-header" style="background:'+bgVar+'">';
+    h+='<div class="h-dot" style="background:'+colorVar+'"></div>';
+    h+='<div class="h-name" style="color:'+colorVar+'">'+horizon.label+'</div>';
+    h+='<div class="h-vision">'+horizon.vision+'</div></div>';
 
-    h.qualities.forEach(function(q){
-      var comps = (COMPONENTS[q]||[]).filter(function(c){return !c.archived;});
-      var archivedComps = (COMPONENTS[q]||[]).filter(function(c){return c.archived;});
-      var score = qualityScore(q, dayChecked);
-      var isOpen = openQualities.has(q);
-      var scoreHtml = score!==null ? '<span class="quality-score" style="background:'+grad(score)+'22;color:'+grad(score)+'">'+score+'%</span>' : '';
-      html += '<div class="quality-block">';
-      html += '<div class="quality-title '+(isOpen?'open':'')+'" onclick="toggleQ(\''+q.replace(/'/g,"\\'")+'\')">';
-      html += '<span class="quality-title-name">'+q+'</span>'+scoreHtml;
-      html += '<span class="arrow">&#9654;</span></div>';
+    horizon.qualities.forEach(function(q){
+      var allComps=COMPONENTS[q]||[];
+      var activeComps=allComps.filter(function(c){return !c.archived;});
+      var archivedComps=allComps.filter(function(c){return c.archived;});
+      var score=qualityScore(q,dayChecked);
+      var isOpen=openQualities.has(q);
+      var scoreHtml=score!==null?'<span class="quality-score" style="background:'+grad(score)+'22;color:'+grad(score)+'">'+score+'%</span>':'';
+
+      h+='<div class="quality-block">';
+      h+='<div class="quality-title '+(isOpen?'open':'')+'" onclick="toggleQ('+JSON.stringify(q)+')">';
+      h+='<span class="quality-title-name">'+esc(q)+'</span>'+scoreHtml;
+      h+='<span class="arrow">&#9654;</span></div>';
 
       if(isOpen){
-        html += '<div class="components-list">';
-        // today date to check visibility of archived comps on past days
-        var today = todayStr();
-        var currentDay = dateStr(currentOffset);
+        h+='<div class="components-list">';
 
-        comps.forEach(function(c){
-          var val = dayChecked[c.id];
-          var cls = compStateClass(val);
-          var icon = compStateIcon(val);
-          var descOpen = openDescs.has(c.id);
-          html += '<div class="comp-row '+(cls||'')+'">';
-          html += '<div class="comp-check" onclick="toggleComp('+JSON.stringify(c.id)+')">'+icon+'</div>';
-          html += '<div class="comp-info" onclick="toggleDesc('+JSON.stringify(c.id)+')">';
-          html += '<div class="comp-name">'+c.name+'</div>';
-          if(c.desc) html += '<div class="comp-desc '+(descOpen?'open':'')+'">'+c.desc+'</div>';
-          html += '</div>';
-          html += '<div class="comp-actions">';
-          html += '<button class="btn-icon-sm" onclick="editComp('+JSON.stringify(q)+','+JSON.stringify(c.id)+')" title="Modifier">✏️</button>';
-          html += '<button class="btn-icon-sm" onclick="archiveComp('+JSON.stringify(q)+','+JSON.stringify(c.id)+')" title="Archiver">📦</button>';
-          html += '<button class="btn-icon-sm" onclick="deleteComp('+JSON.stringify(q)+','+JSON.stringify(c.id)+')" title="Supprimer">🗑</button>';
-          html += '</div></div>';
+        // Active components
+        activeComps.forEach(function(c){
+          var val=dayChecked[c.id];
+          var cls=compStateClass(val);
+          var icon=compStateIcon(val);
+          var descOpen=openDescs.has(c.id);
+          h+='<div class="comp-row '+(cls||'')+'">';
+          h+='<div class="comp-check" onclick="toggleComp('+JSON.stringify(c.id)+')">'+icon+'</div>';
+          h+='<div class="comp-info" onclick="toggleDesc('+JSON.stringify(c.id)+')">';
+          h+='<div class="comp-name">'+esc(c.name)+'</div>';
+          if(c.desc) h+='<div class="comp-desc '+(descOpen?'open':'')+'">'+esc(c.desc)+'</div>';
+          h+='</div>';
+          h+='<div class="comp-actions">';
+          h+='<button class="btn-icon-sm" onclick="editComp('+JSON.stringify(q)+','+JSON.stringify(c.id)+')" title="Modifier">✏️</button>';
+          h+='<button class="btn-icon-sm" onclick="archiveComp('+JSON.stringify(q)+','+JSON.stringify(c.id)+')" title="Archiver">📦</button>';
+          h+='<button class="btn-icon-sm" onclick="deleteComp('+JSON.stringify(q)+','+JSON.stringify(c.id)+')" title="Supprimer">🗑</button>';
+          h+='</div></div>';
         });
 
-        // archived comps on past days (before archivedAt): show cochable, no action buttons
-        var currentDay = dateStr(currentOffset);
-        var activeArchivedOnThisDay = archivedComps.filter(function(c){
+        // Archived comps visible on past days (before archivedAt)
+        archivedComps.filter(function(c){
           return c.archivedAt && currentDay < c.archivedAt;
-        });
-        activeArchivedOnThisDay.forEach(function(c){
-          var val = dayChecked[c.id];
-          var cls = compStateClass(val);
-          var icon = compStateIcon(val);
-          var descOpen = openDescs.has(c.id);
-          html += '<div class="comp-row '+(cls||'')+'">';
-          html += '<div class="comp-check" onclick="toggleComp('+JSON.stringify(c.id)+')">'+(icon||'')+'</div>';
-          html += '<div class="comp-info"><div class="comp-name">'+c.name+'<span class="comp-archived-badge">archivée</span></div>';
-          if(c.desc) html += '<div class="comp-desc '+(descOpen?'open':'')+'">'+c.desc+'</div>';
-          html += '</div></div>';
+        }).forEach(function(c){
+          var val=dayChecked[c.id];
+          var cls=compStateClass(val);
+          var icon=compStateIcon(val);
+          var descOpen=openDescs.has(c.id);
+          h+='<div class="comp-row '+(cls||'')+'">';
+          h+='<div class="comp-check" onclick="toggleComp('+JSON.stringify(c.id)+')">'+icon+'</div>';
+          h+='<div class="comp-info" onclick="toggleDesc('+JSON.stringify(c.id)+')">';
+          h+='<div class="comp-name">'+esc(c.name)+'<span class="comp-archived-badge">archivée</span></div>';
+          if(c.desc) h+='<div class="comp-desc '+(descOpen?'open':'')+'">'+esc(c.desc)+'</div>';
+          h+='</div></div>';
         });
 
-        // archived section — reactivate + delete only
+        // Archived section — always visible with reactivate + delete
         if(archivedComps.length){
-          var aOpen = openArchived.has(q);
-          html += '<div class="archived-section">';
-          html += '<button class="archived-toggle" onclick="toggleArchived('+JSON.stringify(q)+')">'+  (aOpen?'▾':'▸')+' Archivées ('+archivedComps.length+')</button>';
+          var aOpen=openArchived.has(q);
+          h+='<div class="archived-section">';
+          h+='<button class="archived-toggle" onclick="toggleArchived('+JSON.stringify(q)+')">'+(aOpen?'▾':'▸')+' Archivées ('+archivedComps.length+')</button>';
           if(aOpen){
             archivedComps.forEach(function(c){
-              html += '<div class="comp-row state-archived">';
-              html += '<div class="comp-check" style="opacity:.4"></div>';
-              html += '<div class="comp-info"><div class="comp-name">'+c.name+(c.archivedAt?'<span class="comp-archived-badge">archivée le '+c.archivedAt+'</span>':'')+'</div></div>';
-              html += '<div class="comp-actions">';
-              html += '<button class="btn-icon-sm" onclick="unarchiveComp('+JSON.stringify(q)+','+JSON.stringify(c.id)+')">♻️</button>';
-              html += '<button class="btn-icon-sm" onclick="deleteComp('+JSON.stringify(q)+','+JSON.stringify(c.id)+')">🗑</button>';
-              html += '</div></div>';
+              h+='<div class="comp-row state-archived">';
+              h+='<div class="comp-check" style="opacity:.4"></div>';
+              h+='<div class="comp-info"><div class="comp-name">'+esc(c.name);
+              if(c.archivedAt) h+='<span class="comp-archived-badge">archivée le '+c.archivedAt+'</span>';
+              h+='</div></div>';
+              h+='<div class="comp-actions">';
+              h+='<button class="btn-icon-sm" onclick="unarchiveComp('+JSON.stringify(q)+','+JSON.stringify(c.id)+')" title="Réactiver">♻️</button>';
+              h+='<button class="btn-icon-sm" onclick="deleteComp('+JSON.stringify(q)+','+JSON.stringify(c.id)+')" title="Supprimer">🗑</button>';
+              h+='</div></div>';
             });
           }
-          html += '</div>';
+          h+='</div>';
         }
 
-        // add component
-        html += '<div class="add-comp-row" onclick="addComp('+JSON.stringify(q)+')">+ Ajouter une composante</div>';
-
-        }
-
-        // add component button
-        html += '<div class="add-comp-row" onclick="addComp(\''+q.replace(/'/g,"\\'")+'\')">+ Ajouter une composante</div>';
-
+        h+='<div class="add-comp-row" onclick="addComp('+JSON.stringify(q)+')">+ Ajouter une composante</div>';
+        h+='</div>';
       }
-      html += '</div>';
+      h+='</div>';
     });
-    html += '</div>';
+    h+='</div>';
   });
 
-  html += '<div class="save-area"><button class="btn-save" onclick="saveDay()">Enregistrer la journée</button>';
-  html += '<div class="day-total">'+okComps+' / '+totalComps+' composantes OK</div></div>';
-  document.getElementById('page-saisie').innerHTML = html;
+  h+='<div class="save-area"><button class="btn-save" onclick="saveDay()">Enregistrer la journée</button>';
+  h+='<div class="day-total">'+okComps+' / '+totalComps+' composantes OK</div></div>';
+  document.getElementById('page-saisie').innerHTML=h;
 }
 
-function toggleQ(q){ openQualities.has(q)?openQualities.delete(q):openQualities.add(q); renderSaisie(); }
-function toggleDesc(id){ openDescs.has(id)?openDescs.delete(id):openDescs.add(id); renderSaisie(); }
-function toggleArchived(q){ openArchived.has(q)?openArchived.delete(q):openArchived.add(q); renderSaisie(); }
-async function nav(d){ currentOffset=Math.min(0,currentOffset+d); await loadDay(); renderSaisie(); }
-async function goToday(){ currentOffset=0; await loadDay(); renderSaisie(); }
+async function nav(d){currentOffset=Math.min(0,currentOffset+d);await loadDay();renderSaisie();}
+async function goToday(){currentOffset=0;await loadDay();renderSaisie();}
 
-// ── MODAL ──
+// Modal
 function openModal(title,name,desc,onSave){
   modalCtx=onSave;
   document.getElementById('modal-title').textContent=title;
@@ -634,18 +519,18 @@ function openModal(title,name,desc,onSave){
   document.getElementById('modal-overlay').classList.remove('hidden');
   setTimeout(function(){document.getElementById('modal-name').focus();},100);
 }
-function closeModal(){ document.getElementById('modal-overlay').classList.add('hidden'); modalCtx=null; }
+function closeModal(){document.getElementById('modal-overlay').classList.add('hidden');modalCtx=null;}
 function saveModal(){
   var name=document.getElementById('modal-name').value.trim();
   var desc=document.getElementById('modal-desc').value.trim();
-  if(!name) return;
-  if(modalCtx) modalCtx(name,desc);
+  if(!name)return;
+  if(modalCtx)modalCtx(name,desc);
   closeModal();
 }
 
 function addComp(q){
   openModal('Nouvelle composante','','',async function(name,desc){
-    if(!COMPONENTS[q]) COMPONENTS[q]=[];
+    if(!COMPONENTS[q])COMPONENTS[q]=[];
     var newId=uid();
     COMPONENTS[q].push({id:newId,name:name,desc:desc,archived:false,archivedAt:null});
     await saveComponentsToDB();
@@ -655,23 +540,19 @@ function addComp(q){
 }
 function editComp(q,id){
   var comp=(COMPONENTS[q]||[]).find(function(c){return c.id===id;});
-  if(!comp) return;
+  if(!comp)return;
   openModal('Modifier',comp.name,comp.desc,async function(name,desc){
-    comp.name=name; comp.desc=desc;
-    await saveComponentsToDB();
-    renderSaisie();
+    comp.name=name;comp.desc=desc;
+    await saveComponentsToDB();renderSaisie();
   });
 }
 async function deleteComp(q,id){
-  if(!confirm('Supprimer définitivement cette composante ? L\'historique sera impacté.')) return;
+  if(!confirm('Supprimer définitivement ? L\'historique sera impacté.'))return;
   COMPONENTS[q]=(COMPONENTS[q]||[]).filter(function(c){return c.id!==id;});
-  await saveComponentsToDB();
-  renderSaisie();
+  await saveComponentsToDB();renderSaisie();
 }
 
-// ── DASHBOARD ──
-var dashDays=30, openDashCards=new Set();
-
+// Dashboard
 async function renderDashboard(){
   var el=document.getElementById('page-dashboard');
   el.innerHTML='<div class="loading">Chargement...</div>';
@@ -681,20 +562,20 @@ async function renderDashboard(){
   rows.forEach(function(row){
     ALL_QUALITIES.forEach(function(q){
       var p=qualityScore(q,row.checks||{});
-      if(p!==null) scores[q].push(p);
+      if(p!==null)scores[q].push(p);
     });
   });
   function avg(arr){return arr.length?Math.round(arr.reduce(function(a,b){return a+b;},0)/arr.length):null;}
 
-  var html='<div class="dash-controls"><label>Période :</label>';
-  html+='<input type="number" id="dash-days-input" value="'+dashDays+'" min="1" max="365" />';
-  html+='<span style="font-size:12px;color:var(--muted)">jours</span>';
-  html+='<button class="btn-refresh" onclick="setDashDays()">Actualiser</button>';
-  html+='<span style="font-size:11px;color:var(--muted);margin-left:4px">'+rows.length+' jour'+(rows.length!==1?'s':'')+' de données</span></div>';
+  var h='<div class="dash-controls"><label>Période :</label>';
+  h+='<input type="number" id="dash-days-input" value="'+dashDays+'" min="1" max="365" />';
+  h+='<span style="font-size:12px;color:var(--muted)">jours</span>';
+  h+='<button class="btn-refresh" onclick="setDashDays()">Actualiser</button>';
+  h+='<span style="font-size:11px;color:var(--muted);margin-left:4px">'+rows.length+' jour'+(rows.length!==1?'s':'')+' de données</span></div>';
 
-  HORIZONS.forEach(function(h){
-    html+='<div class="dash-section"><div class="dash-section-title">'+h.label+'</div><div class="dash-grid">';
-    h.qualities.forEach(function(q){
+  HORIZONS.forEach(function(horizon){
+    h+='<div class="dash-section"><div class="dash-section-title">'+horizon.label+'</div><div class="dash-grid">';
+    horizon.qualities.forEach(function(q){
       var a=avg(scores[q]);
       var cardBg=a!==null?gradBg(a):'var(--surface)';
       var cardColor=a!==null?grad(a):'var(--muted)';
@@ -706,38 +587,29 @@ async function renderDashboard(){
         var vals=active.map(function(r){return (r.checks||{})[c.id]===true?100:0;});
         return {name:c.name,avg:vals.length?Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length):null};
       });
-      var detailHtml='';
+      var detail='';
       if(isOpen&&comps.length){
-        detailHtml='<div class="dash-card-detail open">';
+        detail='<div class="dash-card-detail open">';
         compAvgs.forEach(function(ca){
           var cc=ca.avg!==null?grad(ca.avg):'var(--muted)';
-          detailHtml+='<div class="comp-detail-row"><span>'+ca.name+'</span><span style="color:'+cc+';font-weight:600">'+(ca.avg!==null?ca.avg+'%':'—')+'</span></div>';
+          detail+='<div class="comp-detail-row"><span>'+esc(ca.name)+'</span><span style="color:'+cc+';font-weight:600">'+(ca.avg!==null?ca.avg+'%':'—')+'</span></div>';
         });
-        detailHtml+='</div>';
+        detail+='</div>';
       }
-      html+='<div class="dash-card" style="background:'+cardBg+';color:'+cardColor+';border-color:'+cardBorder+'" onclick="toggleDashCard(\''+q.replace(/'/g,"\\'")+'\')">'+
-        '<div class="dash-card-name" style="color:'+cardColor+'">'+q+'</div>'+
-        '<div class="dash-card-pct" style="color:'+cardColor+'">'+(a!==null?a+'%':'—')+'</div>'+
-        '<div class="dash-card-sub">'+scores[q].length+' jours · détail</div>'+
-        detailHtml+'</div>';
+      h+='<div class="dash-card" style="background:'+cardBg+';color:'+cardColor+';border-color:'+cardBorder+'" onclick="toggleDashCard('+JSON.stringify(q)+')">';
+      h+='<div class="dash-card-name" style="color:'+cardColor+'">'+esc(q)+'</div>';
+      h+='<div class="dash-card-pct" style="color:'+cardColor+'">'+(a!==null?a+'%':'—')+'</div>';
+      h+='<div class="dash-card-sub">'+scores[q].length+' jours · détail</div>';
+      h+=detail+'</div>';
     });
-    html+='</div></div>';
+    h+='</div></div>';
   });
-  el.innerHTML=html;
+  el.innerHTML=h;
 }
+function toggleDashCard(q){openDashCards.has(q)?openDashCards.delete(q):openDashCards.add(q);renderDashboard();}
+function setDashDays(){dashDays=parseInt(document.getElementById('dash-days-input').value)||30;openDashCards=new Set();renderDashboard();}
 
-function gradBg(p){
-  var t=p/100, r=[220,38,38], o=[234,88,12], g=[5,150,105], rgb;
-  if(t<=0.5) rgb=lerp(r,o,t*2); else rgb=lerp(o,g,(t-0.5)*2);
-  var dark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
-  return 'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+','+(dark?0.28:0.15)+')';
-}
-
-function toggleDashCard(q){ openDashCards.has(q)?openDashCards.delete(q):openDashCards.add(q); renderDashboard(); }
-function setDashDays(){ dashDays=parseInt(document.getElementById('dash-days-input').value)||30; openDashCards=new Set(); renderDashboard(); }
-
-// ── HEBDO ──
-var weekDays=7;
+// Hebdo
 async function renderHebdo(){
   var el=document.getElementById('page-hebdo');
   el.innerHTML='<div class="loading">Chargement...</div>';
@@ -745,67 +617,48 @@ async function renderHebdo(){
   var byDate={};
   rows.forEach(function(r){byDate[r.date]=r.checks||{};});
   var dates=[];
-  for(var i=weekDays-1;i>=0;i--){
-    var d=new Date(); d.setDate(d.getDate()-i);
-    dates.push(dStr(d));
-  }
-  var dayLabels=dates.map(function(dt){
-    var d=new Date(dt+'T00:00:00');
-    return d.toLocaleDateString('fr-FR',{weekday:'short'}).slice(0,2);
-  });
+  for(var i=weekDays-1;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);dates.push(dStr(d));}
+  var dayLabels=dates.map(function(dt){var d=new Date(dt+'T00:00:00');return d.toLocaleDateString('fr-FR',{weekday:'short'}).slice(0,2);});
 
-  var html='<div class="dash-controls"><label>Période :</label>';
-  html+='<input type="number" id="week-days-input" value="'+weekDays+'" min="1" max="90" />';
-  html+='<span style="font-size:12px;color:var(--muted)">jours</span>';
-  html+='<button class="btn-refresh" onclick="setWeekDays()">Actualiser</button></div>';
+  var h='<div class="dash-controls"><label>Période :</label>';
+  h+='<input type="number" id="week-days-input" value="'+weekDays+'" min="1" max="90" />';
+  h+='<span style="font-size:12px;color:var(--muted)">jours</span>';
+  h+='<button class="btn-refresh" onclick="setWeekDays()">Actualiser</button></div>';
 
-  HORIZONS.forEach(function(h){
-    html+='<div class="dash-section"><div class="dash-section-title">'+h.label+'</div>';
-    h.qualities.forEach(function(q){
-      var barData=dates.map(function(dt){ return qualityScore(q,byDate[dt]||{}); });
-      html+='<div class="week-card"><div class="week-card-title">'+q+'</div><div class="week-bars">';
+  HORIZONS.forEach(function(horizon){
+    h+='<div class="dash-section"><div class="dash-section-title">'+horizon.label+'</div>';
+    horizon.qualities.forEach(function(q){
+      var barData=dates.map(function(dt){return qualityScore(q,byDate[dt]||{});});
+      h+='<div class="week-card"><div class="week-card-title">'+esc(q)+'</div><div class="week-bars">';
       barData.forEach(function(p,i){
         var h100=p!==null?p:0;
         var col=p===null?'var(--border)':grad(p);
-        html+='<div class="week-bar-wrap">';
-        html+='<div class="week-bar-pct" style="color:'+col+'">'+(p!==null?p:'—')+'</div>';
-        html+='<div class="week-bar-col"><div class="week-bar" style="height:'+h100+'%;background:'+col+';width:100%"></div></div>';
-        html+='<div class="week-bar-label">'+dayLabels[i]+'</div></div>';
+        h+='<div class="week-bar-wrap">';
+        h+='<div class="week-bar-pct" style="color:'+col+'">'+(p!==null?p:'—')+'</div>';
+        h+='<div class="week-bar-col"><div class="week-bar" style="height:'+h100+'%;background:'+col+';width:100%"></div></div>';
+        h+='<div class="week-bar-label">'+dayLabels[i]+'</div></div>';
       });
-      html+='</div></div>';
+      h+='</div></div>';
     });
-    html+='</div>';
+    h+='</div>';
   });
-  el.innerHTML=html;
+  el.innerHTML=h;
 }
-function setWeekDays(){ weekDays=parseInt(document.getElementById('week-days-input').value)||7; renderHebdo(); }
+function setWeekDays(){weekDays=parseInt(document.getElementById('week-days-input').value)||7;renderHebdo();}
 
-// ── FETCH ──
 async function fetchDays(n){
-  var cutoff=new Date(); cutoff.setDate(cutoff.getDate()-n);
-  var cutoffStr=dStr(cutoff);
-  if(sb){
-    var res=await sb.from('suivi_jours').select('*').gte('date',cutoffStr);
-    return res.data||[];
-  }
-  var result=[];
-  for(var i=0;i<n;i++){
-    var d=new Date(); d.setDate(d.getDate()-i);
-    var dt=dStr(d);
-    var v=lsGet('day:'+dt);
-    if(v) result.push({date:dt,checks:v});
-  }
-  return result;
+  var cutoff=new Date();cutoff.setDate(cutoff.getDate()-n);
+  var res=await sb.from('suivi_jours').select('*').gte('date',dStr(cutoff));
+  return res.data||[];
 }
 
-// ── PAGE NAV ──
 function showPage(page,btn){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
   document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active');});
   document.getElementById('page-'+page).classList.add('active');
   btn.classList.add('active');
-  if(page==='dashboard') renderDashboard();
-  if(page==='hebdo') renderHebdo();
+  if(page==='dashboard')renderDashboard();
+  if(page==='hebdo')renderHebdo();
 }
 </script>
 </body>
