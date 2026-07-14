@@ -475,7 +475,20 @@ function renderCalendrier(){
     dows.forEach(function(d){h+='<div class="cal-month-dow">'+d+'</div>';});
     for(var i=0;i<startDow;i++){
       var pd=new Date(calYear,calMonth,1-startDow+i);
-      h+='<div class="cal-month-day other-month"><div class="cal-day-num">'+pd.getDate()+'</div></div>';
+      var pdStr=calDStr(pd);
+      var pdTasks=byDate[pdStr]||[];
+      h+='<div class="cal-month-day other-month"><div class="cal-day-num">'+pd.getDate()+'</div>';
+      pdTasks.slice(0,3).forEach(function(t){
+        var goal=goalForTask(t);
+        var color=goal?horizonColorForGoal(goal.id):'#888';
+        var bg=goal?horizonBgForGoal(goal.id):'var(--border)';
+        var gid=goal?goal.id:'';
+        h+='<div class="cal-task-pill'+(t.done?' done-task':'')+'" data-goal-id="'+gid+'" style="background:'+bg+';border-left:2px solid '+color+'">';
+        h+='<span class="cal-task-pill-name" style="color:'+color+'">'+esc(t.name)+'</span>';
+        h+='</div>';
+      });
+      if(pdTasks.length>3) h+='<div class="cal-more">'+(pdTasks.length-3)+' autres</div>';
+      h+='</div>';
     }
     for(var d=1;d<=lastDay.getDate();d++){
       var dt=new Date(calYear,calMonth,d);
@@ -498,7 +511,23 @@ function renderCalendrier(){
     }
     var total=startDow+lastDay.getDate();
     var rem=(7-total%7)%7;
-    for(var i=1;i<=rem;i++) h+='<div class="cal-month-day other-month"><div class="cal-day-num">'+i+'</div></div>';
+    for(var i=1;i<=rem;i++){
+      var nd=new Date(calYear,calMonth+1,i);
+      var ndStr=calDStr(nd);
+      var ndTasks=byDate[ndStr]||[];
+      h+='<div class="cal-month-day other-month"><div class="cal-day-num">'+i+'</div>';
+      ndTasks.slice(0,3).forEach(function(t){
+        var goal=goalForTask(t);
+        var color=goal?horizonColorForGoal(goal.id):'#888';
+        var bg=goal?horizonBgForGoal(goal.id):'var(--border)';
+        var gid=goal?goal.id:'';
+        h+='<div class="cal-task-pill'+(t.done?' done-task':'')+'" data-goal-id="'+gid+'" style="background:'+bg+';border-left:2px solid '+color+'">';
+        h+='<span class="cal-task-pill-name" style="color:'+color+'">'+esc(t.name)+'</span>';
+        h+='</div>';
+      });
+      if(ndTasks.length>3) h+='<div class="cal-more">'+(ndTasks.length-3)+' autres</div>';
+      h+='</div>';
+    }
     h+='</div>';
   } else {
     h+='<div class="cal-week-grid">';
