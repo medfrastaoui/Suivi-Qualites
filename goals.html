@@ -210,9 +210,8 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 /* DAY TASKS POPUP LIST */
 .day-tasks-list .home-task-row{margin-bottom:6px}
 
-/* DRAG REORDER */
-.goal-card.dragging,.step-block.dragging{opacity:.55;box-shadow:0 10px 28px rgba(0,0,0,.25);transform:scale(1.02);position:relative;z-index:10}
-.step-header{touch-action:manipulation}
+/* REORDER (up/down arrows) */
+.btn-card-action:disabled,.btn-icon-sm:disabled{opacity:.25;cursor:default}
 </style>
 </head>
 <body>
@@ -402,64 +401,37 @@ async function loadAll(){
   goals=res[0].data||[]; steps=res[1].data||[]; tasks=res[2].data||[];
 }
 
-// ── CLICK GUARD (used by long-press drag to avoid opening/toggling after a drag) ──
-var suppressNextClick=false;
-function cardClick(e,kind,id){
-  if(suppressNextClick){ suppressNextClick=false; e.stopPropagation(); e.preventDefault(); return; }
-  if(kind==='goal') openGoal(id);
-  else if(kind==='step') toggleStep(id);
+// ── REORDER HELPERS (up/down arrows swap position with neighbor) ──
+async function moveGoal(id,dir){
+  var goal=goals.find(function(g){return g.id===id;});
+  if(!goal) return;
+  var horizon=horizonOf(goal.quality);
+  var group=goals.filter(function(g){return horizon.qualities.indexOf(g.quality)>=0 && !g.archived;});
+  group.sort(function(a,b){return (a.position||0)-(b.position||0);});
+  var idx=group.findIndex(function(g){return g.id===id;});
+  var swapIdx=dir==='up'?idx-1:idx+1;
+  if(swapIdx<0||swapIdx>=group.length) return;
+  var other=group[swapIdx];
+  var tmp=goal.position; goal.position=other.position; other.position=tmp;
+  await Promise.all([
+    sb.from('goals').update({position:goal.position}).eq('id',goal.id),
+    sb.from('goals').update({position:other.position}).eq('id',other.id)
+  ]);
+  renderHome();
 }
-
-// ── LONG-PRESS DRAG REORDER (generic, used for goals-in-horizon and steps-in-goal) ──
-function makeLongPressReorderable(container,itemSelector,handleSelector,onReorder){
-  if(!container) return;
-  var LONG_PRESS_MS=400, MOVE_CANCEL_PX=8;
-  container.querySelectorAll(itemSelector).forEach(function(item){
-    var handle = handleSelector===itemSelector ? item : item.querySelector(handleSelector);
-    if(!handle) return;
-    var timer=null, dragging=false, moved=false, startX=0, startY=0;
-    handle.addEventListener('pointerdown', function(e){
-      if(e.target.closest('button,input,select,textarea,a')) return;
-      startX=e.clientX; startY=e.clientY; moved=false;
-      timer=setTimeout(function(){
-        dragging=true;
-        item.classList.add('dragging');
-        item.style.touchAction='none';
-        try{ handle.setPointerCapture(e.pointerId); }catch(err){}
-      }, LONG_PRESS_MS);
-    });
-    handle.addEventListener('pointermove', function(e){
-      var dx=Math.abs(e.clientX-startX), dy=Math.abs(e.clientY-startY);
-      if(!dragging){
-        if(dx>MOVE_CANCEL_PX||dy>MOVE_CANCEL_PX){ clearTimeout(timer); timer=null; }
-        return;
-      }
-      moved=true;
-      e.preventDefault();
-      var el=document.elementFromPoint(e.clientX,e.clientY);
-      var target=el?el.closest(itemSelector):null;
-      if(target && target!==item && container.contains(target)){
-        var rect=target.getBoundingClientRect();
-        var before=(e.clientY-rect.top)<rect.height/2;
-        container.insertBefore(item, before?target:target.nextSibling);
-      }
-    });
-    function endDrag(){
-      clearTimeout(timer); timer=null;
-      if(dragging){
-        dragging=false;
-        item.classList.remove('dragging');
-        item.style.touchAction='';
-        suppressNextClick=true;
-        if(moved){
-          var ids=Array.prototype.map.call(container.querySelectorAll(itemSelector),function(el){return el.getAttribute('data-id');});
-          onReorder(ids);
-        }
-      }
-    }
-    handle.addEventListener('pointerup', endDrag);
-    handle.addEventListener('pointercancel', endDrag);
-  });
+async function moveStep(id,dir){
+  var goalSteps=steps.filter(function(s){return s.goal_id===currentGoal.id;});
+  goalSteps.sort(function(a,b){return (a.position||0)-(b.position||0);});
+  var idx=goalSteps.findIndex(function(s){return s.id===id;});
+  var swapIdx=dir==='up'?idx-1:idx+1;
+  if(swapIdx<0||swapIdx>=goalSteps.length) return;
+  var a=goalSteps[idx], b=goalSteps[swapIdx];
+  var tmp=a.position; a.position=b.position; b.position=tmp;
+  await Promise.all([
+    sb.from('steps').update({position:a.position}).eq('id',a.id),
+    sb.from('steps').update({position:b.position}).eq('id',b.id)
+  ]);
+  renderStepsTab();
 }
 
 // ── HOME TABS ──
@@ -628,11 +600,12 @@ async function toggleTaskFromPopup(taskId,dateStr){
   openDayTasks(dateStr);
 }
 
-function goalCardHtml(goal,horizon,extraActionsHtml){
+function goalCardHtml(goal,horizon,extraActionsHtml,arrowsHtml){
   var c=calcGoal(goal);
-  var h='<div class="goal-card" data-id="'+goal.id+'" style="border-color:'+horizon.color+'" onclick="cardClick(event,\'goal\',\''+goal.id+'\')">';
+  var h='<div class="goal-card" style="border-color:'+horizon.color+'" onclick="openGoal(\''+goal.id+'\')">';
   h+='<div class="goal-card-top"><div class="goal-card-name">'+esc(goal.name)+'</div>';
   h+='<div class="goal-card-actions" onclick="event.stopPropagation()">';
+  h+=(arrowsHtml||'');
   h+=extraActionsHtml;
   h+='<button class="btn-card-action" onclick="openGoalModal(\''+goal.id+'\',null)">✏️</button>';
   h+='<button class="btn-card-action" onclick="confirmDelete(\'goal\',\''+goal.id+'\',\''+goal.name.replace(/'/g,"&#39;")+'\')">🗑</button>';
@@ -666,24 +639,15 @@ async function renderHome(){
     h+='<div class="horizon-name" style="color:'+horizon.color+'">'+horizon.label+'</div>';
     h+='<div class="horizon-vision">'+horizon.vision+'</div></div>';
     h+='<div class="goals-grid" data-horizon="'+horizon.id+'">';
-    hGoals.forEach(function(goal){
-      h+=goalCardHtml(goal,horizon,'<button class="btn-card-action" onclick="archiveGoal(\''+goal.id+'\')" title="Archiver">📦</button>');
+    hGoals.forEach(function(goal,i){
+      var arrows='<button class="btn-card-action"'+(i===0?' disabled':'')+' onclick="moveGoal(\''+goal.id+'\',\'up\')" title="Monter">▲</button>';
+      arrows+='<button class="btn-card-action"'+(i===hGoals.length-1?' disabled':'')+' onclick="moveGoal(\''+goal.id+'\',\'down\')" title="Descendre">▼</button>';
+      h+=goalCardHtml(goal,horizon,'<button class="btn-card-action" onclick="archiveGoal(\''+goal.id+'\')" title="Archiver">📦</button>',arrows);
     });
     h+='</div></div>';
   });
   if(!h) h='<div class="loading">Aucun objectif — cliquez sur "+ Objectif" pour commencer.</div>';
   document.getElementById('home-content').innerHTML=h;
-  document.querySelectorAll('.goals-grid').forEach(function(grid){
-    makeLongPressReorderable(grid,'.goal-card','.goal-card',onGoalsReordered);
-  });
-}
-
-async function onGoalsReordered(ids){
-  ids.forEach(function(id,i){
-    var g=goals.find(function(g){return g.id===id;});
-    if(g) g.position=i;
-  });
-  await Promise.all(ids.map(function(id,i){return sb.from('goals').update({position:i}).eq('id',id);}));
 }
 
 // ── ARCHIVE ──
@@ -824,14 +788,14 @@ function renderStepsTab(){
   goalSteps.sort(function(a,b){return (a.position||0)-(b.position||0);});
   var h='<div id="steps-list">';
 
-  goalSteps.forEach(function(step){
+  goalSteps.forEach(function(step,i){
     var sc=calcStep(step);
     var st=tasks.filter(function(t){return t.step_id===step.id;});
     var isOpen=openSteps.has(step.id);
 
-    h+='<div class="step-block" data-id="'+step.id+'">';
+    h+='<div class="step-block">';
     // Step header
-    h+='<div class="step-header" onclick="cardClick(event,\'step\',\''+step.id+'\')">';
+    h+='<div class="step-header" onclick="toggleStep(\''+step.id+'\')">';
     h+='<div class="step-toggle-icon '+(isOpen?'open':'')+'">▶</div>';
     h+='<div class="step-info">';
     h+='<div class="step-name">'+esc(step.name)+'</div>';
@@ -844,6 +808,8 @@ function renderStepsTab(){
     h+='<div class="step-score-item"><div class="step-score-val" style="color:'+grad(sc.progDate)+'">'+sc.progDate+'%</div><div class="step-score-lbl">À date</div></div>';
     h+='</div>';
     h+='<div class="step-actions" onclick="event.stopPropagation()">';
+    h+='<button class="btn-icon-sm"'+(i===0?' disabled':'')+' onclick="moveStep(\''+step.id+'\',\'up\')" title="Monter">▲</button>';
+    h+='<button class="btn-icon-sm"'+(i===goalSteps.length-1?' disabled':'')+' onclick="moveStep(\''+step.id+'\',\'down\')" title="Descendre">▼</button>';
     h+='<button class="btn-icon-sm" onclick="openStepEdit(\''+step.id+'\')">✏️</button>';
     h+='<button class="btn-icon-sm" onclick="confirmDelete(\'step\',\''+step.id+'\',\''+step.name.replace(/'/g,"&#39;")+'\')">🗑</button>';
     h+='</div></div>';
@@ -912,15 +878,6 @@ function renderStepsTab(){
   h+='</div>';
 
   document.getElementById('tab-steps').innerHTML=h;
-  makeLongPressReorderable(document.getElementById('steps-list'),'.step-block','.step-header',onStepsReordered);
-}
-
-async function onStepsReordered(ids){
-  ids.forEach(function(id,i){
-    var s=steps.find(function(s){return s.id===id;});
-    if(s) s.position=i;
-  });
-  await Promise.all(ids.map(function(id,i){return sb.from('steps').update({position:i}).eq('id',id);}));
 }
 
 // ── DUPLICATE TASK ──
