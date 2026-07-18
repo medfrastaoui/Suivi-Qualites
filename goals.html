@@ -185,34 +185,34 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .cal-view-btn{padding:5px 12px;border-radius:6px;border:none;background:transparent;color:var(--muted);font-size:12px;font-weight:500;cursor:pointer}
 .cal-view-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1)}
 
-/* MONTH VIEW */
-.cal-month-grid{display:grid;grid-template-columns:repeat(7,100px);gap:1px;background:var(--border);border-radius:10px;overflow:hidden;min-width:706px}
+/* MONTH VIEW — simplified: count badge per day, tap opens popup */
+.cal-month-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:var(--border);border-radius:10px;overflow:hidden}
 .cal-month-dow{background:var(--bg);padding:4px 2px;text-align:center;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
-.cal-month-day{background:var(--surface);padding:3px;vertical-align:top}
+.cal-month-day{background:var(--surface);padding:3px;vertical-align:top;cursor:pointer;min-height:44px}
 .cal-month-day.other-month{background:var(--bg);opacity:.45}
 .cal-month-day.is-today .cal-day-num{background:var(--text);color:var(--bg);border-radius:50%}
 .cal-day-num{font-size:10px;font-weight:600;color:var(--muted);margin-bottom:2px;width:18px;height:18px;display:flex;align-items:center;justify-content:center}
-.cal-task-pill{border-radius:3px;padding:1px 4px;margin-bottom:1px;cursor:pointer;transition:opacity .15s;display:block;width:100%}
-.cal-task-pill:hover{opacity:.75}
-.cal-task-pill-name{font-size:9px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
-.cal-task-pill.done-task{opacity:.35}
-.cal-more{font-size:8px;color:var(--muted);padding:0 2px}
+.cal-day-count{font-size:10px;font-weight:700;background:var(--bg);color:var(--text);border-radius:20px;padding:1px 6px;display:inline-block}
+@media(prefers-color-scheme:dark){.cal-day-count{background:var(--border)}}
 
-/* WEEK VIEW */
-.cal-week-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.cal-week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;min-width:480px;align-items:stretch}
-.cal-week-col{display:flex;flex-direction:column;background:var(--surface);border-radius:10px;padding:8px 6px;border:1px solid var(--border)}
+/* WEEK VIEW — simplified: count summary per day, tap opens popup */
+.cal-week-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;align-items:stretch}
+.cal-week-col{display:flex;flex-direction:column;background:var(--surface);border-radius:10px;padding:8px 4px;border:1px solid var(--border);cursor:pointer;align-items:center;text-align:center}
 .cal-week-dow{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;text-align:center}
-.cal-week-date{font-size:13px;font-weight:600;text-align:center;margin-bottom:8px;padding:3px;border-radius:6px}
+.cal-week-date{font-size:13px;font-weight:600;text-align:center;margin-bottom:6px;padding:3px;border-radius:6px;width:24px}
 .cal-week-date.is-today{background:var(--text);color:var(--bg)}
-.cal-week-tasks{flex:1}
-.cal-week-task{border-radius:6px;padding:5px 7px;margin-bottom:4px;cursor:pointer;transition:opacity .15s}
-.cal-week-task:hover{opacity:.8}
-.cal-week-task-name{font-size:11px;font-weight:500;line-height:1.3;margin-bottom:1px;word-break:break-word}
-.cal-week-task-goal{font-size:9px;opacity:.7;word-break:break-word}
-.cal-week-task.done-task{opacity:.35}
+.cal-week-count{font-size:10px;font-weight:700;background:var(--bg);color:var(--text);border-radius:20px;padding:2px 7px}
+.cal-week-count.empty{opacity:.4;font-weight:500}
+@media(prefers-color-scheme:dark){.cal-week-count{background:var(--border)}}
 .btn-icon-sm{background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:2px 4px;border-radius:5px}
 .btn-icon-sm:hover{background:var(--border)}
+
+/* DAY TASKS POPUP LIST */
+.day-tasks-list .home-task-row{margin-bottom:6px}
+
+/* DRAG REORDER */
+.goal-card.dragging,.step-block.dragging{opacity:.55;box-shadow:0 10px 28px rgba(0,0,0,.25);transform:scale(1.02);position:relative;z-index:10}
+.step-header{touch-action:manipulation}
 </style>
 </head>
 <body>
@@ -228,10 +228,12 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
     <button class="home-tab-btn active" onclick="switchHomeTab('objectifs',this)">Objectifs</button>
     <button class="home-tab-btn" onclick="switchHomeTab('todo',this)">À faire</button>
     <button class="home-tab-btn" onclick="switchHomeTab('calendrier',this)">Calendrier</button>
+    <button class="home-tab-btn" onclick="switchHomeTab('archives',this)">Archivés</button>
   </div>
   <div id="home-content"><div class="loading">Chargement...</div></div>
   <div id="todo-content" style="display:none"></div>
   <div id="cal-content" style="display:none"></div>
+  <div id="archives-content" style="display:none"></div>
 </div>
 
 <div id="screen-detail" class="screen">
@@ -309,6 +311,17 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
   </div>
 </div>
 
+<!-- MODAL DAY TASKS (calendrier) -->
+<div class="modal-overlay hidden" id="modal-day-tasks">
+  <div class="modal">
+    <div class="modal-title" id="day-tasks-title">Tâches</div>
+    <div class="day-tasks-list" id="day-tasks-list"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('modal-day-tasks')">Fermer</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 var SUPABASE_URL = 'https://gzfliakogbmuvwurwqfy.supabase.co';
@@ -382,11 +395,71 @@ function calcGoal(goal){
 // ── LOAD ──
 async function loadAll(){
   var res=await Promise.all([
-    sb.from('goals').select('*').order('created_at'),
+    sb.from('goals').select('*').order('position'),
     sb.from('steps').select('*').order('position'),
     sb.from('tasks').select('*').order('due_date')
   ]);
   goals=res[0].data||[]; steps=res[1].data||[]; tasks=res[2].data||[];
+}
+
+// ── CLICK GUARD (used by long-press drag to avoid opening/toggling after a drag) ──
+var suppressNextClick=false;
+function cardClick(e,kind,id){
+  if(suppressNextClick){ suppressNextClick=false; e.stopPropagation(); e.preventDefault(); return; }
+  if(kind==='goal') openGoal(id);
+  else if(kind==='step') toggleStep(id);
+}
+
+// ── LONG-PRESS DRAG REORDER (generic, used for goals-in-horizon and steps-in-goal) ──
+function makeLongPressReorderable(container,itemSelector,handleSelector,onReorder){
+  if(!container) return;
+  var LONG_PRESS_MS=400, MOVE_CANCEL_PX=8;
+  container.querySelectorAll(itemSelector).forEach(function(item){
+    var handle = handleSelector===itemSelector ? item : item.querySelector(handleSelector);
+    if(!handle) return;
+    var timer=null, dragging=false, moved=false, startX=0, startY=0;
+    handle.addEventListener('pointerdown', function(e){
+      if(e.target.closest('button,input,select,textarea,a')) return;
+      startX=e.clientX; startY=e.clientY; moved=false;
+      timer=setTimeout(function(){
+        dragging=true;
+        item.classList.add('dragging');
+        item.style.touchAction='none';
+        try{ handle.setPointerCapture(e.pointerId); }catch(err){}
+      }, LONG_PRESS_MS);
+    });
+    handle.addEventListener('pointermove', function(e){
+      var dx=Math.abs(e.clientX-startX), dy=Math.abs(e.clientY-startY);
+      if(!dragging){
+        if(dx>MOVE_CANCEL_PX||dy>MOVE_CANCEL_PX){ clearTimeout(timer); timer=null; }
+        return;
+      }
+      moved=true;
+      e.preventDefault();
+      var el=document.elementFromPoint(e.clientX,e.clientY);
+      var target=el?el.closest(itemSelector):null;
+      if(target && target!==item && container.contains(target)){
+        var rect=target.getBoundingClientRect();
+        var before=(e.clientY-rect.top)<rect.height/2;
+        container.insertBefore(item, before?target:target.nextSibling);
+      }
+    });
+    function endDrag(){
+      clearTimeout(timer); timer=null;
+      if(dragging){
+        dragging=false;
+        item.classList.remove('dragging');
+        item.style.touchAction='';
+        suppressNextClick=true;
+        if(moved){
+          var ids=Array.prototype.map.call(container.querySelectorAll(itemSelector),function(el){return el.getAttribute('data-id');});
+          onReorder(ids);
+        }
+      }
+    }
+    handle.addEventListener('pointerup', endDrag);
+    handle.addEventListener('pointercancel', endDrag);
+  });
 }
 
 // ── HOME TABS ──
@@ -396,8 +469,10 @@ function switchHomeTab(tab,btn){
   document.getElementById('home-content').style.display=tab==='objectifs'?'':'none';
   document.getElementById('todo-content').style.display=tab==='todo'?'':'none';
   document.getElementById('cal-content').style.display=tab==='calendrier'?'':'none';
+  document.getElementById('archives-content').style.display=tab==='archives'?'':'none';
   if(tab==='todo') renderTodo(null,null);
   if(tab==='calendrier') renderCalendrier();
+  if(tab==='archives') renderArchives();
 }
 
 // ── HOME OBJECTIFS ──
@@ -441,18 +516,19 @@ function calNextPeriod(){
   renderCalendrier();
 }
 
+var calByDate={};
+
 function renderCalendrier(){
   var today=calToday();
   var months=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
   var dows=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
 
-  // Build tasks by date
-  var byDate={};
-  tasks.forEach(function(t){ if(!t.due_date) return; if(!byDate[t.due_date]) byDate[t.due_date]=[]; byDate[t.due_date].push(t); });
+  // Build tasks by date (kept global so the day popup can read from it)
+  calByDate={};
+  tasks.forEach(function(t){ if(!t.due_date) return; if(!calByDate[t.due_date]) calByDate[t.due_date]=[]; calByDate[t.due_date].push(t); });
 
   var el=document.getElementById('cal-content');
 
-  // Toolbar HTML (no onclick strings with apostrophes)
   var periodLabel = calView==='mois' ? (months[calMonth]+' '+calYear) : (function(){
     var end=new Date(calWeekStart); end.setDate(end.getDate()+6);
     return calFmtDate(calDStr(calWeekStart))+' – '+calFmtDate(calDStr(end));
@@ -469,105 +545,112 @@ function renderCalendrier(){
   h+='<button class="cal-view-btn'+(calView==='semaine'?' active':'')+'" id="cal-btn-semaine">Semaine</button>';
   h+='</div></div>';
 
+  function dayCountBadge(n){ return n?'<div class="cal-day-count">'+n+'</div>':''; }
+
   if(calView==='mois'){
     var firstDay=new Date(calYear,calMonth,1);
     var lastDay=new Date(calYear,calMonth+1,0);
     var startDow=(firstDay.getDay()+6)%7;
-    h+='<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><div class="cal-month-grid">';
+    h+='<div class="cal-month-grid">';
     dows.forEach(function(d){h+='<div class="cal-month-dow">'+d+'</div>';});
     for(var i=0;i<startDow;i++){
       var pd=new Date(calYear,calMonth,1-startDow+i);
       var pdStr=calDStr(pd);
-      var pdTasks=byDate[pdStr]||[];
-      h+='<div class="cal-month-day other-month"><div class="cal-day-num">'+pd.getDate()+'</div>';
-      pdTasks.slice(0,3).forEach(function(t){
-        var goal=goalForTask(t);
-        var color=goal?horizonColorForGoal(goal.id):'#888';
-        var bg=goal?horizonBgForGoal(goal.id):'var(--border)';
-        var gid=goal?goal.id:'';
-        h+='<div class="cal-task-pill'+(t.done?' done-task':'')+'" data-goal-id="'+gid+'" style="background:'+bg+';border-left:2px solid '+color+'">';
-        h+='<span class="cal-task-pill-name" style="color:'+color+'">'+esc(t.name)+'</span>';
-        h+='</div>';
-      });
-      if(pdTasks.length>3) h+='<div class="cal-more">'+(pdTasks.length-3)+' autres</div>';
-      h+='</div>';
+      h+='<div class="cal-month-day other-month" data-date="'+pdStr+'"><div class="cal-day-num">'+pd.getDate()+'</div>'+dayCountBadge((calByDate[pdStr]||[]).length)+'</div>';
     }
     for(var d=1;d<=lastDay.getDate();d++){
       var dt=new Date(calYear,calMonth,d);
       var dtStr=calDStr(dt);
       var isToday=dtStr===today;
-      var dayTasks=byDate[dtStr]||[];
-      h+='<div class="cal-month-day'+(isToday?' is-today':'')+'">';
-      h+='<div class="cal-day-num">'+d+'</div>';
-      dayTasks.slice(0,3).forEach(function(t){
-        var goal=goalForTask(t);
-        var color=goal?horizonColorForGoal(goal.id):'#888';
-        var bg=goal?horizonBgForGoal(goal.id):'var(--border)';
-        var gid=goal?goal.id:'';
-        h+='<div class="cal-task-pill'+(t.done?' done-task':'')+'" data-goal-id="'+gid+'" style="background:'+bg+';border-left:2px solid '+color+'">';
-        h+='<span class="cal-task-pill-name" style="color:'+color+'">'+esc(t.name)+'</span>';
-        h+='</div>';
-      });
-      if(dayTasks.length>3) h+='<div class="cal-more">+'+(dayTasks.length-3)+' autres</div>';
-      h+='</div>';
+      h+='<div class="cal-month-day'+(isToday?' is-today':'')+'" data-date="'+dtStr+'"><div class="cal-day-num">'+d+'</div>'+dayCountBadge((calByDate[dtStr]||[]).length)+'</div>';
     }
     var total=startDow+lastDay.getDate();
     var rem=(7-total%7)%7;
     for(var i=1;i<=rem;i++){
       var nd=new Date(calYear,calMonth+1,i);
       var ndStr=calDStr(nd);
-      var ndTasks=byDate[ndStr]||[];
-      h+='<div class="cal-month-day other-month"><div class="cal-day-num">'+i+'</div>';
-      ndTasks.slice(0,3).forEach(function(t){
-        var goal=goalForTask(t);
-        var color=goal?horizonColorForGoal(goal.id):'#888';
-        var bg=goal?horizonBgForGoal(goal.id):'var(--border)';
-        var gid=goal?goal.id:'';
-        h+='<div class="cal-task-pill'+(t.done?' done-task':'')+'" data-goal-id="'+gid+'" style="background:'+bg+';border-left:2px solid '+color+'">';
-        h+='<span class="cal-task-pill-name" style="color:'+color+'">'+esc(t.name)+'</span>';
-        h+='</div>';
-      });
-      if(ndTasks.length>3) h+='<div class="cal-more">'+(ndTasks.length-3)+' autres</div>';
-      h+='</div>';
+      h+='<div class="cal-month-day other-month" data-date="'+ndStr+'"><div class="cal-day-num">'+i+'</div>'+dayCountBadge((calByDate[ndStr]||[]).length)+'</div>';
     }
-    h+='</div></div>';
+    h+='</div>';
   } else {
-    h+='<div class="cal-week-wrapper"><div class="cal-week-grid">';
+    h+='<div class="cal-week-grid">';
     for(var i=0;i<7;i++){
       var dt=new Date(calWeekStart); dt.setDate(dt.getDate()+i);
       var dtStr=calDStr(dt);
       var isToday=dtStr===today;
-      var dayTasks=byDate[dtStr]||[];
-      h+='<div class="cal-week-col">';
+      var n=(calByDate[dtStr]||[]).length;
+      h+='<div class="cal-week-col" data-date="'+dtStr+'">';
       h+='<div class="cal-week-dow">'+dows[i]+'</div>';
       h+='<div class="cal-week-date'+(isToday?' is-today':'')+'">'+dt.getDate()+'</div>';
-      h+='<div class="cal-week-tasks">';
-      dayTasks.forEach(function(t){
-        var goal=goalForTask(t);
-        var color=goal?horizonColorForGoal(goal.id):'#888';
-        var bg=goal?horizonBgForGoal(goal.id):'var(--border)';
-        var gid=goal?goal.id:'';
-        h+='<div class="cal-week-task'+(t.done?' done-task':'')+'" data-goal-id="'+gid+'" style="background:'+bg+';border-left:3px solid '+color+'">';
-        h+='<div class="cal-week-task-name" style="color:'+color+'">'+esc(t.name)+'</div>';
-        if(goal) h+='<div class="cal-week-task-goal" style="color:'+color+'">'+esc(goal.name)+'</div>';
-        h+='</div>';
-      });
-      h+='</div></div>';
+      h+='<div class="cal-week-count'+(n?'':' empty')+'">'+(n?n+' tâche'+(n>1?'s':''):'—')+'</div>';
+      h+='</div>';
     }
-    h+='</div></div>';
+    h+='</div>';
   }
 
   el.innerHTML=h;
 
-  // Attach events AFTER innerHTML (no onclick in HTML)
   document.getElementById('cal-prev').addEventListener('click', calPrevPeriod);
   document.getElementById('cal-next').addEventListener('click', calNextPeriod);
   document.getElementById('cal-btn-mois').addEventListener('click', function(){ calView='mois'; renderCalendrier(); });
   document.getElementById('cal-btn-semaine').addEventListener('click', function(){ calView='semaine'; renderCalendrier(); });
-  el.querySelectorAll('[data-goal-id]').forEach(function(pill){
-    var gid=pill.getAttribute('data-goal-id');
-    if(gid) pill.addEventListener('click', function(){ openGoal(gid); });
+  el.querySelectorAll('[data-date]').forEach(function(cell){
+    cell.addEventListener('click', function(){ openDayTasks(cell.getAttribute('data-date')); });
   });
+}
+
+// ── DAY TASKS POPUP ──
+function openDayTasks(dateStr){
+  var dayTasks=(calByDate[dateStr]||[]).slice().sort(function(a,b){return (a.done?1:0)-(b.done?1:0);});
+  document.getElementById('day-tasks-title').textContent=fmtDateFull(dateStr);
+  var h='';
+  if(!dayTasks.length){
+    h='<div class="no-tasks">Aucune tâche ce jour.</div>';
+  } else {
+    dayTasks.forEach(function(t){
+      var goal=goalForTask(t);
+      var color=goal?horizonColorForGoal(goal.id):'var(--muted)';
+      h+='<div class="home-task-row'+(t.done?' done-row':'')+'">';
+      h+='<div class="home-task-check'+(t.done?' done-check':'')+'" onclick="toggleTaskFromPopup(\''+t.id+'\',\''+dateStr+'\')">'+(t.done?'✓':'')+'</div>';
+      h+='<div class="home-task-info" onclick="'+(goal?"closeModal('modal-day-tasks');openGoal('"+goal.id+"')":'')+'"><div class="home-task-name'+(t.done?' done-name':'')+'">'+esc(t.name)+'</div>';
+      h+='<div class="home-task-goal" style="color:'+color+'">'+(goal?esc(goal.name):'')+'</div></div>';
+      h+='</div>';
+    });
+  }
+  document.getElementById('day-tasks-list').innerHTML=h;
+  document.getElementById('modal-day-tasks').classList.remove('hidden');
+}
+async function toggleTaskFromPopup(taskId,dateStr){
+  var t=tasks.find(function(t){return t.id===taskId;});
+  if(!t) return;
+  t.done=!t.done;
+  await sb.from('tasks').update({done:t.done}).eq('id',taskId);
+  openDayTasks(dateStr);
+}
+
+function goalCardHtml(goal,horizon,extraActionsHtml){
+  var c=calcGoal(goal);
+  var h='<div class="goal-card" data-id="'+goal.id+'" style="border-color:'+horizon.color+'" onclick="cardClick(event,\'goal\',\''+goal.id+'\')">';
+  h+='<div class="goal-card-top"><div class="goal-card-name">'+esc(goal.name)+'</div>';
+  h+='<div class="goal-card-actions" onclick="event.stopPropagation()">';
+  h+=extraActionsHtml;
+  h+='<button class="btn-card-action" onclick="openGoalModal(\''+goal.id+'\',null)">✏️</button>';
+  h+='<button class="btn-card-action" onclick="confirmDelete(\'goal\',\''+goal.id+'\',\''+goal.name.replace(/'/g,"&#39;")+'\')">🗑</button>';
+  h+='</div></div>';
+  h+='<div class="goal-card-quality">'+esc(goal.quality)+'</div>';
+  h+='<div class="goal-card-body">';
+  h+='<div class="goal-card-left">';
+  h+='<div class="goal-dates">📅 '+fmtDate(c.dateStart)+' → '+fmtDate(c.dateEnd)+'</div>';
+  h+='<div class="health-badge '+(c.healthy?'health-green':'health-red')+'">'+(c.healthy?'🟢 OK':'🔴 Retard')+'</div>';
+  h+='</div>';
+  h+='<div class="goal-card-right">';
+  h+='<div class="prog-block"><div class="prog-label"><span>Global</span><span>'+c.progGlobal+'%</span></div>';
+  h+='<div class="prog-bar"><div class="prog-fill" style="width:'+c.progGlobal+'%;background:'+grad(c.progGlobal)+'"></div></div></div>';
+  h+='<div class="prog-block"><div class="prog-label"><span>À date</span><span>'+c.progDate+'%</span></div>';
+  h+='<div class="prog-bar"><div class="prog-fill" style="width:'+c.progDate+'%;background:'+grad(c.progDate)+'"></div></div></div>';
+  h+='</div>';
+  h+='</div></div>';
+  return h;
 }
 
 async function renderHome(){
@@ -575,42 +658,59 @@ async function renderHome(){
   await loadAll();
   var h='';
   HORIZONS.forEach(function(horizon){
-    var hGoals=goals.filter(function(g){return horizon.qualities.indexOf(g.quality)>=0;});
+    var hGoals=goals.filter(function(g){return horizon.qualities.indexOf(g.quality)>=0 && !g.archived;});
     if(!hGoals.length) return;
+    hGoals.sort(function(a,b){return (a.position||0)-(b.position||0);});
     h+='<div class="horizon-section">';
     h+='<div class="horizon-label"><div class="horizon-dot" style="background:'+horizon.color+'"></div>';
     h+='<div class="horizon-name" style="color:'+horizon.color+'">'+horizon.label+'</div>';
     h+='<div class="horizon-vision">'+horizon.vision+'</div></div>';
-    h+='<div class="goals-grid">';
+    h+='<div class="goals-grid" data-horizon="'+horizon.id+'">';
     hGoals.forEach(function(goal){
-      var c=calcGoal(goal);
-      var h2=horizon.color;
-      h+='<div class="goal-card" style="border-color:'+h2+'" onclick="openGoal(\''+goal.id+'\')">';
-      h+='<div class="goal-card-top"><div class="goal-card-name">'+esc(goal.name)+'</div>';
-      h+='<div class="goal-card-actions" onclick="event.stopPropagation()">';
-      h+='<button class="btn-card-action" onclick="openGoalModal(\''+goal.id+'\',null)">✏️</button>';
-      h+='<button class="btn-card-action" onclick="confirmDelete(\'goal\',\''+goal.id+'\',\''+goal.name.replace(/'/g,"&#39;")+'\')">🗑</button>';
-      h+='</div></div>';
-      h+='<div class="goal-card-quality">'+esc(goal.quality)+'</div>';
-      h+='<div class="goal-card-body">';
-      // Left: dates + health
-      h+='<div class="goal-card-left">';
-      h+='<div class="goal-dates">📅 '+fmtDate(c.dateStart)+' → '+fmtDate(c.dateEnd)+'</div>';
-      h+='<div class="health-badge '+(c.healthy?'health-green':'health-red')+'">'+(c.healthy?'🟢 OK':'🔴 Retard')+'</div>';
-      h+='</div>';
-      // Right: progress bars
-      h+='<div class="goal-card-right">';
-      h+='<div class="prog-block"><div class="prog-label"><span>Global</span><span>'+c.progGlobal+'%</span></div>';
-      h+='<div class="prog-bar"><div class="prog-fill" style="width:'+c.progGlobal+'%;background:'+grad(c.progGlobal)+'"></div></div></div>';
-      h+='<div class="prog-block"><div class="prog-label"><span>À date</span><span>'+c.progDate+'%</span></div>';
-      h+='<div class="prog-bar"><div class="prog-fill" style="width:'+c.progDate+'%;background:'+grad(c.progDate)+'"></div></div></div>';
-      h+='</div>';
-      h+='</div></div>';
+      h+=goalCardHtml(goal,horizon,'<button class="btn-card-action" onclick="archiveGoal(\''+goal.id+'\')" title="Archiver">📦</button>');
     });
     h+='</div></div>';
   });
   if(!h) h='<div class="loading">Aucun objectif — cliquez sur "+ Objectif" pour commencer.</div>';
   document.getElementById('home-content').innerHTML=h;
+  document.querySelectorAll('.goals-grid').forEach(function(grid){
+    makeLongPressReorderable(grid,'.goal-card','.goal-card',onGoalsReordered);
+  });
+}
+
+async function onGoalsReordered(ids){
+  ids.forEach(function(id,i){
+    var g=goals.find(function(g){return g.id===id;});
+    if(g) g.position=i;
+  });
+  await Promise.all(ids.map(function(id,i){return sb.from('goals').update({position:i}).eq('id',id);}));
+}
+
+// ── ARCHIVE ──
+async function archiveGoal(id){
+  await sb.from('goals').update({archived:true}).eq('id',id);
+  var g=goals.find(function(g){return g.id===id;}); if(g) g.archived=true;
+  renderHome();
+}
+async function unarchiveGoal(id){
+  await sb.from('goals').update({archived:false}).eq('id',id);
+  var g=goals.find(function(g){return g.id===id;}); if(g) g.archived=false;
+  renderArchives();
+}
+function renderArchives(){
+  var archived=goals.filter(function(g){return g.archived;});
+  var h='';
+  if(!archived.length){
+    h='<div class="loading">Aucun objectif archivé.</div>';
+  } else {
+    h+='<div class="goals-grid">';
+    archived.forEach(function(goal){
+      var horizon=horizonOf(goal.quality);
+      h+=goalCardHtml(goal,horizon,'<button class="btn-card-action" onclick="unarchiveGoal(\''+goal.id+'\')" title="Désarchiver">📤</button>');
+    });
+    h+='</div>';
+  }
+  document.getElementById('archives-content').innerHTML=h;
 }
 
 // ── À FAIRE ──
@@ -721,16 +821,17 @@ async function renderDetailTabs(){
 function renderStepsTab(){
   var today=todayStr();
   var goalSteps=steps.filter(function(s){return s.goal_id===currentGoal.id;});
-  var h='';
+  goalSteps.sort(function(a,b){return (a.position||0)-(b.position||0);});
+  var h='<div id="steps-list">';
 
   goalSteps.forEach(function(step){
     var sc=calcStep(step);
     var st=tasks.filter(function(t){return t.step_id===step.id;});
     var isOpen=openSteps.has(step.id);
 
-    h+='<div class="step-block">';
+    h+='<div class="step-block" data-id="'+step.id+'">';
     // Step header
-    h+='<div class="step-header" onclick="toggleStep(\''+step.id+'\')">';
+    h+='<div class="step-header" onclick="cardClick(event,\'step\',\''+step.id+'\')">';
     h+='<div class="step-toggle-icon '+(isOpen?'open':'')+'">▶</div>';
     h+='<div class="step-info">';
     h+='<div class="step-name">'+esc(step.name)+'</div>';
@@ -771,6 +872,7 @@ function renderStepsTab(){
           h+='<span class="task-wt">×'+t.weight+'</span>';
           if(t.description) h+='<span style="font-size:10px;color:var(--muted)">📝</span>';
           h+='</div></div>';
+          h+='<button class="task-delete" onclick="duplicateTask(\''+t.id+'\')" title="Dupliquer">📋</button>';
           h+='<button class="task-delete" onclick="confirmDelete(\'task\',\''+t.id+'\',\''+t.name.replace(/'/g,"&#39;")+'\')">🗑</button>';
           h+='</div>';
         });
@@ -794,6 +896,7 @@ function renderStepsTab(){
     }
     h+='</div>';
   });
+  h+='</div>'; // close #steps-list
 
   // Add step button
   h+='<button class="btn-add-step" onclick="showAddStepForm()">+ Ajouter une étape</button>';
@@ -809,6 +912,25 @@ function renderStepsTab(){
   h+='</div>';
 
   document.getElementById('tab-steps').innerHTML=h;
+  makeLongPressReorderable(document.getElementById('steps-list'),'.step-block','.step-header',onStepsReordered);
+}
+
+async function onStepsReordered(ids){
+  ids.forEach(function(id,i){
+    var s=steps.find(function(s){return s.id===id;});
+    if(s) s.position=i;
+  });
+  await Promise.all(ids.map(function(id,i){return sb.from('steps').update({position:i}).eq('id',id);}));
+}
+
+// ── DUPLICATE TASK ──
+async function duplicateTask(taskId){
+  var t=tasks.find(function(t){return t.id===taskId;});
+  if(!t) return;
+  var res=await sb.from('tasks').insert({step_id:t.step_id,goal_id:t.goal_id,name:t.name,description:t.description,due_date:t.due_date,weight:t.weight,done:false}).select().single();
+  if(res.error) return;
+  tasks.push(res.data);
+  renderStepsTab();
 }
 
 function toggleStep(stepId){ openSteps.has(stepId)?openSteps.delete(stepId):openSteps.add(stepId); renderStepsTab(); }
@@ -937,7 +1059,9 @@ async function saveGoal(){
     var g=goals.find(function(g){return g.id===editGoalId;});
     if(g){g.name=name;g.quality=quality;g.definition=definition;}
   } else {
-    var res2=await sb.from('goals').insert({name:name,quality:quality,definition:definition}).select().single();
+    var hz=horizonOf(quality);
+    var pos=goals.filter(function(g){return hz.qualities.indexOf(g.quality)>=0 && !g.archived;}).length;
+    var res2=await sb.from('goals').insert({name:name,quality:quality,definition:definition,position:pos,archived:false}).select().single();
     if(res2.error){fb.textContent='Erreur: '+res2.error.message;fb.style.color='#dc2626';return;}
     goals.push(res2.data);
   }
