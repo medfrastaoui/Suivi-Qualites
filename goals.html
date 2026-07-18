@@ -186,7 +186,7 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .cal-view-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1)}
 
 /* MONTH VIEW */
-.cal-month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);border-radius:10px;overflow:hidden}
+.cal-month-grid{display:grid;grid-template-columns:repeat(7,100px);gap:1px;background:var(--border);border-radius:10px;overflow:hidden;min-width:706px}
 .cal-month-dow{background:var(--bg);padding:4px 2px;text-align:center;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
 .cal-month-day{background:var(--surface);padding:3px;vertical-align:top}
 .cal-month-day.other-month{background:var(--bg);opacity:.45}
@@ -473,7 +473,7 @@ function renderCalendrier(){
     var firstDay=new Date(calYear,calMonth,1);
     var lastDay=new Date(calYear,calMonth+1,0);
     var startDow=(firstDay.getDay()+6)%7;
-    h+='<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><div class="cal-month-grid" style="min-width:560px">';
+    h+='<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><div class="cal-month-grid">';
     dows.forEach(function(d){h+='<div class="cal-month-dow">'+d+'</div>';});
     for(var i=0;i<startDow;i++){
       var pd=new Date(calYear,calMonth,1-startDow+i);
