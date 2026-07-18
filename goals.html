@@ -473,7 +473,7 @@ function renderCalendrier(){
     var firstDay=new Date(calYear,calMonth,1);
     var lastDay=new Date(calYear,calMonth+1,0);
     var startDow=(firstDay.getDay()+6)%7;
-    h+='<div class="cal-month-grid">';
+    h+='<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><div class="cal-month-grid" style="min-width:560px">';
     dows.forEach(function(d){h+='<div class="cal-month-dow">'+d+'</div>';});
     for(var i=0;i<startDow;i++){
       var pd=new Date(calYear,calMonth,1-startDow+i);
@@ -530,7 +530,7 @@ function renderCalendrier(){
       if(ndTasks.length>3) h+='<div class="cal-more">'+(ndTasks.length-3)+' autres</div>';
       h+='</div>';
     }
-    h+='</div>';
+    h+='</div></div>';
   } else {
     h+='<div class="cal-week-wrapper"><div class="cal-week-grid">';
     for(var i=0;i<7;i++){
