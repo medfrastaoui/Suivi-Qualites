@@ -286,8 +286,14 @@ function gradBg(p){
 
 // ── SCORE ──
 // États: true=OK(100%), 'ko'=KO(0%), 'skip'=exclu, false/undefined=vide=KO(0%)
-function qualityScore(qName, checks){
-  var comps = (COMPONENTS[qName]||[]).filter(function(c){return !c.archived;});
+// date = jour évalué (YYYY-MM-DD). Une composante compte normalement pour les jours
+// AVANT son archivage ; elle n'est exclue qu'à partir de sa date d'archivage tant
+// qu'elle est encore archivée (l'historique réel du jour n'est jamais effacé).
+function qualityScore(qName, checks, date){
+  var comps = (COMPONENTS[qName]||[]).filter(function(c){
+    if(c.archived && c.archivedAt && date && date>=c.archivedAt) return false;
+    return true;
+  });
   if(!comps.length) return null;
   var active = comps.filter(function(c){return checks[c.id]!=='skip';});
   if(!active.length) return null;
@@ -600,7 +606,7 @@ function renderSaisie(){
       var allComps=COMPONENTS[qName]||[];
       var activeComps=allComps.filter(function(c){return !c.archived;});
       var archivedComps=allComps.filter(function(c){return c.archived;});
-      var score=qualityScore(qName,dayChecked);
+      var score=qualityScore(qName,dayChecked,currentDay);
       var isOpen=!!openQualities[qName];
       var scoreHtml=score!==null?('<span class="quality-score" style="background:'+grad(score)+'22;color:'+grad(score)+'">'+score+'%</span>'):'';
 
@@ -692,7 +698,7 @@ async function renderDashboard(){
   ALL_QUALITIES.forEach(function(q){scores[q]=[];});
   rows.forEach(function(row){
     ALL_QUALITIES.forEach(function(q){
-      var p=qualityScore(q,row.checks||{});
+      var p=qualityScore(q,row.checks||{},row.date);
       if(p!==null) scores[q].push(p);
     });
   });
@@ -762,7 +768,7 @@ async function renderHebdo(){
   HORIZONS.forEach(function(horizon){
     h+='<div class="dash-section"><div class="dash-section-title">'+horizon.label+'</div>';
     horizon.qualities.forEach(function(q){
-      var barData=dates.map(function(dt){return qualityScore(q,byDate[dt]||{});});
+      var barData=dates.map(function(dt){return qualityScore(q,byDate[dt]||{},dt);});
       h+='<div class="week-card"><div class="week-card-title">'+q+'</div><div class="week-bars">';
       barData.forEach(function(p,i){
         var h100=p!==null?p:0;
