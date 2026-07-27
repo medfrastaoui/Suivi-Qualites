@@ -718,23 +718,25 @@ async function renderDashboard(){
       var cardColor=a!==null?grad(a):'var(--muted)';
       var cardBorder=a!==null?grad(a):'var(--border)';
       var isOpen=!!openDashCards[q];
-      var comps=(COMPONENTS[q]||[]).filter(function(c){return !c.archived;});
-      var compAvgs=comps.map(function(c){
-        var active=rows.filter(function(r){return (r.checks||{})[c.id]!=='skip';});
+      var allComps=COMPONENTS[q]||[];
+      var noActiveComp=allComps.length>0 && allComps.every(function(c){return c.archived;});
+      var compAvgs=allComps.map(function(c){
+        var rowsForComp = c.archived && c.archivedAt ? rows.filter(function(r){return r.date<c.archivedAt;}) : rows;
+        var active=rowsForComp.filter(function(r){return (r.checks||{})[c.id]!=='skip';});
         var vals=active.map(function(r){return (r.checks||{})[c.id]===true?100:0;});
-        return {name:c.name,avg:vals.length?Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length):null};
+        return {name:c.name,archived:c.archived,avg:vals.length?Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length):null};
       });
       var detail='';
-      if(isOpen&&comps.length){
+      if(isOpen&&allComps.length){
         detail='<div class="dash-card-detail open">';
         compAvgs.forEach(function(ca){
           var cc=ca.avg!==null?grad(ca.avg):'var(--muted)';
-          detail+='<div class="comp-detail-row"><span>'+ca.name+'</span><span style="color:'+cc+';font-weight:600">'+(ca.avg!==null?ca.avg+'%':'—')+'</span></div>';
+          detail+='<div class="comp-detail-row"><span>'+ca.name+(ca.archived?' <span class="comp-archived-badge">archivée</span>':'')+'</span><span style="color:'+cc+';font-weight:600">'+(ca.avg!==null?ca.avg+'%':'—')+'</span></div>';
         });
         detail+='</div>';
       }
       h+='<div class="dash-card" style="background:'+cardBg+';color:'+cardColor+';border-color:'+cardBorder+'" onclick="toggleDashCard('+Q_IDX[q]+')">';
-      h+='<div class="dash-card-name" style="color:'+cardColor+'">'+q+'</div>';
+      h+='<div class="dash-card-name" style="color:'+cardColor+'">'+q+(noActiveComp?' <span title="Aucune composante active" style="font-size:11px">⚠️</span>':'')+'</div>';
       h+='<div class="dash-card-pct" style="color:'+cardColor+'">'+(a!==null?a+'%':'—')+'</div>';
       h+='<div class="dash-card-sub">'+scores[q].length+' jours · détail</div>';
       h+=detail+'</div>';
