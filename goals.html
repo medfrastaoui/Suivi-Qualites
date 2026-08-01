@@ -340,6 +340,7 @@ var openSteps=new Set();
 var todoFilterFrom=null, todoFilterTo=null;
 
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function escAttr(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function dStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function todayStr(){return dStr(new Date());}
 function addDays(s,n){var d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return dStr(d);}
@@ -608,7 +609,7 @@ function goalCardHtml(goal,horizon,extraActionsHtml,arrowsHtml){
   h+=(arrowsHtml||'');
   h+=extraActionsHtml;
   h+='<button class="btn-card-action" onclick="openGoalModal(\''+goal.id+'\',null)">✏️</button>';
-  h+='<button class="btn-card-action" onclick="confirmDelete(\'goal\',\''+goal.id+'\',\''+goal.name.replace(/'/g,"&#39;")+'\')">🗑</button>';
+  h+='<button class="btn-card-action" onclick="confirmDelete(\'goal\',\''+goal.id+'\',\''+escAttr(goal.name)+'\')">🗑</button>';
   h+='</div></div>';
   h+='<div class="goal-card-quality">'+esc(goal.quality)+'</div>';
   h+='<div class="goal-card-body">';
@@ -811,7 +812,7 @@ function renderStepsTab(){
     h+='<button class="btn-icon-sm"'+(i===0?' disabled':'')+' onclick="moveStep(\''+step.id+'\',\'up\')" title="Monter">▲</button>';
     h+='<button class="btn-icon-sm"'+(i===goalSteps.length-1?' disabled':'')+' onclick="moveStep(\''+step.id+'\',\'down\')" title="Descendre">▼</button>';
     h+='<button class="btn-icon-sm" onclick="openStepEdit(\''+step.id+'\')">✏️</button>';
-    h+='<button class="btn-icon-sm" onclick="confirmDelete(\'step\',\''+step.id+'\',\''+step.name.replace(/'/g,"&#39;")+'\')">🗑</button>';
+    h+='<button class="btn-icon-sm" onclick="confirmDelete(\'step\',\''+step.id+'\',\''+escAttr(step.name)+'\')">🗑</button>';
     h+='</div></div>';
 
     if(isOpen){
@@ -839,7 +840,7 @@ function renderStepsTab(){
           if(t.description) h+='<span style="font-size:10px;color:var(--muted)">📝</span>';
           h+='</div></div>';
           h+='<button class="task-delete" onclick="duplicateTask(\''+t.id+'\')" title="Dupliquer">📋</button>';
-          h+='<button class="task-delete" onclick="confirmDelete(\'task\',\''+t.id+'\',\''+t.name.replace(/'/g,"&#39;")+'\')">🗑</button>';
+          h+='<button class="task-delete" onclick="confirmDelete(\'task\',\''+t.id+'\',\''+escAttr(t.name)+'\')">🗑</button>';
           h+='</div>';
         });
       }
