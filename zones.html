@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Suivi des Zones</title>
+<style>
+:root {
+  --spirituel:#7c3aed; --professionnel:#059669; --social:#dc2626; --personnel:#2563eb;
+  --bg:#f8f7f4; --surface:#ffffff; --text:#1a1a18; --muted:#6b6b67;
+  --border:rgba(0,0,0,0.09); --radius:12px;
+  --shadow:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111110;--surface:#1c1c1a;--text:#f0efe8;--muted:#8a8a84;--border:rgba(255,255,255,0.09);
+  --shadow:0 1px 4px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.2);
+}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;height:54px}
+.nav-brand{font-size:14px;font-weight:700}
+.screen{display:none;padding:1.25rem;max-width:900px;margin:0 auto}
+.screen.active{display:block}
+
+/* HOME TABS */
+.home-tabs{display:flex;gap:4px;margin-bottom:1.25rem;border-bottom:1px solid var(--border)}
+.home-tab-btn{padding:8px 18px;border:none;background:transparent;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.home-tab-btn.active{color:var(--text);border-bottom-color:var(--text)}
+
+/* CARD */
+.card{background:var(--surface);border-radius:14px;padding:1.25rem;box-shadow:var(--shadow);margin-bottom:1rem}
+
+/* FORM FIELDS */
+.modal-field{display:flex;flex-direction:column;gap:4px;margin-bottom:.75rem}
+.modal-field label{font-size:11px;color:var(--muted);font-weight:500}
+.modal-field input,.modal-field select,.modal-field textarea{padding:.6rem .8rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:14px;font-family:inherit;width:100%}
+.modal-field textarea{min-height:70px;resize:vertical}
+.form-row{display:flex;gap:8px;flex-wrap:wrap}
+.form-field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:110px;margin-bottom:.75rem}
+.form-field label{font-size:11px;color:var(--muted);font-weight:500}
+.form-field input,.form-field select{padding:.6rem .8rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:14px;font-family:inherit;width:100%}
+
+/* TOGGLE GROUP (effort / émotion) */
+.toggle-group{display:flex;gap:6px;flex-wrap:wrap}
+.toggle-btn{padding:9px 14px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;cursor:pointer;font-weight:500;transition:all .15s}
+.toggle-btn.active{background:var(--text);color:var(--bg);border-color:var(--text)}
+.toggle-btn.emotion-pos.active{background:#059669;border-color:#059669;color:#fff}
+.toggle-btn.emotion-neg.active{background:#dc2626;border-color:#dc2626;color:#fff}
+
+.btn-primary{padding:11px;background:var(--text);color:var(--bg);border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;width:100%}
+.btn-cancel{flex:1;padding:11px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;font-size:14px;cursor:pointer}
+.btn-danger{padding:11px;background:#dc2626;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;width:100%;margin-top:8px}
+.modal-btns{display:flex;gap:8px;margin-top:1rem}
+.feedback{text-align:center;font-size:12px;min-height:18px;margin-top:6px}
+.loading{text-align:center;padding:3rem;color:var(--muted);font-size:13px}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:flex-end;justify-content:center}
+.modal-overlay.hidden{display:none}
+.modal{background:var(--surface);border-radius:16px 16px 0 0;padding:1.25rem 1rem 2rem;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:15px;font-weight:700;margin-bottom:1rem}
+.confirm-msg{font-size:14px;color:var(--muted);margin-bottom:1rem;line-height:1.5}
+
+/* NAV DATE (toolbar Actions / Dashboard intraday) */
+.cal-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
+.cal-nav-group{display:flex;align-items:center;gap:6px}
+.cal-nav-arrow{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:13px;color:var(--text)}
+.cal-nav-group input[type=date]{padding:6px 8px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;font-family:inherit}
+
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
+.filter-bar label{font-size:12px;color:var(--muted)}
+.filter-bar input[type=date]{padding:5px 8px;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text);font-size:12px;font-family:inherit}
+.btn-filter{padding:6px 12px;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text);font-size:12px;cursor:pointer}
+.btn-filter.active{background:var(--text);color:var(--bg);border-color:var(--text)}
+
+.cal-view-toggle{display:flex;gap:3px;background:var(--bg);border-radius:8px;padding:3px;width:fit-content;margin-bottom:1.25rem}
+.cal-view-btn{padding:5px 12px;border-radius:6px;border:none;background:transparent;color:var(--muted);font-size:12px;font-weight:500;cursor:pointer}
+.cal-view-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+
+/* ACTIONS LIST */
+.log-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.65rem .9rem;display:flex;align-items:center;gap:10px;margin-bottom:6px;cursor:pointer;box-shadow:var(--shadow)}
+.zone-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.log-info{flex:1;min-width:0}
+.log-action{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.log-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.zone-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;flex-shrink:0;white-space:nowrap}
+.no-logs{text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:13px}
+
+/* TIMELINE */
+.timeline-track{position:relative;height:44px;background:var(--bg);border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.timeline-seg{position:absolute;top:0;bottom:0;cursor:pointer;min-width:2px}
+.timeline-ticks{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:5px}
+.timeline-empty{text-align:center;padding:1rem;color:var(--muted);font-size:12px}
+
+/* PIE */
+.pie-wrap{display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;justify-content:center}
+.pie-chart{width:170px;height:170px;border-radius:50%;flex-shrink:0}
+.pie-legend{display:flex;flex-direction:column;gap:7px;flex:1;min-width:200px}
+.pie-legend-item{display:flex;align-items:center;gap:8px;font-size:13px}
+.pie-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.pie-legend-label{flex:1}
+.pie-legend-val{font-weight:600;font-size:12px;color:var(--muted);white-space:nowrap}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Suivi des Zones</div>
+</nav>
+
+<div id="screen-home" class="screen active">
+  <div class="home-tabs">
+    <button class="home-tab-btn active" onclick="switchHomeTab('saisie',this)">Saisie</button>
+    <button class="home-tab-btn" onclick="switchHomeTab('actions',this)">Actions</button>
+    <button class="home-tab-btn" onclick="switchHomeTab('dashboard',this)">Dashboard</button>
+  </div>
+
+  <!-- ONGLET SAISIE -->
+  <div id="tab-saisie" class="home-tab-content">
+    <div class="card">
+      <div class="modal-field"><label>Date</label><input type="date" id="f-date"></div>
+      <div class="form-row">
+        <div class="form-field"><label>Début</label><input type="time" id="f-start"></div>
+        <div class="form-field"><label>Fin</label><input type="time" id="f-end"></div>
+      </div>
+      <div class="modal-field"><label>Action</label><input type="text" id="f-action" placeholder="Ex: Rédaction rapport"></div>
+      <div class="modal-field"><label>Qualité</label><select id="f-quality"></select></div>
+      <div class="modal-field"><label>Niveau d'effort</label><div class="toggle-group" id="f-effort-group"></div></div>
+      <div class="modal-field"><label>Émotion dominante</label><div class="toggle-group" id="f-emotion-group"></div></div>
+      <div class="modal-field"><label>Commentaire (optionnel)</label><textarea id="f-comment"></textarea></div>
+      <button class="btn-primary" onclick="submitLog()">Valider la saisie</button>
+      <div class="feedback" id="f-fb"></div>
+    </div>
+  </div>
+
+  <!-- ONGLET ACTIONS -->
+  <div id="tab-actions" class="home-tab-content" style="display:none">
+    <div class="cal-toolbar">
+      <div class="cal-nav-group">
+        <button class="cal-nav-arrow" onclick="shiftActionsDate(-1)">◀</button>
+        <input type="date" id="actions-date-input" onchange="setActionsDate(this.value)">
+        <button class="cal-nav-arrow" onclick="shiftActionsDate(1)">▶</button>
+      </div>
+      <button class="btn-filter" onclick="setActionsDate(todayStr())">Aujourd'hui</button>
+    </div>
+    <div id="actions-list"><div class="loading">Chargement...</div></div>
+  </div>
+
+  <!-- ONGLET DASHBOARD -->
+  <div id="tab-dashboard" class="home-tab-content" style="display:none">
+    <div class="card">
+      <div class="cal-toolbar">
+        <div class="cal-nav-group">
+          <button class="cal-nav-arrow" onclick="shiftIntradayDate(-1)">◀</button>
+          <input type="date" id="dash-intraday-date" onchange="setIntradayDate(this.value)">
+          <button class="cal-nav-arrow" onclick="shiftIntradayDate(1)">▶</button>
+        </div>
+      </div>
+      <div id="timeline-container"><div class="loading">Chargement...</div></div>
+    </div>
+
+    <div class="card">
+      <div class="filter-bar">
+        <button class="btn-filter" id="btn-range-7" onclick="setDashRange(7)">7 derniers jours</button>
+        <button class="btn-filter" id="btn-range-month" onclick="setDashRangeMonth()">Ce mois-ci</button>
+        <label>Du</label><input type="date" id="dash-from" onchange="applyDashRangeCustom()">
+        <label>Au</label><input type="date" id="dash-to" onchange="applyDashRangeCustom()">
+      </div>
+      <div class="cal-view-toggle">
+        <button class="cal-view-btn active" id="dash-view-macro" onclick="setDashView('macro')">Macro</button>
+        <button class="cal-view-btn" id="dash-view-detail" onclick="setDashView('detail')">Détaillée</button>
+      </div>
+      <div id="pie-container"><div class="loading">Chargement...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL LOG (détail / édition) -->
+<div class="modal-overlay hidden" id="modal-log">
+  <div class="modal">
+    <div class="modal-title">Détail de l'action</div>
+    <div class="modal-field"><label>Date</label><input type="date" id="m-date"></div>
+    <div class="form-row">
+      <div class="form-field"><label>Début</label><input type="time" id="m-start"></div>
+      <div class="form-field"><label>Fin</label><input type="time" id="m-end"></div>
+    </div>
+    <div class="modal-field"><label>Action</label><input type="text" id="m-action"></div>
+    <div class="modal-field"><label>Qualité</label><select id="m-quality"></select></div>
+    <div class="modal-field"><label>Niveau d'effort</label><div class="toggle-group" id="m-effort-group"></div></div>
+    <div class="modal-field"><label>Émotion dominante</label><div class="toggle-group" id="m-emotion-group"></div></div>
+    <div class="modal-field"><label>Commentaire</label><textarea id="m-comment"></textarea></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('modal-log')">Fermer</button>
+      <button class="btn-primary" style="flex:1" onclick="saveLogEdit()">Enregistrer</button>
+    </div>
+    <button class="btn-danger" onclick="askDeleteLog()">Supprimer</button>
+    <div class="feedback" id="log-fb"></div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRM -->
+<div class="modal-overlay hidden" id="modal-confirm">
+  <div class="modal">
+    <div class="modal-title">Confirmer la suppression</div>
+    <div class="confirm-msg" id="confirm-msg"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('modal-confirm')">Annuler</button>
+      <button class="btn-danger" id="confirm-ok" style="margin-top:0">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+var SUPABASE_URL = 'https://gzfliakogbmuvwurwqfy.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6ZmxpYWtvZ2JtdXZ3dXJ3cWZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NjQ5NTMsImV4cCI6MjA5ODE0MDk1M30.35aNfS9uS1oCxvhk-6Tgg9wi93hGzU10bBBN4-Lz1KM';
+var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ── QUALITÉS (identique à Objectifs Stratégiques) ──
+var HORIZONS = [
+  {id:'spirituel',label:'Spirituel',color:'#7c3aed',qualities:['Rester Conscient','Être droit','Contribuer dans la société']},
+  {id:'professionnel',label:'Professionnel',color:'#059669',qualities:['Apprendre de nouvelles compétences','Donner un service de qualité','Avoir un revenu']},
+  {id:'social',label:'Social',color:'#dc2626',qualities:['Prendre soins de ma petite famille','Prendre soins de ma grande famille','Garder une bonne relation avec amis et proches']},
+  {id:'personnel',label:'Personnel',color:'#2563eb',qualities:['Prendre soins de mon corps','Vivre avec confort','Faire des activités de loisirs']}
+];
+var NON_QUALITE = 'Non qualité';
+
+// ── ZONES ──
+var ZONES = [
+  {id:'1.1',macro:1,label:'Deep Focus',color:'#4f46e5'},
+  {id:'1.2',macro:1,label:'Légère Focus',color:'#818cf8'},
+  {id:'4.1',macro:4,label:'Recharge Actif',color:'#059669'},
+  {id:'4.2',macro:4,label:'Repos Total',color:'#6ee7b7'},
+  {id:'2.1',macro:2,label:'Deep Forçage',color:'#dc2626'},
+  {id:'2.2',macro:2,label:'Légère Forçage',color:'#f87171'},
+  {id:'3.1',macro:3,label:'Distraction Active',color:'#78716c'},
+  {id:'3.2',macro:3,label:'Distraction Passive',color:'#d6d3d1'}
+];
+var MACRO_ZONES = [
+  {id:1,label:'Zone 1 — Focus',color:'#4f46e5'},
+  {id:2,label:'Zone 2 — Forçage',color:'#dc2626'},
+  {id:3,label:'Zone 3 — Distraction',color:'#78716c'},
+  {id:4,label:'Zone 4 — Recharge',color:'#059669'}
+];
+var EFFORT_LEVELS = [
+  {v:1,label:'1 · Deep Work'},
+  {v:2,label:'2 · Légère Work'},
+  {v:3,label:'3 · Chill Actif'},
+  {v:4,label:'4 · Repos'}
+];
+
+function zoneOf(quality,effort,emotion){
+  var positive = quality!==NON_QUALITE && emotion==='Positive';
+  var id;
+  if(positive){ id = effort===1?'1.1':effort===2?'1.2':effort===3?'4.1':'4.2'; }
+  else { id = effort===1?'2.1':effort===2?'2.2':effort===3?'3.1':'3.2'; }
+  return ZONES.find(function(z){return z.id===id;});
+}
+function macroOf(macroId){return MACRO_ZONES.find(function(m){return m.id===macroId;});}
+
+// ── HELPERS (dates locales, échappement) ──
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function escAttr(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function dStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function todayStr(){return dStr(new Date());}
+function addDays(s,n){var d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return dStr(d);}
+function fmtDateFull(s){if(!s)return'—';var d=new Date(s+'T00:00:00');return d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short',year:'numeric'});}
+function firstOfMonthStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-01';}
+function timeToMinutes(t){var p=t.split(':');return parseInt(p[0],10)*60+parseInt(p[1],10);}
+function durationMinutes(start,end){var diff=timeToMinutes(end)-timeToMinutes(start);if(diff<0)diff+=1440;return diff;}
+function fmtDuration(min){var h=Math.floor(min/60),m=min%60;if(h===0)return m+'min';if(m===0)return h+'h';return h+'h'+String(m).padStart(2,'0');}
+function hexToRgba(hex,a){var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return 'rgba('+r+','+g+','+b+','+a+')';}
+
+// ── ÉTAT GLOBAL ──
+var currentEffort=null, currentEmotion=null;
+var editLogId=null, editEffort=null, editEmotion=null;
+var actionsDate=todayStr(), actionsLogs=[];
+var dashIntradayDate=todayStr();
+var dashRangeFrom=addDays(todayStr(),-6), dashRangeTo=todayStr();
+var dashView='macro', dashRangeLogs=[];
+
+// ── QUALITÉ SELECT ──
+function populateQualitySelect(selectId,selectedValue){
+  var html='<option value="">— Choisir —</option>';
+  HORIZONS.forEach(function(h){
+    html+='<optgroup label="'+h.label+'">';
+    h.qualities.forEach(function(q){html+='<option value="'+escAttr(q)+'">'+esc(q)+'</option>';});
+    html+='</optgroup>';
+  });
+  html+='<optgroup label="Autre"><option value="'+escAttr(NON_QUALITE)+'">'+esc(NON_QUALITE)+'</option></optgroup>';
+  var sel=document.getElementById(selectId);
+  sel.innerHTML=html;
+  if(selectedValue) sel.value=selectedValue;
+}
+
+// ── TOGGLE GROUPS ──
+function renderEffortToggle(containerId,selected,ctx){
+  var html=EFFORT_LEVELS.map(function(e){
+    return '<button type="button" class="toggle-btn'+(selected===e.v?' active':'')+'" onclick="selectEffort('+e.v+',\''+ctx+'\')">'+e.label+'</button>';
+  }).join('');
+  document.getElementById(containerId).innerHTML=html;
+}
+function selectEffort(v,ctx){
+  if(ctx==='f'){currentEffort=v;renderEffortToggle('f-effort-group',v,'f');}
+  else {editEffort=v;renderEffortToggle('m-effort-group',v,'m');}
+}
+function renderEmotionToggle(containerId,selected,ctx){
+  var opts=[{v:'Positive',cls:'emotion-pos'},{v:'Négative',cls:'emotion-neg'}];
+  var html=opts.map(function(o){
+    return '<button type="button" class="toggle-btn '+o.cls+(selected===o.v?' active':'')+'" onclick="selectEmotion(\''+o.v+'\',\''+ctx+'\')">'+o.v+'</button>';
+  }).join('');
+  document.getElementById(containerId).innerHTML=html;
+}
+function selectEmotion(v,ctx){
+  if(ctx==='f'){currentEmotion=v;renderEmotionToggle('f-emotion-group',v,'f');}
+  else {editEmotion=v;renderEmotionToggle('m-emotion-group',v,'m');}
+}
+
+// ── HOME TABS ──
+function switchHomeTab(tab,btn){
+  document.querySelectorAll('.home-tab-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('.home-tab-content').forEach(function(c){c.style.display='none';});
+  document.getElementById('tab-'+tab).style.display='';
+  if(tab==='actions') renderActions();
+  if(tab==='dashboard') renderDashboard();
+}
+
+// ══════════════════ ONGLET SAISIE ══════════════════
+function resetSaisieForm(keepDate){
+  var d=keepDate||todayStr();
+  document.getElementById('f-date').value=d;
+  document.getElementById('f-start').value='';
+  document.getElementById('f-end').value='';
+  document.getElementById('f-action').value='';
+  populateQualitySelect('f-quality','');
+  document.getElementById('f-comment').value='';
+  currentEffort=null; currentEmotion=null;
+  renderEffortToggle('f-effort-group',null,'f');
+  renderEmotionToggle('f-emotion-group',null,'f');
+}
+
+async function submitLog(){
+  var fb=document.getElementById('f-fb');
+  var date=document.getElementById('f-date').value;
+  var start=document.getElementById('f-start').value;
+  var end=document.getElementById('f-end').value;
+  var action=document.getElementById('f-action').value.trim();
+  var quality=document.getElementById('f-quality').value;
+  var comment=document.getElementById('f-comment').value.trim();
+  if(!date||!start||!end||!action||!quality||!currentEffort||!currentEmotion){
+    fb.textContent='Merci de remplir tous les champs obligatoires.'; fb.style.color='#dc2626'; return;
+  }
+  if(end===start){
+    fb.textContent="L'heure de fin doit être différente du début."; fb.style.color='#dc2626'; return;
+  }
+  var row={entry_date:date,start_time:start,end_time:end,action_name:action,quality:quality,effort_level:currentEffort,emotion:currentEmotion,comment:comment||null};
+  var res=await sb.from('zone_logs').insert(row);
+  if(res.error){fb.textContent='Erreur: '+res.error.message; fb.style.color='#dc2626'; return;}
+  fb.textContent='Saisie enregistrée ✓'; fb.style.color='#059669';
+  resetSaisieForm(date);
+  setTimeout(function(){fb.textContent='';},2500);
+}
+
+// ══════════════════ ONGLET ACTIONS ══════════════════
+function shiftActionsDate(n){setActionsDate(addDays(actionsDate,n));}
+function setActionsDate(d){actionsDate=d;renderActions();}
+
+async function renderActions(){
+  document.getElementById('actions-date-input').value=actionsDate;
+  var list=document.getElementById('actions-list');
+  list.innerHTML='<div class="loading">Chargement...</div>';
+  var res=await sb.from('zone_logs').select('*').eq('entry_date',actionsDate).order('start_time');
+  actionsLogs=res.data||[];
+  if(!actionsLogs.length){
+    list.innerHTML='<div class="no-logs">Aucune action enregistrée ce jour-là.</div>';
+    return;
+  }
+  var h='';
+  actionsLogs.forEach(function(log){
+    var z=zoneOf(log.quality,log.effort_level,log.emotion);
+    h+='<div class="log-row" onclick="openLogDetail(\''+log.id+'\')">';
+    h+='<div class="zone-dot" style="background:'+z.color+'"></div>';
+    h+='<div class="log-info">';
+    h+='<div class="log-action">'+esc(log.action_name)+'</div>';
+    h+='<div class="log-meta">'+esc(log.quality)+' · '+log.start_time.slice(0,5)+'–'+log.end_time.slice(0,5)+'</div>';
+    h+='</div>';
+    h+='<div class="zone-badge" style="background:'+hexToRgba(z.color,0.15)+';color:'+z.color+'">'+z.id+' '+esc(z.label)+'</div>';
+    h+='</div>';
+  });
+  list.innerHTML=h;
+}
+
+function openLogDetail(id){
+  var log=actionsLogs.find(function(l){return l.id===id;});
+  if(!log)return;
+  editLogId=id;
+  document.getElementById('m-date').value=log.entry_date;
+  document.getElementById('m-start').value=log.start_time.slice(0,5);
+  document.getElementById('m-end').value=log.end_time.slice(0,5);
+  document.getElementById('m-action').value=log.action_name;
+  populateQualitySelect('m-quality',log.quality);
+  document.getElementById('m-comment').value=log.comment||'';
+  editEffort=log.effort_level; editEmotion=log.emotion;
+  renderEffortToggle('m-effort-group',editEffort,'m');
+  renderEmotionToggle('m-emotion-group',editEmotion,'m');
+  document.getElementById('log-fb').textContent='';
+  document.getElementById('modal-log').classList.remove('hidden');
+}
+
+async function saveLogEdit(){
+  var fb=document.getElementById('log-fb');
+  var date=document.getElementById('m-date').value;
+  var start=document.getElementById('m-start').value;
+  var end=document.getElementById('m-end').value;
+  var action=document.getElementById('m-action').value.trim();
+  var quality=document.getElementById('m-quality').value;
+  var comment=document.getElementById('m-comment').value.trim();
+  if(!date||!start||!end||!action||!quality||!editEffort||!editEmotion){
+    fb.textContent='Merci de remplir tous les champs obligatoires.'; fb.style.color='#dc2626'; return;
+  }
+  var row={entry_date:date,start_time:start,end_time:end,action_name:action,quality:quality,effort_level:editEffort,emotion:editEmotion,comment:comment||null};
+  var res=await sb.from('zone_logs').update(row).eq('id',editLogId);
+  if(res.error){fb.textContent='Erreur: '+res.error.message; fb.style.color='#dc2626'; return;}
+  closeModal('modal-log');
+  renderActions();
+}
+
+function askDeleteLog(){
+  var log=actionsLogs.find(function(l){return l.id===editLogId;});
+  var label=log?log.action_name:'cette action';
+  document.getElementById('confirm-msg').innerHTML='Supprimer "<strong>'+esc(label)+'</strong>" ?';
+  document.getElementById('confirm-ok').onclick=function(){doDeleteLog(editLogId);};
+  document.getElementById('modal-confirm').classList.remove('hidden');
+}
+async function doDeleteLog(id){
+  closeModal('modal-confirm');
+  await sb.from('zone_logs').delete().eq('id',id);
+  actionsLogs=actionsLogs.filter(function(l){return l.id!==id;});
+  closeModal('modal-log');
+  renderActions();
+}
+
+function closeModal(id){document.getElementById(id).classList.add('hidden');}
+
+// ══════════════════ ONGLET DASHBOARD ══════════════════
+function renderDashboard(){
+  document.getElementById('dash-intraday-date').value=dashIntradayDate;
+  document.getElementById('dash-from').value=dashRangeFrom;
+  document.getElementById('dash-to').value=dashRangeTo;
+  loadIntraday();
+  loadDashRange();
+}
+
+function shiftIntradayDate(n){setIntradayDate(addDays(dashIntradayDate,n));}
+function setIntradayDate(d){dashIntradayDate=d;document.getElementById('dash-intraday-date').value=d;loadIntraday();}
+
+async function loadIntraday(){
+  var c=document.getElementById('timeline-container');
+  c.innerHTML='<div class="loading">Chargement...</div>';
+  var res=await sb.from('zone_logs').select('*').eq('entry_date',dashIntradayDate).order('start_time');
+  var logs=res.data||[];
+  if(!logs.length){
+    c.innerHTML='<div class="timeline-empty">Aucune action ce jour-là.</div>'+
+      '<div class="timeline-ticks"><span>0h</span><span>6h</span><span>12h</span><span>18h</span><span>24h</span></div>';
+    return;
+  }
+  var h='<div class="timeline-track">';
+  logs.forEach(function(log){
+    var z=zoneOf(log.quality,log.effort_level,log.emotion);
+    var left=timeToMinutes(log.start_time)/1440*100;
+    var width=Math.max(durationMinutes(log.start_time,log.end_time)/1440*100,0.3);
+    h+='<div class="timeline-seg" style="left:'+left+'%;width:'+width+'%;background:'+z.color+'" title="'+escAttr(log.action_name+' — '+z.label+' ('+log.start_time.slice(0,5)+'–'+log.end_time.slice(0,5)+')')+'"></div>';
+  });
+  h+='</div><div class="timeline-ticks"><span>0h</span><span>6h</span><span>12h</span><span>18h</span><span>24h</span></div>';
+  c.innerHTML=h;
+}
+
+function setDashRange(days){
+  dashRangeTo=todayStr();
+  dashRangeFrom=addDays(dashRangeTo,-(days-1));
+  document.getElementById('dash-from').value=dashRangeFrom;
+  document.getElementById('dash-to').value=dashRangeTo;
+  loadDashRange();
+}
+function setDashRangeMonth(){
+  dashRangeFrom=firstOfMonthStr();
+  dashRangeTo=todayStr();
+  document.getElementById('dash-from').value=dashRangeFrom;
+  document.getElementById('dash-to').value=dashRangeTo;
+  loadDashRange();
+}
+function applyDashRangeCustom(){
+  dashRangeFrom=document.getElementById('dash-from').value;
+  dashRangeTo=document.getElementById('dash-to').value;
+  if(!dashRangeFrom||!dashRangeTo)return;
+  loadDashRange();
+}
+function setDashView(v){
+  dashView=v;
+  document.getElementById('dash-view-macro').classList.toggle('active',v==='macro');
+  document.getElementById('dash-view-detail').classList.toggle('active',v==='detail');
+  renderPie();
+}
+
+async function loadDashRange(){
+  var c=document.getElementById('pie-container');
+  c.innerHTML='<div class="loading">Chargement...</div>';
+  var res=await sb.from('zone_logs').select('*').gte('entry_date',dashRangeFrom).lte('entry_date',dashRangeTo);
+  dashRangeLogs=res.data||[];
+  renderPie();
+}
+
+function renderPie(){
+  var c=document.getElementById('pie-container');
+  var totalsByZone={};
+  ZONES.forEach(function(z){totalsByZone[z.id]=0;});
+  dashRangeLogs.forEach(function(log){
+    var z=zoneOf(log.quality,log.effort_level,log.emotion);
+    totalsByZone[z.id]+=durationMinutes(log.start_time,log.end_time);
+  });
+
+  var slices;
+  if(dashView==='macro'){
+    var totalsByMacro={};
+    MACRO_ZONES.forEach(function(m){totalsByMacro[m.id]=0;});
+    ZONES.forEach(function(z){totalsByMacro[z.macro]+=totalsByZone[z.id];});
+    slices=MACRO_ZONES.map(function(m){return {label:m.label,color:m.color,minutes:totalsByMacro[m.id]};});
+  } else {
+    slices=ZONES.map(function(z){return {label:z.id+' '+z.label,color:z.color,minutes:totalsByZone[z.id]};});
+  }
+
+  var grandTotal=slices.reduce(function(s,sl){return s+sl.minutes;},0);
+  if(grandTotal===0){
+    c.innerHTML='<div class="timeline-empty">Aucune donnée sur cette période.</div>';
+    return;
+  }
+
+  var cum=0, gradientParts=[];
+  slices.forEach(function(sl){
+    if(sl.minutes<=0)return;
+    var startPct=cum/grandTotal*100;
+    cum+=sl.minutes;
+    var endPct=cum/grandTotal*100;
+    gradientParts.push(sl.color+' '+startPct+'% '+endPct+'%');
+  });
+  var gradient='conic-gradient('+gradientParts.join(', ')+')';
+
+  var h='<div class="pie-wrap">';
+  h+='<div class="pie-chart" style="background:'+gradient+'"></div>';
+  h+='<div class="pie-legend">';
+  slices.forEach(function(sl){
+    if(sl.minutes<=0)return;
+    var pct=Math.round(sl.minutes/grandTotal*100);
+    h+='<div class="pie-legend-item">';
+    h+='<div class="pie-legend-dot" style="background:'+sl.color+'"></div>';
+    h+='<div class="pie-legend-label">'+esc(sl.label)+'</div>';
+    h+='<div class="pie-legend-val">'+pct+'% · '+fmtDuration(sl.minutes)+'</div>';
+    h+='</div>';
+  });
+  h+='</div></div>';
+  c.innerHTML=h;
+}
+
+// ── INIT ──
+resetSaisieForm(todayStr());
+</script>
+</body>
+</html>
