@@ -91,6 +91,9 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .timeline-seg{position:absolute;top:0;bottom:0;cursor:pointer;min-width:2px}
 .timeline-ticks{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:5px}
 .timeline-empty{text-align:center;padding:1rem;color:var(--muted);font-size:12px}
+.timeline-legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:.85rem;padding-top:.75rem;border-top:1px solid var(--border)}
+.timeline-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.timeline-legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 
 /* PIE */
 .pie-wrap{display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;justify-content:center}
@@ -157,6 +160,7 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
         </div>
       </div>
       <div id="timeline-container"><div class="loading">Chargement...</div></div>
+      <div class="timeline-legend" id="timeline-legend"></div>
     </div>
 
     <div class="card">
@@ -562,8 +566,16 @@ function renderPie(){
   c.innerHTML=h;
 }
 
+function renderTimelineLegend(){
+  var h=ZONES.map(function(z){
+    return '<div class="timeline-legend-item"><div class="timeline-legend-dot" style="background:'+z.color+'"></div>'+z.id+' '+esc(z.label)+'</div>';
+  }).join('');
+  document.getElementById('timeline-legend').innerHTML=h;
+}
+
 // ── INIT ──
 resetSaisieForm(todayStr());
+renderTimelineLegend();
 </script>
 </body>
 </html>
