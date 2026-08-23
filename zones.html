@@ -87,9 +87,17 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .no-logs{text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:13px}
 
 /* TIMELINE */
-.timeline-track{position:relative;height:44px;background:var(--bg);border-radius:8px;overflow:hidden;border:1px solid var(--border)}
-.timeline-seg{position:absolute;top:0;bottom:0;cursor:pointer;min-width:2px}
-.timeline-ticks{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:5px}
+.tabs{display:flex;gap:4px;margin-bottom:1.25rem;border-bottom:1px solid var(--border)}
+.tab-btn{padding:8px 16px;border:none;background:transparent;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.tab-btn.active{color:var(--text);border-bottom-color:var(--text)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+.timeline-col-wrap{display:flex;gap:8px}
+.timeline-col-ticks{display:flex;flex-direction:column;justify-content:space-between;width:26px;flex-shrink:0;height:560px;font-size:9px;color:var(--muted);text-align:right}
+.timeline-col-track{position:relative;flex:1;height:560px;background:var(--bg);border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.timeline-col-seg{position:absolute;left:0;right:0;cursor:pointer;overflow:hidden;border-bottom:1px solid rgba(0,0,0,.12)}
+.timeline-col-seg-label{font-size:10px;color:#fff;padding:2px 6px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
 .timeline-empty{text-align:center;padding:1rem;color:var(--muted);font-size:12px}
 .timeline-legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:.85rem;padding-top:.75rem;border-top:1px solid var(--border)}
 .timeline-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
@@ -151,30 +159,39 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 
   <!-- ONGLET DASHBOARD -->
   <div id="tab-dashboard" class="home-tab-content" style="display:none">
-    <div class="card">
-      <div class="cal-toolbar">
-        <div class="cal-nav-group">
-          <button class="cal-nav-arrow" onclick="shiftIntradayDate(-1)">◀</button>
-          <input type="date" id="dash-intraday-date" onchange="setIntradayDate(this.value)">
-          <button class="cal-nav-arrow" onclick="shiftIntradayDate(1)">▶</button>
-        </div>
-      </div>
-      <div id="timeline-container"><div class="loading">Chargement...</div></div>
-      <div class="timeline-legend" id="timeline-legend"></div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchDashSubTab('jour',this)">Journée</button>
+      <button class="tab-btn" onclick="switchDashSubTab('tendances',this)">Tendances</button>
     </div>
 
-    <div class="card">
-      <div class="filter-bar">
-        <button class="btn-filter" id="btn-range-7" onclick="setDashRange(7)">7 derniers jours</button>
-        <button class="btn-filter" id="btn-range-month" onclick="setDashRangeMonth()">Ce mois-ci</button>
-        <label>Du</label><input type="date" id="dash-from" onchange="applyDashRangeCustom()">
-        <label>Au</label><input type="date" id="dash-to" onchange="applyDashRangeCustom()">
+    <div id="dashsub-jour" class="tab-content active">
+      <div class="card">
+        <div class="cal-toolbar">
+          <div class="cal-nav-group">
+            <button class="cal-nav-arrow" onclick="shiftIntradayDate(-1)">◀</button>
+            <input type="date" id="dash-intraday-date" onchange="setIntradayDate(this.value)">
+            <button class="cal-nav-arrow" onclick="shiftIntradayDate(1)">▶</button>
+          </div>
+        </div>
+        <div id="timeline-container"><div class="loading">Chargement...</div></div>
+        <div class="timeline-legend" id="timeline-legend"></div>
       </div>
-      <div class="cal-view-toggle">
-        <button class="cal-view-btn active" id="dash-view-macro" onclick="setDashView('macro')">Macro</button>
-        <button class="cal-view-btn" id="dash-view-detail" onclick="setDashView('detail')">Détaillée</button>
+    </div>
+
+    <div id="dashsub-tendances" class="tab-content">
+      <div class="card">
+        <div class="filter-bar">
+          <button class="btn-filter" id="btn-range-7" onclick="setDashRange(7)">7 derniers jours</button>
+          <button class="btn-filter" id="btn-range-month" onclick="setDashRangeMonth()">Ce mois-ci</button>
+          <label>Du</label><input type="date" id="dash-from" onchange="applyDashRangeCustom()">
+          <label>Au</label><input type="date" id="dash-to" onchange="applyDashRangeCustom()">
+        </div>
+        <div class="cal-view-toggle">
+          <button class="cal-view-btn active" id="dash-view-macro" onclick="setDashView('macro')">Macro</button>
+          <button class="cal-view-btn" id="dash-view-detail" onclick="setDashView('detail')">Détaillée</button>
+        </div>
+        <div id="pie-container"><div class="loading">Chargement...</div></div>
       </div>
-      <div id="pie-container"><div class="loading">Chargement...</div></div>
     </div>
   </div>
 </div>
@@ -448,36 +465,52 @@ async function doDeleteLog(id){
 function closeModal(id){document.getElementById(id).classList.add('hidden');}
 
 // ══════════════════ ONGLET DASHBOARD ══════════════════
+var dashSubTab='jour';
+
 function renderDashboard(){
   document.getElementById('dash-intraday-date').value=dashIntradayDate;
   document.getElementById('dash-from').value=dashRangeFrom;
   document.getElementById('dash-to').value=dashRangeTo;
-  loadIntraday();
-  loadDashRange();
+  if(dashSubTab==='jour') loadIntraday();
+  else loadDashRange();
+}
+
+function switchDashSubTab(tab,btn){
+  dashSubTab=tab;
+  document.querySelectorAll('#tab-dashboard .tab-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('#tab-dashboard .tab-content').forEach(function(c){c.classList.remove('active');});
+  document.getElementById('dashsub-'+tab).classList.add('active');
+  if(tab==='jour') loadIntraday();
+  else loadDashRange();
 }
 
 function shiftIntradayDate(n){setIntradayDate(addDays(dashIntradayDate,n));}
 function setIntradayDate(d){dashIntradayDate=d;document.getElementById('dash-intraday-date').value=d;loadIntraday();}
+
+var TIMELINE_COL_H=560;
 
 async function loadIntraday(){
   var c=document.getElementById('timeline-container');
   c.innerHTML='<div class="loading">Chargement...</div>';
   var res=await sb.from('zone_logs').select('*').eq('entry_date',dashIntradayDate).order('start_time');
   var logs=res.data||[];
+  var ticksHtml='<div class="timeline-col-ticks">'+[0,3,6,9,12,15,18,21,24].map(function(h){return '<span>'+h+'h</span>';}).join('')+'</div>';
   if(!logs.length){
-    c.innerHTML='<div class="timeline-empty">Aucune action ce jour-là.</div>'+
-      '<div class="timeline-ticks"><span>0h</span><span>6h</span><span>12h</span><span>18h</span><span>24h</span></div>';
+    c.innerHTML='<div class="timeline-col-wrap">'+ticksHtml+'<div class="timeline-col-track"><div class="timeline-empty">Aucune action ce jour-là.</div></div></div>';
     return;
   }
-  var h='<div class="timeline-track">';
+  var segs='';
   logs.forEach(function(log){
     var z=zoneOf(log.quality,log.effort_level,log.emotion);
-    var left=timeToMinutes(log.start_time)/1440*100;
-    var width=Math.max(durationMinutes(log.start_time,log.end_time)/1440*100,0.3);
-    h+='<div class="timeline-seg" style="left:'+left+'%;width:'+width+'%;background:'+z.color+'" title="'+escAttr(log.action_name+' — '+z.label+' ('+log.start_time.slice(0,5)+'–'+log.end_time.slice(0,5)+')')+'"></div>';
+    var top=timeToMinutes(log.start_time)/1440*TIMELINE_COL_H;
+    var height=Math.max(durationMinutes(log.start_time,log.end_time)/1440*TIMELINE_COL_H,2);
+    var tip=escAttr(log.action_name+' — '+z.id+' '+z.label+' ('+log.start_time.slice(0,5)+'–'+log.end_time.slice(0,5)+')');
+    segs+='<div class="timeline-col-seg" style="top:'+top+'px;height:'+height+'px;background:'+z.color+'" title="'+tip+'">';
+    if(height>=20) segs+='<div class="timeline-col-seg-label">'+z.id+' '+esc(z.label)+'</div>';
+    segs+='</div>';
   });
-  h+='</div><div class="timeline-ticks"><span>0h</span><span>6h</span><span>12h</span><span>18h</span><span>24h</span></div>';
-  c.innerHTML=h;
+  c.innerHTML='<div class="timeline-col-wrap">'+ticksHtml+'<div class="timeline-col-track">'+segs+'</div></div>';
 }
 
 function setDashRange(days){
