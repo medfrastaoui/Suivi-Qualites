@@ -84,6 +84,7 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 .log-action{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .log-meta{font-size:11px;color:var(--muted);margin-top:2px}
 .zone-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;flex-shrink:0;white-space:nowrap}
+.btn-dup{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:5px 8px;font-size:13px;cursor:pointer;color:var(--text);flex-shrink:0;line-height:1}
 .no-logs{text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:13px}
 
 /* TIMELINE */
@@ -121,7 +122,7 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 
 <div id="screen-home" class="screen active">
   <div class="home-tabs">
-    <button class="home-tab-btn active" onclick="switchHomeTab('saisie',this)">Saisie</button>
+    <button class="home-tab-btn active" id="hometab-btn-saisie" onclick="switchHomeTab('saisie',this)">Saisie</button>
     <button class="home-tab-btn" onclick="switchHomeTab('actions',this)">Actions</button>
     <button class="home-tab-btn" onclick="switchHomeTab('dashboard',this)">Dashboard</button>
   </div>
@@ -415,9 +416,26 @@ async function renderActions(){
     h+='<div class="log-meta">'+esc(log.quality)+' · '+log.start_time.slice(0,5)+'–'+log.end_time.slice(0,5)+'</div>';
     h+='</div>';
     h+='<div class="zone-badge" style="background:'+hexToRgba(z.color,0.15)+';color:'+z.color+'">'+z.id+' '+esc(z.label)+'</div>';
+    h+='<button type="button" class="btn-dup" title="Dupliquer" onclick="event.stopPropagation();duplicateLog(\''+log.id+'\')">⧉</button>';
     h+='</div>';
   });
   list.innerHTML=h;
+}
+
+function duplicateLog(id){
+  var log=actionsLogs.find(function(l){return l.id===id;});
+  if(!log)return;
+  document.getElementById('f-date').value=todayStr();
+  document.getElementById('f-start').value=log.start_time.slice(0,5);
+  document.getElementById('f-end').value=log.end_time.slice(0,5);
+  document.getElementById('f-action').value=log.action_name;
+  populateQualitySelect('f-quality',log.quality);
+  document.getElementById('f-comment').value=log.comment||'';
+  currentEffort=log.effort_level; currentEmotion=log.emotion;
+  renderEffortToggle('f-effort-group',currentEffort,'f');
+  renderEmotionToggle('f-emotion-group',currentEmotion,'f');
+  document.getElementById('f-fb').textContent='';
+  switchHomeTab('saisie',document.getElementById('hometab-btn-saisie'));
 }
 
 function openLogDetail(id){
