@@ -192,11 +192,13 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
           <button class="cal-view-btn active" id="dash-metric-zones" onclick="setDashMetric('zones')">Zones</button>
           <button class="cal-view-btn" id="dash-metric-qualites" onclick="setDashMetric('qualites')">Qualités</button>
         </div>
-        <div class="cal-view-toggle">
-          <button class="cal-view-btn active" id="dash-view-macro" onclick="setDashView('macro')">Macro</button>
-          <button class="cal-view-btn" id="dash-view-detail" onclick="setDashView('detail')">Détaillée</button>
+        <div class="cal-view-toggle" style="justify-content:space-between;width:100%;background:transparent;padding:0;margin-bottom:1rem">
+          <div class="cal-view-toggle" style="margin-bottom:0">
+            <button class="cal-view-btn active" id="dash-view-macro" onclick="setDashView('macro')">Macro</button>
+            <button class="cal-view-btn" id="dash-view-detail" onclick="setDashView('detail')">Détaillée</button>
+          </div>
+          <button class="btn-filter" id="btn-exclude-sommeil" onclick="toggleExcludeSommeil()">Exclure Sommeil</button>
         </div>
-        <button class="btn-filter" id="btn-exclude-sommeil" style="margin-bottom:1rem" onclick="toggleExcludeSommeil()">Exclure Sommeil</button>
         <div id="pie-container"><div class="loading">Chargement...</div></div>
       </div>
     </div>
@@ -646,6 +648,8 @@ function renderPie(){
       slices.push({label:NON_QUALITE,color:HORS_HORIZON_COLOR,minutes:horsHorizon});
     }
   }
+
+  slices.sort(function(a,b){return b.minutes-a.minutes;});
 
   var grandTotal=slices.reduce(function(s,sl){return s+sl.minutes;},0);
   if(grandTotal===0){
