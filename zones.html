@@ -196,6 +196,7 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
           <button class="cal-view-btn active" id="dash-view-macro" onclick="setDashView('macro')">Macro</button>
           <button class="cal-view-btn" id="dash-view-detail" onclick="setDashView('detail')">Détaillée</button>
         </div>
+        <button class="btn-filter" id="btn-exclude-sommeil" style="margin-bottom:1rem" onclick="toggleExcludeSommeil()">Exclure Sommeil</button>
         <div id="pie-container"><div class="loading">Chargement...</div></div>
       </div>
     </div>
@@ -308,6 +309,8 @@ var actionsDate=todayStr(), actionsLogs=[];
 var dashIntradayDate=todayStr();
 var dashRangeFrom=todayStr(), dashRangeTo=todayStr();
 var dashView='macro', dashMetric='zones', dashRangePreset='today', dashRangeLogs=[];
+var excludeSommeil=false;
+var SOMMEIL_ACTION_NAME='routine - sommeil';
 
 // ── QUALITÉ SELECT ──
 function populateQualitySelect(selectId,selectedValue){
@@ -592,14 +595,21 @@ async function loadDashRange(){
   renderPie();
 }
 
+function toggleExcludeSommeil(){
+  excludeSommeil=!excludeSommeil;
+  document.getElementById('btn-exclude-sommeil').classList.toggle('active',excludeSommeil);
+  renderPie();
+}
+
 function renderPie(){
   var c=document.getElementById('pie-container');
   var slices;
+  var logs=excludeSommeil?dashRangeLogs.filter(function(l){return l.action_name.trim().toLowerCase()!==SOMMEIL_ACTION_NAME;}):dashRangeLogs;
 
   if(dashMetric==='zones'){
     var totalsByZone={};
     ZONES.forEach(function(z){totalsByZone[z.id]=0;});
-    dashRangeLogs.forEach(function(log){
+    logs.forEach(function(log){
       var z=zoneOf(log.quality,log.effort_level,log.emotion);
       totalsByZone[z.id]+=durationMinutes(log.start_time,log.end_time);
     });
@@ -615,7 +625,7 @@ function renderPie(){
     var totalsByQuality={};
     HORIZONS.forEach(function(h){h.qualities.forEach(function(q){totalsByQuality[q]=0;});});
     var horsHorizon=0;
-    dashRangeLogs.forEach(function(log){
+    logs.forEach(function(log){
       var dur=durationMinutes(log.start_time,log.end_time);
       if(log.quality===NON_QUALITE){horsHorizon+=dur;}
       else{totalsByQuality[log.quality]=(totalsByQuality[log.quality]||0)+dur;}
