@@ -89,10 +89,15 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 
 /* TIMELINE */
 .tabs{display:flex;gap:4px;margin-bottom:1.25rem;border-bottom:1px solid var(--border)}
-.tab-btn{padding:8px 16px;border:none;background:transparent;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
-.tab-btn.active{color:var(--text);border-bottom-color:var(--text)}
-.tab-content{display:none}
-.tab-content.active{display:block}
+.cmp-caption{font-size:11px;color:var(--muted);margin-top:.5rem}
+.cmp-row{margin-bottom:14px}
+.cmp-row-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.cmp-row-label{font-size:13px;font-weight:600}
+.cmp-row-delta{font-size:11px;font-weight:700;flex-shrink:0}
+.cmp-bar-wrap{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.cmp-bar-track{flex:1;height:14px;background:var(--bg);border-radius:4px;overflow:hidden}
+.cmp-bar-fill{height:100%;border-radius:4px;transition:width .2s}
+.cmp-bar-val{font-size:10px;color:var(--muted);width:78px;flex-shrink:0;text-align:right}
 
 .timeline-col-wrap{display:flex;gap:8px}
 .timeline-col-ticks{display:flex;flex-direction:column;justify-content:space-between;width:26px;flex-shrink:0;height:560px;font-size:9px;color:var(--muted);text-align:right}
@@ -124,6 +129,7 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
   <div class="home-tabs">
     <button class="home-tab-btn active" id="hometab-btn-saisie" onclick="switchHomeTab('saisie',this)">Saisie</button>
     <button class="home-tab-btn" onclick="switchHomeTab('actions',this)">Actions</button>
+    <button class="home-tab-btn" onclick="switchHomeTab('timeline',this)">Timeline</button>
     <button class="home-tab-btn" onclick="switchHomeTab('dashboard',this)">Dashboard</button>
   </div>
 
@@ -158,29 +164,30 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
     <div id="actions-list"><div class="loading">Chargement...</div></div>
   </div>
 
+  <!-- ONGLET TIMELINE -->
+  <div id="tab-timeline" class="home-tab-content" style="display:none">
+    <div class="card">
+      <div class="cal-toolbar">
+        <div class="cal-nav-group">
+          <button class="cal-nav-arrow" onclick="shiftIntradayDate(-1)">◀</button>
+          <input type="date" id="dash-intraday-date" onchange="setIntradayDate(this.value)">
+          <button class="cal-nav-arrow" onclick="shiftIntradayDate(1)">▶</button>
+        </div>
+      </div>
+      <div id="timeline-container"><div class="loading">Chargement...</div></div>
+      <div class="timeline-legend" id="timeline-legend"></div>
+    </div>
+  </div>
+
   <!-- ONGLET DASHBOARD -->
   <div id="tab-dashboard" class="home-tab-content" style="display:none">
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchDashSubTab('jour',this)">Journée</button>
-      <button class="tab-btn" onclick="switchDashSubTab('tendances',this)">Tendances</button>
-    </div>
-
-    <div id="dashsub-jour" class="tab-content active">
-      <div class="card">
-        <div class="cal-toolbar">
-          <div class="cal-nav-group">
-            <button class="cal-nav-arrow" onclick="shiftIntradayDate(-1)">◀</button>
-            <input type="date" id="dash-intraday-date" onchange="setIntradayDate(this.value)">
-            <button class="cal-nav-arrow" onclick="shiftIntradayDate(1)">▶</button>
-          </div>
-        </div>
-        <div id="timeline-container"><div class="loading">Chargement...</div></div>
-        <div class="timeline-legend" id="timeline-legend"></div>
+    <div class="card">
+      <div class="cal-view-toggle">
+        <button class="cal-view-btn active" id="dash-mode-simple" onclick="setDashMode('simple')">Vue simple</button>
+        <button class="cal-view-btn" id="dash-mode-compare" onclick="setDashMode('compare')">Comparer</button>
       </div>
-    </div>
 
-    <div id="dashsub-tendances" class="tab-content">
-      <div class="card">
+      <div id="dash-simple-block">
         <div class="filter-bar">
           <button class="btn-filter" id="btn-range-today" onclick="setDashRange(1)">Aujourd'hui</button>
           <button class="btn-filter" id="btn-range-7" onclick="setDashRange(7)">7 derniers jours</button>
@@ -188,19 +195,44 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
           <label>Du</label><input type="date" id="dash-from" onchange="applyDashRangeCustom()">
           <label>Au</label><input type="date" id="dash-to" onchange="applyDashRangeCustom()">
         </div>
-        <div class="cal-view-toggle">
-          <button class="cal-view-btn active" id="dash-metric-zones" onclick="setDashMetric('zones')">Zones</button>
-          <button class="cal-view-btn" id="dash-metric-qualites" onclick="setDashMetric('qualites')">Qualités</button>
-        </div>
-        <div class="cal-view-toggle" style="justify-content:space-between;width:100%;background:transparent;padding:0;margin-bottom:1rem">
-          <div class="cal-view-toggle" style="margin-bottom:0">
-            <button class="cal-view-btn active" id="dash-view-macro" onclick="setDashView('macro')">Macro</button>
-            <button class="cal-view-btn" id="dash-view-detail" onclick="setDashView('detail')">Détaillée</button>
-          </div>
-          <button class="btn-filter" id="btn-exclude-sommeil" onclick="toggleExcludeSommeil()">Exclure Sommeil</button>
-        </div>
-        <div id="pie-container"><div class="loading">Chargement...</div></div>
       </div>
+
+      <div id="dash-compare-block" style="display:none">
+        <div class="modal-field">
+          <label>Période A</label>
+          <div class="filter-bar">
+            <button class="btn-filter" id="btn-a-range-today" onclick="setPeriodRange('A',1)">Aujourd'hui</button>
+            <button class="btn-filter" id="btn-a-range-7" onclick="setPeriodRange('A',7)">7 derniers jours</button>
+            <button class="btn-filter" id="btn-a-range-month" onclick="setPeriodRangeMonth('A')">Ce mois-ci</button>
+            <label>Du</label><input type="date" id="a-from" onchange="applyPeriodCustom('A')">
+            <label>Au</label><input type="date" id="a-to" onchange="applyPeriodCustom('A')">
+          </div>
+        </div>
+        <div class="modal-field">
+          <label>Période B (proposée automatiquement, modifiable)</label>
+          <div class="filter-bar">
+            <button class="btn-filter" id="btn-b-range-today" onclick="setPeriodRange('B',1)">Aujourd'hui</button>
+            <button class="btn-filter" id="btn-b-range-7" onclick="setPeriodRange('B',7)">7 derniers jours</button>
+            <button class="btn-filter" id="btn-b-range-month" onclick="setPeriodRangeMonth('B')">Ce mois-ci</button>
+            <label>Du</label><input type="date" id="b-from" onchange="applyPeriodCustom('B')">
+            <label>Au</label><input type="date" id="b-to" onchange="applyPeriodCustom('B')">
+          </div>
+        </div>
+        <div class="cmp-caption">Barres du haut = Période A (couleur pleine) · barres du bas = Période B (couleur claire)</div>
+      </div>
+
+      <div class="cal-view-toggle" style="margin-top:1rem">
+        <button class="cal-view-btn active" id="dash-metric-zones" onclick="setDashMetric('zones')">Zones</button>
+        <button class="cal-view-btn" id="dash-metric-qualites" onclick="setDashMetric('qualites')">Qualités</button>
+      </div>
+      <div class="cal-view-toggle" style="justify-content:space-between;width:100%;background:transparent;padding:0;margin-bottom:1rem">
+        <div class="cal-view-toggle" style="margin-bottom:0">
+          <button class="cal-view-btn active" id="dash-view-macro" onclick="setDashView('macro')">Macro</button>
+          <button class="cal-view-btn" id="dash-view-detail" onclick="setDashView('detail')">Détaillée</button>
+        </div>
+        <button class="btn-filter" id="btn-exclude-sommeil" onclick="toggleExcludeSommeil()">Exclure Sommeil</button>
+      </div>
+      <div id="pie-container"><div class="loading">Chargement...</div></div>
     </div>
   </div>
 </div>
@@ -311,6 +343,10 @@ var actionsDate=todayStr(), actionsLogs=[];
 var dashIntradayDate=todayStr();
 var dashRangeFrom=todayStr(), dashRangeTo=todayStr();
 var dashView='macro', dashMetric='zones', dashRangePreset='today', dashRangeLogs=[];
+var dashMode='simple';
+var pAFrom=todayStr(), pATo=todayStr(), pAPreset='today';
+var pBFrom=addDays(todayStr(),-1), pBTo=addDays(todayStr(),-1), pBPreset='auto';
+var dashRangeLogsA=[], dashRangeLogsB=[];
 var excludeSommeil=false;
 var SOMMEIL_ACTION_NAME='routine - sommeil';
 
@@ -358,6 +394,7 @@ function switchHomeTab(tab,btn){
   document.querySelectorAll('.home-tab-content').forEach(function(c){c.style.display='none';});
   document.getElementById('tab-'+tab).style.display='';
   if(tab==='actions') renderActions();
+  if(tab==='timeline') loadIntraday();
   if(tab==='dashboard') renderDashboard();
 }
 
@@ -496,25 +533,28 @@ async function doDeleteLog(id){
 function closeModal(id){document.getElementById(id).classList.add('hidden');}
 
 // ══════════════════ ONGLET DASHBOARD ══════════════════
-var dashSubTab='jour';
-
 function renderDashboard(){
-  document.getElementById('dash-intraday-date').value=dashIntradayDate;
   document.getElementById('dash-from').value=dashRangeFrom;
   document.getElementById('dash-to').value=dashRangeTo;
   highlightRangePreset();
-  if(dashSubTab==='jour') loadIntraday();
-  else loadDashRange();
+  document.getElementById('a-from').value=pAFrom;
+  document.getElementById('a-to').value=pATo;
+  document.getElementById('b-from').value=pBFrom;
+  document.getElementById('b-to').value=pBTo;
+  highlightPeriodPreset('A');
+  highlightPeriodPreset('B');
+  if(dashMode==='simple') loadDashRange();
+  else loadCompareData();
 }
 
-function switchDashSubTab(tab,btn){
-  dashSubTab=tab;
-  document.querySelectorAll('#tab-dashboard .tab-btn').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');
-  document.querySelectorAll('#tab-dashboard .tab-content').forEach(function(c){c.classList.remove('active');});
-  document.getElementById('dashsub-'+tab).classList.add('active');
-  if(tab==='jour') loadIntraday();
-  else loadDashRange();
+function setDashMode(m){
+  dashMode=m;
+  document.getElementById('dash-mode-simple').classList.toggle('active',m==='simple');
+  document.getElementById('dash-mode-compare').classList.toggle('active',m==='compare');
+  document.getElementById('dash-simple-block').style.display=m==='simple'?'':'none';
+  document.getElementById('dash-compare-block').style.display=m==='compare'?'':'none';
+  if(m==='simple') loadDashRange();
+  else loadCompareData();
 }
 
 function shiftIntradayDate(n){setIntradayDate(addDays(dashIntradayDate,n));}
@@ -576,17 +616,85 @@ function applyDashRangeCustom(){
   if(!dashRangeFrom||!dashRangeTo)return;
   loadDashRange();
 }
+
+// ── PÉRIODE A / B (mode Comparer) ──
+function computePeriodBAuto(){
+  var days=Math.round((new Date(pATo+'T00:00:00')-new Date(pAFrom+'T00:00:00'))/86400000)+1;
+  pBTo=addDays(pAFrom,-1);
+  pBFrom=addDays(pBTo,-(days-1));
+  pBPreset='auto';
+}
+function highlightPeriodPreset(which){
+  var preset=which==='A'?pAPreset:pBPreset;
+  document.getElementById('btn-'+which.toLowerCase()+'-range-today').classList.toggle('active',preset==='today');
+  document.getElementById('btn-'+which.toLowerCase()+'-range-7').classList.toggle('active',preset==='7');
+  document.getElementById('btn-'+which.toLowerCase()+'-range-month').classList.toggle('active',preset==='month');
+}
+function setPeriodRange(which,days){
+  var to=todayStr(), from=addDays(to,-(days-1)), preset=days===1?'today':'7';
+  if(which==='A'){
+    pAFrom=from; pATo=to; pAPreset=preset;
+    computePeriodBAuto();
+    document.getElementById('b-from').value=pBFrom;
+    document.getElementById('b-to').value=pBTo;
+  } else {
+    pBFrom=from; pBTo=to; pBPreset=preset;
+  }
+  document.getElementById(which.toLowerCase()+'-from').value=which==='A'?pAFrom:pBFrom;
+  document.getElementById(which.toLowerCase()+'-to').value=which==='A'?pATo:pBTo;
+  highlightPeriodPreset('A'); highlightPeriodPreset('B');
+  loadCompareData();
+}
+function setPeriodRangeMonth(which){
+  var from=firstOfMonthStr(), to=todayStr();
+  if(which==='A'){
+    pAFrom=from; pATo=to; pAPreset='month';
+    computePeriodBAuto();
+    document.getElementById('b-from').value=pBFrom;
+    document.getElementById('b-to').value=pBTo;
+  } else {
+    pBFrom=from; pBTo=to; pBPreset='month';
+  }
+  document.getElementById(which.toLowerCase()+'-from').value=which==='A'?pAFrom:pBFrom;
+  document.getElementById(which.toLowerCase()+'-to').value=which==='A'?pATo:pBTo;
+  highlightPeriodPreset('A'); highlightPeriodPreset('B');
+  loadCompareData();
+}
+function applyPeriodCustom(which){
+  if(which==='A'){
+    pAFrom=document.getElementById('a-from').value;
+    pATo=document.getElementById('a-to').value;
+    pAPreset='custom';
+    if(!pAFrom||!pATo){highlightPeriodPreset('A');return;}
+    computePeriodBAuto();
+    document.getElementById('b-from').value=pBFrom;
+    document.getElementById('b-to').value=pBTo;
+  } else {
+    pBFrom=document.getElementById('b-from').value;
+    pBTo=document.getElementById('b-to').value;
+    pBPreset='custom';
+    if(!pBFrom||!pBTo){highlightPeriodPreset('B');return;}
+  }
+  highlightPeriodPreset('A'); highlightPeriodPreset('B');
+  loadCompareData();
+}
+
 function setDashView(v){
   dashView=v;
   document.getElementById('dash-view-macro').classList.toggle('active',v==='macro');
   document.getElementById('dash-view-detail').classList.toggle('active',v==='detail');
-  renderPie();
+  if(dashMode==='simple') renderPie(); else renderCompareBars();
 }
 function setDashMetric(v){
   dashMetric=v;
   document.getElementById('dash-metric-zones').classList.toggle('active',v==='zones');
   document.getElementById('dash-metric-qualites').classList.toggle('active',v==='qualites');
-  renderPie();
+  if(dashMode==='simple') renderPie(); else renderCompareBars();
+}
+function toggleExcludeSommeil(){
+  excludeSommeil=!excludeSommeil;
+  document.getElementById('btn-exclude-sommeil').classList.toggle('active',excludeSommeil);
+  if(dashMode==='simple') renderPie(); else renderCompareBars();
 }
 
 async function loadDashRange(){
@@ -597,17 +705,20 @@ async function loadDashRange(){
   renderPie();
 }
 
-function toggleExcludeSommeil(){
-  excludeSommeil=!excludeSommeil;
-  document.getElementById('btn-exclude-sommeil').classList.toggle('active',excludeSommeil);
-  renderPie();
+async function loadCompareData(){
+  var c=document.getElementById('pie-container');
+  c.innerHTML='<div class="loading">Chargement...</div>';
+  var resA=await sb.from('zone_logs').select('*').gte('entry_date',pAFrom).lte('entry_date',pATo);
+  var resB=await sb.from('zone_logs').select('*').gte('entry_date',pBFrom).lte('entry_date',pBTo);
+  dashRangeLogsA=resA.data||[];
+  dashRangeLogsB=resB.data||[];
+  renderCompareBars();
 }
 
-function renderPie(){
-  var c=document.getElementById('pie-container');
+// ── CALCUL DES TRANCHES (partagé Vue simple / Comparer) ──
+function computeSlices(logsRaw){
+  var logs=excludeSommeil?logsRaw.filter(function(l){return l.action_name.trim().toLowerCase()!==SOMMEIL_ACTION_NAME;}):logsRaw;
   var slices;
-  var logs=excludeSommeil?dashRangeLogs.filter(function(l){return l.action_name.trim().toLowerCase()!==SOMMEIL_ACTION_NAME;}):dashRangeLogs;
-
   if(dashMetric==='zones'){
     var totalsByZone={};
     ZONES.forEach(function(z){totalsByZone[z.id]=0;});
@@ -648,7 +759,12 @@ function renderPie(){
       slices.push({label:NON_QUALITE,color:HORS_HORIZON_COLOR,minutes:horsHorizon});
     }
   }
+  return slices;
+}
 
+function renderPie(){
+  var c=document.getElementById('pie-container');
+  var slices=computeSlices(dashRangeLogs);
   slices.sort(function(a,b){return b.minutes-a.minutes;});
 
   var grandTotal=slices.reduce(function(s,sl){return s+sl.minutes;},0);
@@ -681,6 +797,46 @@ function renderPie(){
   });
   h+='</div></div>';
   c.innerHTML=h;
+}
+
+function renderCompareBars(){
+  var c=document.getElementById('pie-container');
+  var slicesA=computeSlices(dashRangeLogsA);
+  var slicesB=computeSlices(dashRangeLogsB);
+  var totalA=slicesA.reduce(function(s,sl){return s+sl.minutes;},0);
+  var totalB=slicesB.reduce(function(s,sl){return s+sl.minutes;},0);
+  if(totalA===0 && totalB===0){
+    c.innerHTML='<div class="timeline-empty">Aucune donnée sur ces périodes.</div>';
+    return;
+  }
+  var map={};
+  slicesA.forEach(function(sl){
+    map[sl.label]=map[sl.label]||{label:sl.label,color:sl.color,minsA:0,minsB:0};
+    map[sl.label].minsA=sl.minutes;
+  });
+  slicesB.forEach(function(sl){
+    map[sl.label]=map[sl.label]||{label:sl.label,color:sl.color,minsA:0,minsB:0};
+    map[sl.label].minsB=sl.minutes;
+  });
+  var rows=Object.keys(map).map(function(k){
+    var r=map[k];
+    r.pctA=totalA>0?r.minsA/totalA*100:0;
+    r.pctB=totalB>0?r.minsB/totalB*100:0;
+    r.delta=r.pctA-r.pctB;
+    return r;
+  }).filter(function(r){return r.minsA>0||r.minsB>0;});
+  rows.sort(function(a,b){return Math.abs(b.delta)-Math.abs(a.delta);});
+
+  var h='';
+  rows.forEach(function(r){
+    var deltaSign=r.delta>=0?'+':'';
+    h+='<div class="cmp-row">';
+    h+='<div class="cmp-row-head"><span class="cmp-row-label">'+esc(r.label)+'</span><span class="cmp-row-delta" style="color:'+(r.delta>=0?'#059669':'#dc2626')+'">'+deltaSign+Math.round(r.delta)+' pts</span></div>';
+    h+='<div class="cmp-bar-wrap"><div class="cmp-bar-track"><div class="cmp-bar-fill" style="width:'+r.pctA+'%;background:'+r.color+'"></div></div><span class="cmp-bar-val">'+Math.round(r.pctA)+'% · '+fmtDuration(r.minsA)+'</span></div>';
+    h+='<div class="cmp-bar-wrap"><div class="cmp-bar-track"><div class="cmp-bar-fill" style="width:'+r.pctB+'%;background:'+hexToRgba(r.color,0.4)+'"></div></div><span class="cmp-bar-val">'+Math.round(r.pctB)+'% · '+fmtDuration(r.minsB)+'</span></div>';
+    h+='</div>';
+  });
+  c.innerHTML=h||'<div class="timeline-empty">Aucune donnée sur ces périodes.</div>';
 }
 
 function renderTimelineLegend(){
