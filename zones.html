@@ -90,6 +90,8 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 /* TIMELINE */
 .tabs{display:flex;gap:4px;margin-bottom:1.25rem;border-bottom:1px solid var(--border)}
 .cmp-caption{font-size:11px;color:var(--muted);margin-top:.5rem}
+.period-block{margin-bottom:.85rem}
+.period-label{font-size:11px;color:var(--muted);font-weight:500;margin-bottom:4px}
 .cmp-row{margin-bottom:14px}
 .cmp-row-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
 .cmp-row-label{font-size:13px;font-weight:600}
@@ -198,8 +200,8 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
       </div>
 
       <div id="dash-compare-block" style="display:none">
-        <div class="modal-field">
-          <label>Période A</label>
+        <div class="period-block">
+          <div class="period-label">Période A</div>
           <div class="filter-bar">
             <button class="btn-filter" id="btn-a-range-today" onclick="setPeriodRange('A',1)">Aujourd'hui</button>
             <button class="btn-filter" id="btn-a-range-7" onclick="setPeriodRange('A',7)">7 derniers jours</button>
@@ -208,8 +210,8 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
             <label>Au</label><input type="date" id="a-to" onchange="applyPeriodCustom('A')">
           </div>
         </div>
-        <div class="modal-field">
-          <label>Période B (proposée automatiquement, modifiable)</label>
+        <div class="period-block">
+          <div class="period-label">Période B (proposée automatiquement, modifiable)</div>
           <div class="filter-bar">
             <button class="btn-filter" id="btn-b-range-today" onclick="setPeriodRange('B',1)">Aujourd'hui</button>
             <button class="btn-filter" id="btn-b-range-7" onclick="setPeriodRange('B',7)">7 derniers jours</button>
