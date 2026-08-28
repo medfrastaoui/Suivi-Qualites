@@ -161,7 +161,10 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
         <input type="date" id="actions-date-input" onchange="setActionsDate(this.value)">
         <button class="cal-nav-arrow" onclick="shiftActionsDate(1)">▶</button>
       </div>
-      <button class="btn-filter" onclick="setActionsDate(todayStr())">Aujourd'hui</button>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="btn-filter" onclick="setActionsDate(todayStr())">Aujourd'hui</button>
+        <span id="actions-total" style="font-size:11px;color:var(--muted)"></span>
+      </div>
     </div>
     <div id="actions-list"><div class="loading">Chargement...</div></div>
   </div>
@@ -446,6 +449,8 @@ async function renderActions(){
   list.innerHTML='<div class="loading">Chargement...</div>';
   var res=await sb.from('zone_logs').select('*').eq('entry_date',actionsDate).order('start_time');
   actionsLogs=res.data||[];
+  var totalMin=actionsLogs.reduce(function(s,log){return s+durationMinutes(log.start_time,log.end_time);},0);
+  document.getElementById('actions-total').textContent=totalMin>0?fmtDuration(totalMin)+' saisies':'';
   if(!actionsLogs.length){
     list.innerHTML='<div class="no-logs">Aucune action enregistrée ce jour-là.</div>';
     return;
