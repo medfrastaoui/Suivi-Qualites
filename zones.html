@@ -307,7 +307,16 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 <script>
 var SUPABASE_URL = 'https://gzfliakogbmuvwurwqfy.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6ZmxpYWtvZ2JtdXZ3dXJ3cWZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NjQ5NTMsImV4cCI6MjA5ODE0MDk1M30.35aNfS9uS1oCxvhk-6Tgg9wi93hGzU10bBBN4-Lz1KM';
-var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ── Verrou code d'accès (RLS via header) ──
+var appSecret = localStorage.getItem('app_secret_v1');
+if(!appSecret){
+  appSecret = prompt('Code d\'accès :');
+  if(appSecret) localStorage.setItem('app_secret_v1', appSecret);
+}
+var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  global: { headers: { 'x-app-secret': appSecret || '' } }
+});
 
 // ── QUALITÉS (identique à Objectifs Stratégiques) ──
 var HORIZONS = [
