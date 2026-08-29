@@ -592,7 +592,7 @@ function setDashMode(m){
   document.getElementById('dash-cross-block').style.display=m==='cross'?'':'none';
   if(m==='simple') loadDashRange();
   else if(m==='compare') loadCompareData();
-  else loadCrossData();
+  else { populateCrossSelect(); loadCrossData(); }
 }
 
 function shiftIntradayDate(n){setIntradayDate(addDays(dashIntradayDate,n));}
@@ -837,7 +837,6 @@ function computeSlicesForAxis(logsRaw,axis){
   return result;
 }
 async function loadCrossData(){
-  populateCrossSelect();
   var res=await sb.from('zone_logs').select('*').gte('entry_date',dashCrossFrom).lte('entry_date',dashCrossTo);
   dashCrossLogs=res.data||[];
   renderCrossBreakdown();
