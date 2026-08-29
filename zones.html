@@ -190,15 +190,18 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
       <div class="cal-view-toggle">
         <button class="cal-view-btn active" id="dash-mode-simple" onclick="setDashMode('simple')">Vue simple</button>
         <button class="cal-view-btn" id="dash-mode-compare" onclick="setDashMode('compare')">Comparer</button>
+        <button class="cal-view-btn" id="dash-mode-cross" onclick="setDashMode('cross')">Vue croisée</button>
       </div>
 
       <div id="dash-simple-block">
         <div class="filter-bar">
+          <button class="cal-nav-arrow" onclick="shiftDashRange(-1)">◀</button>
           <button class="btn-filter" id="btn-range-today" onclick="setDashRange(1)">Aujourd'hui</button>
           <button class="btn-filter" id="btn-range-7" onclick="setDashRange(7)">7 derniers jours</button>
           <button class="btn-filter" id="btn-range-month" onclick="setDashRangeMonth()">Ce mois-ci</button>
           <label>Du</label><input type="date" id="dash-from" onchange="applyDashRangeCustom()">
           <label>Au</label><input type="date" id="dash-to" onchange="applyDashRangeCustom()">
+          <button class="cal-nav-arrow" onclick="shiftDashRange(1)">▶</button>
         </div>
       </div>
 
@@ -206,24 +209,44 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
         <div class="period-block">
           <div class="period-label">Période A</div>
           <div class="filter-bar">
+            <button class="cal-nav-arrow" onclick="shiftPeriod('A',-1)">◀</button>
             <button class="btn-filter" id="btn-a-range-today" onclick="setPeriodRange('A',1)">Aujourd'hui</button>
             <button class="btn-filter" id="btn-a-range-7" onclick="setPeriodRange('A',7)">7 derniers jours</button>
             <button class="btn-filter" id="btn-a-range-month" onclick="setPeriodRangeMonth('A')">Ce mois-ci</button>
             <label>Du</label><input type="date" id="a-from" onchange="applyPeriodCustom('A')">
             <label>Au</label><input type="date" id="a-to" onchange="applyPeriodCustom('A')">
+            <button class="cal-nav-arrow" onclick="shiftPeriod('A',1)">▶</button>
           </div>
         </div>
         <div class="period-block">
           <div class="period-label">Période B (proposée automatiquement, modifiable)</div>
           <div class="filter-bar">
+            <button class="cal-nav-arrow" onclick="shiftPeriod('B',-1)">◀</button>
             <button class="btn-filter" id="btn-b-range-today" onclick="setPeriodRange('B',1)">Aujourd'hui</button>
             <button class="btn-filter" id="btn-b-range-7" onclick="setPeriodRange('B',7)">7 derniers jours</button>
             <button class="btn-filter" id="btn-b-range-month" onclick="setPeriodRangeMonth('B')">Ce mois-ci</button>
             <label>Du</label><input type="date" id="b-from" onchange="applyPeriodCustom('B')">
             <label>Au</label><input type="date" id="b-to" onchange="applyPeriodCustom('B')">
+            <button class="cal-nav-arrow" onclick="shiftPeriod('B',1)">▶</button>
           </div>
         </div>
         <div class="cmp-caption">Barres du haut = Période A (couleur pleine) · barres du bas = Période B (couleur claire)</div>
+      </div>
+
+      <div id="dash-cross-block" style="display:none">
+        <div class="filter-bar">
+          <button class="cal-nav-arrow" onclick="shiftCrossRange(-1)">◀</button>
+          <button class="btn-filter" id="btn-cross-range-today" onclick="setCrossRange(1)">Aujourd'hui</button>
+          <button class="btn-filter" id="btn-cross-range-7" onclick="setCrossRange(7)">7 derniers jours</button>
+          <button class="btn-filter" id="btn-cross-range-month" onclick="setCrossRangeMonth()">Ce mois-ci</button>
+          <label>Du</label><input type="date" id="cross-from" onchange="applyCrossRangeCustom()">
+          <label>Au</label><input type="date" id="cross-to" onchange="applyCrossRangeCustom()">
+          <button class="cal-nav-arrow" onclick="shiftCrossRange(1)">▶</button>
+        </div>
+        <div class="period-block" style="margin-top:.5rem">
+          <div class="period-label" id="cross-select-label">Choisir une zone</div>
+          <select id="cross-select" onchange="renderCrossBreakdown()"></select>
+        </div>
       </div>
 
       <div class="cal-view-toggle" style="margin-top:1rem">
@@ -352,6 +375,7 @@ var dashMode='simple';
 var pAFrom=todayStr(), pATo=todayStr(), pAPreset='today';
 var pBFrom=addDays(todayStr(),-1), pBTo=addDays(todayStr(),-1), pBPreset='auto';
 var dashRangeLogsA=[], dashRangeLogsB=[];
+var dashCrossFrom=todayStr(), dashCrossTo=todayStr(), dashCrossPreset='today', dashCrossLogs=[];
 var excludeSommeil=false;
 var SOMMEIL_ACTION_NAME='routine - sommeil';
 
@@ -550,18 +574,25 @@ function renderDashboard(){
   document.getElementById('b-to').value=pBTo;
   highlightPeriodPreset('A');
   highlightPeriodPreset('B');
+  document.getElementById('cross-from').value=dashCrossFrom;
+  document.getElementById('cross-to').value=dashCrossTo;
+  highlightCrossPreset();
   if(dashMode==='simple') loadDashRange();
-  else loadCompareData();
+  else if(dashMode==='compare') loadCompareData();
+  else loadCrossData();
 }
 
 function setDashMode(m){
   dashMode=m;
   document.getElementById('dash-mode-simple').classList.toggle('active',m==='simple');
   document.getElementById('dash-mode-compare').classList.toggle('active',m==='compare');
+  document.getElementById('dash-mode-cross').classList.toggle('active',m==='cross');
   document.getElementById('dash-simple-block').style.display=m==='simple'?'':'none';
   document.getElementById('dash-compare-block').style.display=m==='compare'?'':'none';
+  document.getElementById('dash-cross-block').style.display=m==='cross'?'':'none';
   if(m==='simple') loadDashRange();
-  else loadCompareData();
+  else if(m==='compare') loadCompareData();
+  else loadCrossData();
 }
 
 function shiftIntradayDate(n){setIntradayDate(addDays(dashIntradayDate,n));}
@@ -592,10 +623,24 @@ async function loadIntraday(){
   c.innerHTML='<div class="timeline-col-wrap">'+ticksHtml+'<div class="timeline-col-track">'+segs+'</div></div>';
 }
 
+function shiftDateRange(from,to,dir){
+  var days=Math.round((new Date(to+'T00:00:00')-new Date(from+'T00:00:00'))/86400000)+1;
+  var delta=dir*days;
+  return {from:addDays(from,delta),to:addDays(to,delta)};
+}
+
 function highlightRangePreset(){
   document.getElementById('btn-range-today').classList.toggle('active',dashRangePreset==='today');
   document.getElementById('btn-range-7').classList.toggle('active',dashRangePreset==='7');
   document.getElementById('btn-range-month').classList.toggle('active',dashRangePreset==='month');
+}
+function shiftDashRange(dir){
+  var r=shiftDateRange(dashRangeFrom,dashRangeTo,dir);
+  dashRangeFrom=r.from; dashRangeTo=r.to; dashRangePreset='custom';
+  document.getElementById('dash-from').value=dashRangeFrom;
+  document.getElementById('dash-to').value=dashRangeTo;
+  highlightRangePreset();
+  loadDashRange();
 }
 function setDashRange(days){
   dashRangePreset=days===1?'today':'7';
@@ -673,9 +718,6 @@ function applyPeriodCustom(which){
     pATo=document.getElementById('a-to').value;
     pAPreset='custom';
     if(!pAFrom||!pATo){highlightPeriodPreset('A');return;}
-    computePeriodBAuto();
-    document.getElementById('b-from').value=pBFrom;
-    document.getElementById('b-to').value=pBTo;
   } else {
     pBFrom=document.getElementById('b-from').value;
     pBTo=document.getElementById('b-to').value;
@@ -685,23 +727,156 @@ function applyPeriodCustom(which){
   highlightPeriodPreset('A'); highlightPeriodPreset('B');
   loadCompareData();
 }
+function shiftPeriod(which,dir){
+  if(which==='A'){
+    var rA=shiftDateRange(pAFrom,pATo,dir);
+    pAFrom=rA.from; pATo=rA.to; pAPreset='custom';
+    document.getElementById('a-from').value=pAFrom;
+    document.getElementById('a-to').value=pATo;
+  } else {
+    var rB=shiftDateRange(pBFrom,pBTo,dir);
+    pBFrom=rB.from; pBTo=rB.to; pBPreset='custom';
+    document.getElementById('b-from').value=pBFrom;
+    document.getElementById('b-to').value=pBTo;
+  }
+  highlightPeriodPreset('A'); highlightPeriodPreset('B');
+  loadCompareData();
+}
+
+// ── VUE CROISÉE ──
+function highlightCrossPreset(){
+  document.getElementById('btn-cross-range-today').classList.toggle('active',dashCrossPreset==='today');
+  document.getElementById('btn-cross-range-7').classList.toggle('active',dashCrossPreset==='7');
+  document.getElementById('btn-cross-range-month').classList.toggle('active',dashCrossPreset==='month');
+}
+function setCrossRange(days){
+  dashCrossPreset=days===1?'today':'7';
+  dashCrossTo=todayStr();
+  dashCrossFrom=addDays(dashCrossTo,-(days-1));
+  document.getElementById('cross-from').value=dashCrossFrom;
+  document.getElementById('cross-to').value=dashCrossTo;
+  highlightCrossPreset();
+  loadCrossData();
+}
+function setCrossRangeMonth(){
+  dashCrossPreset='month';
+  dashCrossFrom=firstOfMonthStr();
+  dashCrossTo=todayStr();
+  document.getElementById('cross-from').value=dashCrossFrom;
+  document.getElementById('cross-to').value=dashCrossTo;
+  highlightCrossPreset();
+  loadCrossData();
+}
+function applyCrossRangeCustom(){
+  dashCrossPreset='custom';
+  dashCrossFrom=document.getElementById('cross-from').value;
+  dashCrossTo=document.getElementById('cross-to').value;
+  highlightCrossPreset();
+  if(!dashCrossFrom||!dashCrossTo)return;
+  loadCrossData();
+}
+function shiftCrossRange(dir){
+  var r=shiftDateRange(dashCrossFrom,dashCrossTo,dir);
+  dashCrossFrom=r.from; dashCrossTo=r.to; dashCrossPreset='custom';
+  document.getElementById('cross-from').value=dashCrossFrom;
+  document.getElementById('cross-to').value=dashCrossTo;
+  highlightCrossPreset();
+  loadCrossData();
+}
+
+function crossSelectOptions(){
+  if(dashMetric==='zones'){
+    return dashView==='macro'
+      ? MACRO_ZONES.map(function(m){return {value:'m'+m.id,label:m.label};})
+      : ZONES.map(function(z){return {value:'z'+z.id,label:z.id+' '+z.label};});
+  } else {
+    if(dashView==='macro'){
+      var opts=HORIZONS.map(function(h){return {value:'h'+h.id,label:h.label};});
+      opts.push({value:'hors',label:'Hors Horizon'});
+      return opts;
+    } else {
+      var opts2=[];
+      HORIZONS.forEach(function(h){h.qualities.forEach(function(q){opts2.push({value:'q'+q,label:q});});});
+      opts2.push({value:'nonq',label:NON_QUALITE});
+      return opts2;
+    }
+  }
+}
+function populateCrossSelect(){
+  var opts=crossSelectOptions();
+  var sel=document.getElementById('cross-select');
+  sel.innerHTML='<option value="">— Choisir —</option>'+opts.map(function(o){return '<option value="'+escAttr(o.value)+'">'+esc(o.label)+'</option>';}).join('');
+  document.getElementById('cross-select-label').textContent=dashMetric==='zones'?'Choisir une zone':'Choisir une qualité';
+}
+function filterLogsForCrossSelection(logs,sel){
+  if(dashMetric==='zones'){
+    if(dashView==='macro'){
+      var macroId=parseInt(sel.slice(1),10);
+      return logs.filter(function(l){return zoneOf(l.quality,l.effort_level,l.emotion).macro===macroId;});
+    } else {
+      var zid=sel.slice(1);
+      return logs.filter(function(l){return zoneOf(l.quality,l.effort_level,l.emotion).id===zid;});
+    }
+  } else {
+    if(sel==='hors'||sel==='nonq') return logs.filter(function(l){return l.quality===NON_QUALITE;});
+    if(dashView==='macro'){
+      var hId=sel.slice(1);
+      var horizon=HORIZONS.find(function(h){return h.id===hId;});
+      return logs.filter(function(l){return horizon.qualities.indexOf(l.quality)>=0;});
+    } else {
+      var qname=sel.slice(1);
+      return logs.filter(function(l){return l.quality===qname;});
+    }
+  }
+}
+function computeSlicesForAxis(logsRaw,axis){
+  var savedMetric=dashMetric;
+  dashMetric=axis;
+  var result=computeSlices(logsRaw);
+  dashMetric=savedMetric;
+  return result;
+}
+async function loadCrossData(){
+  populateCrossSelect();
+  var res=await sb.from('zone_logs').select('*').gte('entry_date',dashCrossFrom).lte('entry_date',dashCrossTo);
+  dashCrossLogs=res.data||[];
+  renderCrossBreakdown();
+}
+function renderCrossBreakdown(){
+  var c=document.getElementById('pie-container');
+  var selVal=document.getElementById('cross-select').value;
+  if(!selVal){
+    c.innerHTML='<div class="timeline-empty">Choisis une '+(dashMetric==='zones'?'zone':'qualité')+' ci-dessus pour voir sa répartition.</div>';
+    return;
+  }
+  var filtered=filterLogsForCrossSelection(dashCrossLogs,selVal);
+  var otherAxis=dashMetric==='zones'?'qualites':'zones';
+  var slices=computeSlicesForAxis(filtered,otherAxis);
+  renderSlicesPie(c,slices,'Aucune donnée pour cette sélection sur la période.');
+}
 
 function setDashView(v){
   dashView=v;
   document.getElementById('dash-view-macro').classList.toggle('active',v==='macro');
   document.getElementById('dash-view-detail').classList.toggle('active',v==='detail');
-  if(dashMode==='simple') renderPie(); else renderCompareBars();
+  if(dashMode==='simple') renderPie();
+  else if(dashMode==='compare') renderCompareBars();
+  else { populateCrossSelect(); renderCrossBreakdown(); }
 }
 function setDashMetric(v){
   dashMetric=v;
   document.getElementById('dash-metric-zones').classList.toggle('active',v==='zones');
   document.getElementById('dash-metric-qualites').classList.toggle('active',v==='qualites');
-  if(dashMode==='simple') renderPie(); else renderCompareBars();
+  if(dashMode==='simple') renderPie();
+  else if(dashMode==='compare') renderCompareBars();
+  else { populateCrossSelect(); renderCrossBreakdown(); }
 }
 function toggleExcludeSommeil(){
   excludeSommeil=!excludeSommeil;
   document.getElementById('btn-exclude-sommeil').classList.toggle('active',excludeSommeil);
-  if(dashMode==='simple') renderPie(); else renderCompareBars();
+  if(dashMode==='simple') renderPie();
+  else if(dashMode==='compare') renderCompareBars();
+  else renderCrossBreakdown();
 }
 
 async function loadDashRange(){
@@ -722,7 +897,7 @@ async function loadCompareData(){
   renderCompareBars();
 }
 
-// ── CALCUL DES TRANCHES (partagé Vue simple / Comparer) ──
+// ── CALCUL DES TRANCHES (partagé Vue simple / Comparer / Croisée) ──
 function computeSlices(logsRaw){
   var logs=excludeSommeil?logsRaw.filter(function(l){return l.action_name.trim().toLowerCase()!==SOMMEIL_ACTION_NAME;}):logsRaw;
   var slices;
@@ -769,17 +944,13 @@ function computeSlices(logsRaw){
   return slices;
 }
 
-function renderPie(){
-  var c=document.getElementById('pie-container');
-  var slices=computeSlices(dashRangeLogs);
-  slices.sort(function(a,b){return b.minutes-a.minutes;});
-
+function renderSlicesPie(container,slices,emptyMsg){
+  slices=slices.slice().sort(function(a,b){return b.minutes-a.minutes;});
   var grandTotal=slices.reduce(function(s,sl){return s+sl.minutes;},0);
   if(grandTotal===0){
-    c.innerHTML='<div class="timeline-empty">Aucune donnée sur cette période.</div>';
+    container.innerHTML='<div class="timeline-empty">'+emptyMsg+'</div>';
     return;
   }
-
   var cum=0, gradientParts=[];
   slices.forEach(function(sl){
     if(sl.minutes<=0)return;
@@ -803,7 +974,13 @@ function renderPie(){
     h+='</div>';
   });
   h+='</div></div>';
-  c.innerHTML=h;
+  container.innerHTML=h;
+}
+
+function renderPie(){
+  var c=document.getElementById('pie-container');
+  var slices=computeSlices(dashRangeLogs);
+  renderSlicesPie(c,slices,'Aucune donnée sur cette période.');
 }
 
 function renderCompareBars(){
