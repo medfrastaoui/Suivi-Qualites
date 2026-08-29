@@ -326,6 +326,13 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 var SUPABASE_URL = 'https://gzfliakogbmuvwurwqfy.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6ZmxpYWtvZ2JtdXZ3dXJ3cWZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NjQ5NTMsImV4cCI6MjA5ODE0MDk1M30.35aNfS9uS1oCxvhk-6Tgg9wi93hGzU10bBBN4-Lz1KM';
 
+// ── Verrou code d'accès (RLS via header) ──
+var appSecret = localStorage.getItem('app_secret_v1');
+if(!appSecret){
+  appSecret = prompt('Code d\'accès :');
+  if(appSecret) localStorage.setItem('app_secret_v1', appSecret);
+}
+
 var HORIZONS = [
   {id:'spirituel',label:'Spirituel',color:'#7c3aed',vision:'I am living in a World of Love, Joy and Peace of God',qualities:['Rester Conscient','Être droit','Contribuer dans la société']},
   {id:'professionnel',label:'Professionnel',color:'#059669',vision:'I am giving perfect services for a perfect Pay',qualities:['Apprendre de nouvelles compétences','Donner un service de qualité','Avoir un revenu']},
@@ -334,7 +341,9 @@ var HORIZONS = [
 ];
 var ALL_QUALITIES = HORIZONS.flatMap(function(h){return h.qualities.map(function(q){return {quality:q,horizon:h};});});
 
-var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  global: { headers: { 'x-app-secret': appSecret || '' } }
+});
 var goals=[], steps=[], tasks=[], currentGoal=null, editGoalId=null, editTaskId=null, editStepId=null;
 var openSteps=new Set();
 var todoFilterFrom=null, todoFilterTo=null;
