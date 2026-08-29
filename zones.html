@@ -258,7 +258,10 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
           <button class="cal-view-btn active" id="dash-view-macro" onclick="setDashView('macro')">Macro</button>
           <button class="cal-view-btn" id="dash-view-detail" onclick="setDashView('detail')">Détaillée</button>
         </div>
-        <button class="btn-filter" id="btn-exclude-sommeil" onclick="toggleExcludeSommeil()">Exclure Sommeil</button>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span id="cross-total" style="font-size:11px;color:var(--muted)"></span>
+          <button class="btn-filter" id="btn-exclude-sommeil" onclick="toggleExcludeSommeil()">Exclure Sommeil</button>
+        </div>
       </div>
       <div id="pie-container"><div class="loading">Chargement...</div></div>
     </div>
@@ -846,11 +849,14 @@ function renderCrossBreakdown(){
   var selVal=document.getElementById('cross-select').value;
   if(!selVal){
     c.innerHTML='<div class="timeline-empty">Choisis une '+(dashMetric==='zones'?'zone':'qualité')+' ci-dessus pour voir sa répartition.</div>';
+    document.getElementById('cross-total').textContent='';
     return;
   }
   var filtered=filterLogsForCrossSelection(dashCrossLogs,selVal);
   var otherAxis=dashMetric==='zones'?'qualites':'zones';
   var slices=computeSlicesForAxis(filtered,otherAxis);
+  var totalMin=slices.reduce(function(s,sl){return s+sl.minutes;},0);
+  document.getElementById('cross-total').textContent=totalMin>0?fmtDuration(totalMin):'';
   renderSlicesPie(c,slices,'Aucune donnée pour cette sélection sur la période.');
 }
 
@@ -979,10 +985,12 @@ function renderSlicesPie(container,slices,emptyMsg){
 function renderPie(){
   var c=document.getElementById('pie-container');
   var slices=computeSlices(dashRangeLogs);
+  document.getElementById('cross-total').textContent='';
   renderSlicesPie(c,slices,'Aucune donnée sur cette période.');
 }
 
 function renderCompareBars(){
+  document.getElementById('cross-total').textContent='';
   var c=document.getElementById('pie-container');
   var slicesA=computeSlices(dashRangeLogsA);
   var slicesB=computeSlices(dashRangeLogsB);
