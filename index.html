@@ -226,7 +226,9 @@ ALL_QUALITIES.forEach(function(q,i){ Q_IDX[q]=i; });
 function Q(i){ return ALL_QUALITIES[i]; }
 
 // State
-var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  global: { headers: { 'x-app-secret': 'Zk9#mVq2$pLw7Tn4' } }
+});
 var currentOffset = 0;
 var dayChecked = {};
 var dayNotes = {};        // {compId: "texte"}
