@@ -76,6 +76,11 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
   .comp-row.state-skip .comp-name{color:#a78bfa}
 }
 .comp-archived-badge{font-size:9px;background:var(--border);color:var(--muted);border-radius:4px;padding:1px 5px;margin-left:5px;vertical-align:middle}
+.comp-wrap{display:flex;flex-direction:column;gap:0}
+.comp-note{display:none;padding:0 .2rem}
+.comp-note.open{display:block;margin-top:4px}
+.comp-note-input{width:100%;padding:.5rem .7rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:12px;font-family:inherit;resize:vertical;min-height:44px}
+.btn-icon.has-note{color:#f59e0b}
 .comp-desc{font-size:11px;color:var(--muted);margin-top:2px;display:none;line-height:1.4}
 .comp-desc.open{display:block}
 .comp-actions{display:flex;gap:4px;flex-shrink:0}
@@ -199,13 +204,6 @@ nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1p
 var SUPABASE_URL = 'https://gzfliakogbmuvwurwqfy.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6ZmxpYWtvZ2JtdXZ3dXJ3cWZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NjQ5NTMsImV4cCI6MjA5ODE0MDk1M30.35aNfS9uS1oCxvhk-6Tgg9wi93hGzU10bBBN4-Lz1KM';
 
-// ── Verrou code d'accès (RLS via header) ──
-var appSecret = localStorage.getItem('app_secret_v1');
-if(!appSecret){
-  appSecret = prompt('Code d\'accès :');
-  if(appSecret) localStorage.setItem('app_secret_v1', appSecret);
-}
-
 var HORIZONS = [
   {id:'spirituel',label:'Spirituel',cssVar:'--spirituel',bgVar:'--spirituel-l',
    vision:'I am living in a World of Love, Joy and Peace of God',
@@ -228,11 +226,11 @@ ALL_QUALITIES.forEach(function(q,i){ Q_IDX[q]=i; });
 function Q(i){ return ALL_QUALITIES[i]; }
 
 // State
-var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-  global: { headers: { 'x-app-secret': appSecret || '' } }
-});
+var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 var currentOffset = 0;
 var dayChecked = {};
+var dayNotes = {};        // {compId: "texte"}
+var openNotes = {};       // {compId: bool}
 var openQualities = {};   // {qualityName: bool}
 var openDescs = {};       // {compId: bool}
 var openArchived = {};    // {qualityName: bool}
@@ -269,6 +267,7 @@ function dateFR(offset){
   return s.charAt(0).toUpperCase()+s.slice(1);
 }
 function lsGet(k){ try{return JSON.parse(localStorage.getItem(k));}catch{return null;} }
+function escHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function lsSet(k,v){ try{localStorage.setItem(k,JSON.stringify(v));}catch{} }
 
 // ── TOAST ──
@@ -380,8 +379,10 @@ async function backfillSkipRange(compId,fromDate,toDate){
 // ── LOAD DAY ──
 async function loadDay(){
   dayChecked={};
+  dayNotes={};
   var res=await sb.from('suivi_jours').select('*').eq('date',dateStr(currentOffset)).maybeSingle();
   if(res.data&&res.data.checks) dayChecked=res.data.checks;
+  if(res.data&&res.data.notes) dayNotes=res.data.notes;
   var hasTrue=Object.values(dayChecked).some(function(v){return v===true;});
   if(hasTrue) savedDates[dateStr(currentOffset)]=true;
   else delete savedDates[dateStr(currentOffset)];
@@ -400,10 +401,13 @@ async function loadSavedDates(){
 // ── SAVE DAY ──
 async function saveDay(){
   var date=dateStr(currentOffset);
+  Object.keys(dayNotes).forEach(function(id){
+    if(!dayNotes[id]||!dayNotes[id].trim()) delete dayNotes[id];
+  });
   lsSet('day:'+date,dayChecked);
   var existing=await sb.from('suivi_jours').select('date').eq('date',date).maybeSingle();
   var isUpdate=!!(existing.data);
-  var res=await sb.from('suivi_jours').upsert({date:date,checks:dayChecked},{onConflict:'date'});
+  var res=await sb.from('suivi_jours').upsert({date:date,checks:dayChecked,notes:dayNotes},{onConflict:'date'});
   if(res.error){ showToast('Erreur enregistrement'); return; }
   var hasTrue=Object.values(dayChecked).some(function(v){return v===true;});
   if(hasTrue) savedDates[date]=true; else delete savedDates[date];
@@ -431,6 +435,15 @@ function toggleQuality(qi){ var qName=Q(qi);
 function toggleDesc(compId){
   openDescs[compId]=!openDescs[compId];
   renderSaisie();
+}
+
+// ── COMMENTAIRE PAR COMPOSANTE ──
+function toggleNote(compId){
+  openNotes[compId]=!openNotes[compId];
+  renderSaisie();
+}
+function updateNote(compId,val){
+  dayNotes[compId]=val;
 }
 
 // ── TOGGLE ARCHIVED SECTION ──
@@ -634,6 +647,9 @@ function renderSaisie(){
           var cls=stateClass(val);
           var icon=stateIcon(val);
           var descOpen=!!openDescs[c.id];
+          var noteOpen=!!openNotes[c.id];
+          var hasNote=!!(dayNotes[c.id]&&dayNotes[c.id].trim());
+          h+='<div class="comp-wrap">';
           h+='<div class="comp-row '+(cls||'')+'">';
           h+='<div class="comp-check" onclick="toggleComp(\''+c.id+'\')">'+icon+'</div>';
           h+='<div class="comp-info" onclick="toggleDesc(\''+c.id+'\')">';
@@ -641,10 +657,13 @@ function renderSaisie(){
           if(c.desc) h+='<div class="comp-desc '+(descOpen?'open':'')+'">'+c.desc+'</div>';
           h+='</div>';
           h+='<div class="comp-actions">';
+          h+='<button class="btn-icon'+(hasNote?' has-note':'')+'" onclick="toggleNote(\''+c.id+'\')" title="Commentaire">💬</button>';
           h+='<button class="btn-icon" onclick="editComp('+Q_IDX[qName]+',\''+c.id+'\')">✏️</button>';
           h+='<button class="btn-icon" onclick="archiveComp('+Q_IDX[qName]+',\''+c.id+'\')">📦</button>';
           h+='<button class="btn-icon" onclick="deleteComp('+Q_IDX[qName]+',\''+c.id+'\')">🗑</button>';
           h+='</div></div>';
+          h+='<div class="comp-note '+(noteOpen?'open':'')+'"><textarea class="comp-note-input" placeholder="Commentaire (optionnel)" oninput="updateNote(\''+c.id+'\',this.value)">'+escHtml(dayNotes[c.id])+'</textarea></div>';
+          h+='</div>';
         });
 
         // Composantes archivées visibles sur jours passés avant archivage
@@ -654,11 +673,19 @@ function renderSaisie(){
           var val=dayChecked[c.id];
           var cls=stateClass(val);
           var icon=stateIcon(val);
+          var noteOpen=!!openNotes[c.id];
+          var hasNote=!!(dayNotes[c.id]&&dayNotes[c.id].trim());
+          h+='<div class="comp-wrap">';
           h+='<div class="comp-row '+(cls||'')+'">';
           h+='<div class="comp-check" onclick="toggleComp(\''+c.id+'\')">'+icon+'</div>';
           h+='<div class="comp-info">';
           h+='<div class="comp-name">'+c.name+'<span class="comp-archived-badge">archivée</span></div>';
+          h+='</div>';
+          h+='<div class="comp-actions">';
+          h+='<button class="btn-icon'+(hasNote?' has-note':'')+'" onclick="toggleNote(\''+c.id+'\')" title="Commentaire">💬</button>';
           h+='</div></div>';
+          h+='<div class="comp-note '+(noteOpen?'open':'')+'"><textarea class="comp-note-input" placeholder="Commentaire (optionnel)" oninput="updateNote(\''+c.id+'\',this.value)">'+escHtml(dayNotes[c.id])+'</textarea></div>';
+          h+='</div>';
         });
 
         // Section archivées
